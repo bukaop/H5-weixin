@@ -6,6 +6,10 @@ P3-Weixin
 ==========
 特点：（JAVA 插件开发框架->松耦合、插件模式）
 
+源码下载地址
+==========
+* [http://git.oschina.net/jeecg/p3-weixin](http://git.oschina.net/jeecg/p3-weixin)
+
 演示公众号（H5活动汇）
 ==========
 ![github](http://www.jeecg.org/data/attachment/forum/201601/25/180314mjvputsot6hhtvoa.jpg "jeewx521")
