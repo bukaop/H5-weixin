@@ -5,9 +5,9 @@ H5活动之家（h5huodong.com） | 开源免费微信活动平台
 
 技术交流
 ==========
-* 官网：[H5活动之家](http://www.h5huodong.com)
-* 论坛：[www.jeecg.org](http://www.jeecg.org)
-* H5活动之家群: 413534092
+* H5活动之家官网：[www.h5huodong.com](http://www.h5huodong.com)
+* 开发者论坛 ：[www.jeecg.org](http://www.jeecg.org)
+* H5活动之家QQ群 : 413534092
 
 官方公众号（H5活动之家）
 ==========
