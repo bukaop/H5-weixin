@@ -1,20 +1,19 @@
-开源|免费 捷微H5活动平台（h5huodong.com）
+H5活动之家（h5huodong.com） | 开源免费微信活动平台
 ==========
-特点：（采用插件模式开发H5营销活动，独立部署，解决微信活动大用户、高并发问题）
+特点：（采用微服务架构，插件式开发、专业微信营销活动平台，具备大用户、高并发支撑能力）
 
-P3-Weixin 
+
+技术交流
 ==========
-特点：（JAVA 插件开发框架->松耦合、插件模式）
+* 官网：[H5活动之家](http://www.h5huodong.com)
+* 论坛：[www.jeecg.org](http://www.jeecg.org)
+* H5活动之家群: 413534092
 
-源码下载地址
-==========
-* [http://git.oschina.net/jeecg/p3-weixin](http://git.oschina.net/jeecg/p3-weixin)
-
-演示公众号（H5活动汇）
+官方公众号（H5活动之家）
 ==========
 ![github](http://www.jeecg.org/data/attachment/forum/201601/25/180314mjvputsot6hhtvoa.jpg "jeewx521")
 
-### 微信H5活动插件列表（陆续更新..）
+### 微信H5活动源码列表（陆续更新..）
 	  1.微信砍价活动   P3-Biz-gzbargain
 	  2.摇一摇送卡券   P3-Biz-shaketicket
 	  3.九宫格活动     P3-Biz-jiugongge
@@ -34,14 +33,14 @@ P3-Weixin
 【开发文档】
 
 ![github](http://img.blog.csdn.net/20151028163509595?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center "jeecg")
-* [  文档下载来点我](http://www.jeecg.org/forum.php?mod=forumdisplay&fid=191)
+* [  文档下载来点我](http://www.jeecg.org/forum.php?mod=forumdisplay&fid=202)
 
 
 
 	  
 【架构说明】
 
-    1.P3-weixin 采用SpringMvc + Mybatis + Velocity + Maven(构建) 框架技术
+    1.采用SpringMvc + Mybatis + Velocity + Maven(构建) 框架技术
     2.插件引入方式
         pom.xml文件中，引入新开发的插件
         <!-- P3 jar -->
@@ -63,9 +62,20 @@ P3-Weixin
 
 	1.Eclipse + Maven + JDK7
     2.项目以Maven方式导入eclipse
-	3.采用maven方式，启动主项目P3-Web，命令：tomcat:run
-      活动访问地址：http://localhost:8080/P3-Web/gzbargain/toIndex.do?actId=actgzbargain00001&openid=oR0jFt_DTsAUJebWqGeq3A1VWfRw&subscribe=1
+	3.执行Mysql数据库脚本，每个项目脚本单独提供
+	    P3-Web\doc\db\p3-base-init.sql
+		P3-Biz-jiugongge\doc\db\jiugongge-init.sql
+		P3-Biz-gzbargain\doc\db\gzbargain-init.sql
+		P3-Biz-commonftb\doc\db\commonftb-init.sql
+		P3-Biz-shaketicket\doc\db\shaketicket-init.sql
+		
+		完整项目SQL脚本：
+		docs\p3-weixin-all-mysql.sql
+	4.采用maven方式，启动主项目P3-Web，命令：tomcat:run
+      活动访问地址：
+	     http://localhost:8080/P3-Web/gzbargain/toIndex.do?actId=actgzbargain00001&openid=oR0jFt_DTsAUJebWqGeq3A1VWfRw&subscribe=1
 	  说明：插件不能单独启动，maven方式引入到Web项目
+	5.系统默认登录账号 admin/123456
 	  
 	
 【代码生成器】
@@ -73,15 +83,9 @@ P3-Weixin
 	1.工具类：P3-Web/src/main/java/org/jeecgframework/p3/cg/util/CodeToolUtil.java
 	2.配置文件：P3-Web/src/main/resources/p3-cg-config.properties
 
-      
-### 联系我们
-
-* [Jeewx捷微官网](http://www.jeewx.com)
-* [Jeewx技术论坛](http://www.jeecg.org)
-*  交流QQ群: 289709451
 
 
-### H5活动营销平台（后台）
-![github](http://img.blog.csdn.net/20151028202143675?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center "jeecg")
+### H5活动之家（管理后台）
+![github](http://img.blog.csdn.net/20160830143702156?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center "jeecg")
 ![github](http://img.blog.csdn.net/20151028202206676?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center "jeecg")
 ![github](http://www.jeecg.org/data/attachment/forum/201601/25/182100gwfrlwssjbp278wf.png "jeecg")
