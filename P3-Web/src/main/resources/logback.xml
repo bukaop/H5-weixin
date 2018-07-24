@@ -40,8 +40,8 @@
 		</rollingPolicy>
 	</appender>
 
-	<logger name="java.sql" level="DEBUG" />
-    <logger name="org.springframework" level="DEBUG" />
+	<logger name="java.sql" level="INFO" />
+    <logger name="org.springframework" level="INFO" />
     
 	<root level="INFO">
         <appender-ref ref="CONSOLE" />
