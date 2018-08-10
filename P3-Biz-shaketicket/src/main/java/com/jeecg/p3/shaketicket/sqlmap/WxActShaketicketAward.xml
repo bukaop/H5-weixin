@@ -16,6 +16,9 @@
 		<result column="probability" property="probability" jdbcType="DOUBLE"/>
 		<result column="amount" property="amount" jdbcType="INTEGER"/>
 		<result column="name" property="jwidName" jdbcType="VARCHAR"/>
+		<result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+		<result column="unit" property="unit" jdbcType="VARCHAR"/>
+		<result column="awards_describe" property="awardsDescribe" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -23,7 +26,7 @@
 		<trim  suffixOverrides="," >
 				 <if test="query.awardsName != null and query.awardsName != ''" >
 	  		 		/* 奖品名称 */
-			    	AND wasa.awards_name =  #{query.awardsName,jdbcType=VARCHAR}
+			    	AND wasa.awards_name like concat(concat('%',#{query.awardsName}),'%')
 				 </if>
 				 <if test="query.jwid != null and query.jwid != ''" >
 	  		 		/* 微信公众号 */
@@ -36,6 +39,10 @@
 				 <if test="query.owner != null and query.owner != ''" >
 	  		 		/* 发奖公司 */
 			    	AND wasa.owner =  #{query.owner,jdbcType=VARCHAR}
+				 </if>
+				 <if test="query.createBy != null and query.createBy != ''" >
+	  		 		/* 创建人 */
+			    	AND wasa.create_by =  #{query.createBy,jdbcType=VARCHAR}
 				 </if>
 		</trim>
 	</sql>
@@ -55,7 +62,10 @@
                      ,owner                         /* 发奖公司 */ 
                      ,card_id                       /* 卡券id */ 
                      ,img                           /* 奖品图片 */ 
+                     ,unit                           /* 奖品图片 */ 
                      ,jwid                          /* 微信公众号 */ 
+                     ,create_by                  /* 所属项目编码 */ 
+                     ,awards_describe
 					)
 			values (
                       #{id,jdbcType=VARCHAR}                            /* ID */ 
@@ -64,7 +74,10 @@
                      ,#{owner,jdbcType=VARCHAR}                         /* 发奖公司 */ 
                      ,#{cardId,jdbcType=VARCHAR}                        /* 卡券id */ 
                      ,#{img,jdbcType=VARCHAR}                           /* 奖品图片 */ 
+                     ,#{unit,jdbcType=VARCHAR}                           /* 奖品图片 */ 
                      ,#{jwid,jdbcType=VARCHAR}                          /* 微信公众号 */ 
+                      ,#{createBy,jdbcType=VARCHAR}                   /* 所属项目编码 */ 
+                      ,#{awardsDescribe,jdbcType=VARCHAR}
 					)
 	</insert>
 
@@ -98,9 +111,17 @@
 		    		 		/* 奖品图片 */ 
 	    		 			img = #{img,jdbcType=VARCHAR},
 						 </if>
+						 <if test="unit != null">
+		    		 		/* 奖品图片 */ 
+	    		 			unit = #{unit,jdbcType=VARCHAR},
+						 </if>
 						 <if test="jwid != null">
 		    		 		/* 微信公众号 */ 
 	    		 			jwid = #{jwid,jdbcType=VARCHAR},
+						 </if>
+						 <if test="awardsDescribe != null">
+		    		 		/* 微信公众号 */ 
+	    		 			awards_describe = #{awardsDescribe,jdbcType=VARCHAR},
 						 </if>
 	  	  		</trim>
 				WHERE
@@ -121,7 +142,9 @@
                   ,wasa.owner                         /* 发奖公司 */ 
                   ,wasa.card_id                       /* 卡券id */
                   ,wasa.img                           /* 奖品图片 */ 
+                  ,wasa.unit                           /* 奖品图片 */ 
                   ,wasa.jwid                          /* 微信公众号 */ 
+                  ,wasa.awards_describe
 		   FROM   wx_act_shaketicket_award      AS wasa      /* 奖项表 */ 
 		   WHERE
 				id = #{id}				/* 序号 */ 
@@ -165,11 +188,9 @@
                   ,wasa.owner                         /* 发奖公司 */ 
                   ,wasa.card_id                       /* 卡券id */
                   ,wasa.img                           /* 奖品图片 */ 
+                  ,wasa.unit                           /* 奖品图片 */ 
                   ,wasa.jwid                          /* 微信公众号 */ 
-                  ,jwj.name
 		FROM   	 wx_act_shaketicket_award      AS wasa      /* 奖项表 */ 
-		LEFT JOIN jw_web_jwid      AS jwj
-		ON wasa.jwid=jwj.jwid
 		WHERE 1=1
 		   <include refid="wherecontation"/>
 		LIMIT  #{startRow}  		/* 开始序号 */ 
@@ -183,6 +204,8 @@
                   ,wasa.owner                         /* 发奖公司 */ 
                   ,wasa.card_id                       /* 卡券id */
                   ,wasa.img                          /* 奖品图片 */ 
+                  ,wasa.create_by                          /* 奖品图片 */ 
+                  ,wasa.unit                          /*  */ 
                   ,wasc.jwid                          /*  */ 
                   ,wasc.amount                       /* 奖项数量 */
                   ,wasc.probability                   /* 奖项概率 */             
@@ -199,4 +222,27 @@
 		FROM  wx_act_shaketicket_award      AS wasa
 		   WHERE  wasa.jwid = #{jwid}
 	</select>	
+		<select id="queryAwards2" parameterType="Object"  resultMap="WxActShaketicketAward">
+		SELECT 
+                   wasa.id                            /*奖项id*/
+                  ,wasa.awards_name                   /* 奖品名称 */ 
+		FROM  wx_act_shaketicket_award      AS wasa
+		   WHERE  wasa.jwid = #{jwid} AND wasa.create_by=#{createBy}
+	</select>	
+	
+	<select id="queryAwardsByName" parameterType="Object"  resultMap="WxActShaketicketAward">
+		    SELECT 
+                   wasa.id                            /* 主键id */ 
+                  ,wasa.awards_name                   /* 奖项名称 */ 
+                  ,wasa.jwid                          /* jwid */ 
+                  ,wasa.create_by                     /* 创建人 */  
+		FROM   wx_act_shaketicket_award      AS wasa      /* 奖项表 */  
+		   WHERE
+		    wasa.jwid = #{jwid} 
+		    <if test="createBy != null and createBy != ''" >
+  		 		/* 创建人 */
+		    	AND wasa.create_by =  #{createBy,jdbcType=VARCHAR}
+			 </if>
+		    AND wasa.awards_name = #{awardsName}
+	</select>
 </mapper>

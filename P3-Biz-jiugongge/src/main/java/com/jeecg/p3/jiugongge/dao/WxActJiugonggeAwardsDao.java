@@ -19,7 +19,11 @@ public interface WxActJiugonggeAwardsDao extends GenericDao<WxActJiugonggeAwards
 	
 	public List<WxActJiugonggeAwards> queryPageList(PageQuery<WxActJiugonggeAwards> pageQuery,Integer itemCount);
 	public List<WxActJiugonggeAwards> queryAwards(String jwid);
+	public List<WxActJiugonggeAwards> queryAwards(String jwid,String creatBy);
+	public List<WxActJiugonggeAwards> queryAwardsByName(String jwid,String createBy,String content);
 	public Boolean validReat(int value,String jwid);
 	public Boolean validReat(String id,int value,String jwid);
+	public Integer getMaxAwardsValue(String jwid);
+	public Integer getMaxAwardsValueByCreateBy(String jwid,String createBy);
 }
 

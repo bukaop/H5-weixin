@@ -23,8 +23,11 @@ public class WxActShaketicketAward implements Entity<String> {
 	 *微信原始id
 	 */
 	private String jwidName;
-	
-		public String getJwidName() {
+	private String unit;
+	/**
+	 *创建人
+	 */
+	private String createBy;	public String getJwidName() {
 		return jwidName;
 	}
 	public void setJwidName(String jwidName) {
@@ -74,6 +77,26 @@ public class WxActShaketicketAward implements Entity<String> {
 	}
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+	public String getCreateBy() {
+		return createBy;
+	}
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+	public String getUnit() {
+		return unit;
+	}
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+	
+	private String awardsDescribe;
+	public String getAwardsDescribe() {
+		return awardsDescribe;
+	}
+	public void setAwardsDescribe(String awardsDescribe) {
+		this.awardsDescribe = awardsDescribe;
 	}
 	
 	

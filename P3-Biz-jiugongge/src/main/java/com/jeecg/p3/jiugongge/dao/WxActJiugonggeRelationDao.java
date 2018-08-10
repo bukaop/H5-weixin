@@ -1,6 +1,5 @@
 package com.jeecg.p3.jiugongge.dao;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.jeecgframework.p3.core.utils.common.PageQuery;
@@ -26,5 +25,14 @@ public interface WxActJiugonggeRelationDao extends GenericDao<WxActJiugonggeRela
 	public void bactchDeleteOldAwards(List<String> ids,String actId) ;
 	
 	public Boolean validUsed(String awadsid,String prizeid);
+	
+	/**
+	 * 更新数量
+	 * @param id id
+	 * @param num更新的数量差
+	 */
+	public void updateNum(String id,Integer num);
+
+	public WxActJiugonggeRelation queryByAwardId(String awardsId,String actId);
 }
 

@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jeecg.p3.baseApi.service.BaseApiJwidService;
+import com.jeecg.p3.baseApi.service.BaseApiSystemService;
 import com.jeecg.p3.dict.service.SystemActTxtService;
 import com.jeecg.p3.shaketicket.entity.WxActShaketicketAward;
 import com.jeecg.p3.shaketicket.entity.WxActShaketicketHome;
@@ -53,6 +55,11 @@ public class ShaketicketHomeController extends BaseController {
 	private WxActShaketicketAwardService awardService;
 	@Autowired
 	private SystemActTxtService systemActTxtService;
+	@Autowired
+	private BaseApiJwidService baseApiJwidService;
+	@Autowired
+	private BaseApiSystemService baseApiSystemService;
+
 	/**
 	 * 跳转到活动首页
 	 * 
@@ -70,7 +77,6 @@ public class ShaketicketHomeController extends BaseController {
 		String jwid = weixinDto.getJwid();
 		String appid = weixinDto.getAppid();
 		String actId = weixinDto.getActId();
-
 		VelocityContext velocityContext = new VelocityContext();
 		String viewName = "shaketicket/default/vm/index.vm";
 		try {
@@ -78,13 +84,14 @@ public class ShaketicketHomeController extends BaseController {
 				// 得到昵称并进行过滤
 				String nickname = WeiXinHttpUtil.getNickName(
 						weixinDto.getOpenid(), jwid);
-				weixinDto.setNickname(EmojiFilter.filterNickName(nickname));
+				weixinDto.setNickname(EmojiFilter.filterEmoji(nickname));
 			}
 			// 参数验证
 			validateBargainDtoParam(weixinDto);
 			// 获取活动信息
 			WxActShaketicketHome shaketicket = homeService
 					.queryById(actId);
+			validateActDate(shaketicket);
 			if (!jwid.equals(shaketicket.getJwid())) {
 				throw new ShaketicketHomeException(
 						ShaketicketHomeExceptionEnum.DATA_NOT_EXIST_ERROR,
@@ -115,6 +122,13 @@ public class ShaketicketHomeController extends BaseController {
 			if (url.indexOf("#") != -1) {
 				url = url.substring(0, url.indexOf("#"));
 			}
+			
+			//--update-begin---author:huangqingquan---date:20161125-----for:是否关注可参加---------------
+			if("1".equals(shaketicket.getFoucsUserCanJoin())){
+				String qrcodeUrl = baseApiJwidService.getQrcodeUrl(weixinDto.getJwid());
+				velocityContext.put("qrcodeUrl", qrcodeUrl);
+			}
+			//--update-end---author:huangqingquan---date:20161125-----for:是否关注可参加---------------
 
 			System.out.println("--------------当前访问PageUrl---------------："
 					+ url);
@@ -122,21 +136,33 @@ public class ShaketicketHomeController extends BaseController {
 			velocityContext.put("timestamp", WeiXinHttpUtil.timestamp);
 			velocityContext.put("hdUrl", shaketicket.getHdurl());
 			velocityContext.put("appId", appid);
-			velocityContext.put("signature",
-					WeiXinHttpUtil.getSignature(request, jwid));
-
+			velocityContext.put("signature",WeiXinHttpUtil.getRedisSignature(request, jwid));
+			//update-begin--Author:zhangweijian  Date: 20180314 for：底部logo修改
+			velocityContext.put("huodong_bottom_copyright", baseApiSystemService.getHuodongLogoBottomCopyright(shaketicket.getCreateBy()));
+			//update-end--Author:zhangweijian  Date: 20180314 for：底部logo修改
 		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
 			LOG.error("toIndex error:{}", e.getMessage());
-			viewName = "shaketicket/default/vm/error.vm";
-			velocityContext.put("errCode", e.getDefineCode());
-			velocityContext.put("errMsg", e.getMessage());
+			//update-begin--Author:zhangweijian  Date: 20180316 for：活动开始结束页面
+			viewName = "shaketicket/default/vm/index.vm";
+			if(e.getDefineCode().equals(ShaketicketHomeExceptionEnum.ACT_BARGAIN_NO_START.getErrCode())){
+				velocityContext.put("act_Status", "false");
+				velocityContext.put("act_Status_Msg", "活动未开始");
+			}else if(e.getDefineCode().equals(ShaketicketHomeExceptionEnum.ACT_BARGAIN_END.getErrCode())){
+				velocityContext.put("act_Status", "false");
+				velocityContext.put("act_Status_Msg", "活动已结束");
+				//update-end--Author:zhangweijian  Date: 20180316 for：活动开始结束页面
+			}else{
+				viewName= "system/vm/error.vm";
+			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOG.error("toIndex error:{}", e);
-			viewName = "shaketicket/default/vm/error.vm";
 			velocityContext.put("errCode",
 					ShaketicketHomeExceptionEnum.SYS_ERROR.getErrCode());
 			velocityContext.put("errMsg",
 					ShaketicketHomeExceptionEnum.SYS_ERROR.getErrChineseMsg());
+			viewName= "system/vm/error.vm";
 		}
 		ViewVelocity.view(request,response, viewName, velocityContext);
 	}
@@ -165,19 +191,25 @@ public class ShaketicketHomeController extends BaseController {
 			if (weixinDto.getOpenid() != null) {
 				String nickname = WeiXinHttpUtil.getNickName(
 						weixinDto.getOpenid(), jwid);
-				weixinDto.setNickname(EmojiFilter.filterNickName(nickname));
+				weixinDto.setNickname(EmojiFilter.filterEmoji(nickname));
 			}
 			// 获取活动信息
 			WxActShaketicketHome shaketicket = homeService
 					.queryById(weixinDto.getActId());
+			
+			//--update-begin---author:huangqingquan---date:20161125-----for:是否关注可参加---------------
+			weixinDto.setSubscribe("0");
+			setWeixinDto(weixinDto);
 			if("1".equals(shaketicket.getFoucsUserCanJoin())){//如果活动设置了需要关注用户才能参加	
 				//未关注
-				 if("0".equals(weixinDto.getSubscribe())){
+				 if(!"1".equals(weixinDto.getSubscribe())){
 					 j.setSuccess(false);
 						j.setObj("isNotFoucs");
 						return j;
 				 }
 			 }
+			//--update-end---author:huangqingquan---date:20161125-----for:是否关注可参加---------------
+			
 			if("1".equals(shaketicket.getBindingMobileCanJoin())){//如果活动设置了需要绑定手机号才能参加				
 				// 获取绑定手机号
 				String bindPhone = getBindPhone(weixinDto.getOpenid(),jwid);
@@ -196,7 +228,7 @@ public class ShaketicketHomeController extends BaseController {
 			int countday= ((Number)countMap.get("countday")).intValue();
 			int wincount= ((Number)countMap.get("wincount")).intValue();
 			// 判断总抽奖次数是否用完
-			if (count>= shaketicket.getCount()) {
+			if (shaketicket.getCount()!=null&&shaketicket.getCount()!=0&&count>= shaketicket.getCount()) {
 				throw new ShaketicketHomeException(
 						ShaketicketHomeExceptionEnum.DATA_EXIST_ERROR,systemActTxtService.queryActTxtByCode(
 								"controller.exception.nocount",
@@ -258,10 +290,12 @@ public class ShaketicketHomeController extends BaseController {
 			map.put("shaketicketAward",award);
 			j.setAttributes(map);	
 		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg(e.getMessage());
 			LOG.error("bargain error:{}", e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg("抽奖失败!");
 			LOG.error("bargain error:{}", e.getMessage());
@@ -284,22 +318,28 @@ public class ShaketicketHomeController extends BaseController {
 				new Object[] { weixinDto });
 		try {
 			// 我的中奖记录
-			List<WxActShaketicketRecord> recordList = recordService.queryMyAwardsRecordByOpenidAndActid(weixinDto.getOpenid(), weixinDto.getActId());
+/*			List<WxActShaketicketRecord> recordList = recordService.queryMyAwardsRecordByOpenidAndActid(weixinDto.getOpenid(), weixinDto.getActId());
 			//卡券参数
 			Map<String,String> dataMap = new HashMap<String, String>();
 			populationMap(dataMap,recordList.get(0),weixinDto.getJwid());
 			
 			dataMap.put("record_id", recordList.get(0).getId());
-			j.setObj(dataMap);
+			j.setObj(dataMap);*/
 			// ====================================================================================================
-
+			WxActShaketicketRecord wxActShaketicketRecord = recordService.queryById(request.getParameter("id"));
+			Map<String,String> dataMap = new HashMap<String, String>();
+			populationMap(dataMap,wxActShaketicketRecord,weixinDto.getJwid());
+			dataMap.put("record_id", wxActShaketicketRecord.getId());
+			j.setObj(dataMap);
 			//j.setObj(recordList.get(0));
 			j.setSuccess(true);
 		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg(e.getMessage());
 			LOG.error("bargain error:{}", e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg("获取失败!");
 			LOG.error("bargain error:{}", e.getMessage());
@@ -363,12 +403,13 @@ public class ShaketicketHomeController extends BaseController {
 			validateBargainDtoParam(weixinDto);
 			// 获取活动信息
 			WxActShaketicketHome shaketicket = homeService
-					.queryById(actId);		
+					.queryById(actId);
+			validateActDate(shaketicket);
 			velocityContext.put("weixinDto", weixinDto);
 			velocityContext.put("shaketicket", shaketicket);
 			// 我的中奖记录
 			List<WxActShaketicketRecord> recordList = recordService.queryMyAwardsRecordByOpenidAndActid(weixinDto.getOpenid(), weixinDto.getActId());
-			velocityContext.put("record", recordList.get(0));
+			velocityContext.put("recordList", recordList);
 			String url = request.getRequestURL() + "?"
 					+ request.getQueryString();
 			if (url.indexOf("#") != -1) {
@@ -379,20 +420,31 @@ public class ShaketicketHomeController extends BaseController {
 			velocityContext.put("nonceStr", WeiXinHttpUtil.nonceStr);
 			velocityContext.put("timestamp", WeiXinHttpUtil.timestamp);
 			velocityContext.put("hdUrl", shaketicket.getHdurl());
-			velocityContext.put("signature",
-					WeiXinHttpUtil.getSignature(request, jwid));
+			velocityContext.put("signature",WeiXinHttpUtil.getRedisSignature(request, jwid));
+			velocityContext.put("appId", weixinDto.getAppid());
+			//update-begin--Author:zhangweijian  Date: 20180314 for：底部logo修改
+			velocityContext.put("huodong_bottom_copyright", baseApiSystemService.getHuodongLogoBottomCopyright(shaketicket.getCreateBy()));
+			//update-end--Author:zhangweijian  Date: 20180314 for：底部logo修改
 		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
 			LOG.error("toMyAwardsRecordList error:{}", e.getMessage());
-			viewName = "shaketicket/vm/error.vm";
 			velocityContext.put("errCode", e.getDefineCode());
 			velocityContext.put("errMsg", e.getMessage());
+			if(e.getDefineCode().equals("02007")){
+				viewName= "system/vm/before.vm";
+			}else if(e.getDefineCode().equals("02008")){
+				viewName= "system/vm/over.vm";
+			}else{
+				viewName= "system/vm/error.vm";
+			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOG.error("toMyAwardsRecordList error:{}", e);
-			viewName = "shaketicket/default/vm/error.vm";
 			velocityContext.put("errCode",
 					ShaketicketHomeExceptionEnum.SYS_ERROR.getErrCode());
 			velocityContext.put("errMsg",
 					ShaketicketHomeExceptionEnum.SYS_ERROR.getErrChineseMsg());
+			viewName= "system/vm/error.vm";
 		}
 		ViewVelocity.view(request,response, viewName, velocityContext);
 	}
@@ -415,13 +467,14 @@ public class ShaketicketHomeController extends BaseController {
 			record.setReceiveTime(new Date());
 			recordService.doEdit(record);
 		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg(e.getMessage());
 			LOG.error("addCardCallback error:{}", e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg("优惠券兑换回调失败");
-			e.printStackTrace();
 			LOG.error("addCardCallback error:{}", e.getMessage());
 		}
 		return j;
@@ -435,10 +488,6 @@ public class ShaketicketHomeController extends BaseController {
 			throw new ShaketicketHomeException(
 					ShaketicketHomeExceptionEnum.ARGUMENT_ERROR,
 					"参与人openid不能为空");
-		}
-		if (StringUtils.isEmpty(weixinDto.getSubscribe())) {
-			throw new ShaketicketHomeException(
-					ShaketicketHomeExceptionEnum.ARGUMENT_ERROR, "关注状态不能为空");
 		}
 		if (StringUtils.isEmpty(weixinDto.getJwid())) {
 			throw new ShaketicketHomeException(
@@ -459,7 +508,212 @@ public class ShaketicketHomeController extends BaseController {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return bindPhine;
+	}
+	
+	/**
+	 * 
+	 * @param weixinDto
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/queryMyAwardsList", method = { RequestMethod.GET,
+			RequestMethod.POST })
+	@ResponseBody
+	public AjaxJson queryMyAwardsList(@ModelAttribute WeixinDto weixinDto,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		AjaxJson j=new AjaxJson();
+		LOG.info(request, "queryMyAwardsList parameter WeixinDto={}.",
+				new Object[] { weixinDto });
+		try {
+			// 参数验证
+			validateBargainDtoParam(weixinDto);
+			// 我的中奖记录
+			List<WxActShaketicketRecord> recordList = recordService.queryMyAwardsRecordByOpenidAndActid(weixinDto.getOpenid(), weixinDto.getActId());
+			j.setObj(recordList);
+			j.setSuccess(true);
+		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
+			LOG.error("toMyAwardsRecordList error:{}", e.getMessage());
+			j.setSuccess(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error("toMyAwardsRecordList error:{}", e);
+			j.setSuccess(false);
+		}
+		return j;
+	}
+	@RequestMapping(value = "/queryOneMyAwards", method = { RequestMethod.GET,
+			RequestMethod.POST })
+	@ResponseBody
+	public AjaxJson queryOneMyAwards(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		AjaxJson j=new AjaxJson();
+		try {
+			String id = request.getParameter("id");
+			// 我的中奖记录
+			WxActShaketicketRecord record = recordService.queryById(id);
+			j.setObj(record);
+			j.setSuccess(true);
+		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
+			LOG.error("toMyAwardsRecordList error:{}", e.getMessage());
+			j.setSuccess(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error("toMyAwardsRecordList error:{}", e);
+			j.setSuccess(false);
+		}
+		return j;
+	}
+	@RequestMapping(value = "/updateMyAwards", method = { RequestMethod.GET,
+			RequestMethod.POST })
+	@ResponseBody
+	public AjaxJson updateMyAwards(HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		AjaxJson j=new AjaxJson();
+		try {
+			String id = request.getParameter("id");
+			String name = request.getParameter("name");
+			String address = request.getParameter("address");
+			String mobile = request.getParameter("mobile");
+			
+			// 我的中奖记录
+			WxActShaketicketRecord record = recordService.queryById(id);
+			record.setMobile(mobile);
+			record.setRelName(name);
+			record.setAddress(address);
+			recordService.doEdit(record);
+			j.setSuccess(true);
+		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
+			LOG.error("toMyAwardsRecordList error:{}", e.getMessage());
+			j.setSuccess(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error("toMyAwardsRecordList error:{}", e);
+			j.setSuccess(false);
+		}
+		return j;
+	}
+	@RequestMapping(value = "/toDetail", method = { RequestMethod.GET,
+			RequestMethod.POST })
+	@ResponseBody
+	public void toDetail(@ModelAttribute WeixinDto weixinDto,HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		LOG.info(request, "toIndex parameter WeixinDto={}.",
+				new Object[] { weixinDto });
+		String viewName = "shaketicket/default/vm/detail.vm";
+		VelocityContext velocityContext=new VelocityContext();
+		try {
+			validateBargainDtoParam(weixinDto);
+			// 获取活动信息
+			WxActShaketicketHome shaketicket = homeService.queryById(weixinDto.getActId());
+			validateActDate(shaketicket);
+			velocityContext.put("shaketicket",shaketicket);
+			velocityContext.put("weixinDto",weixinDto);
+			velocityContext.put("nonceStr", WeiXinHttpUtil.nonceStr);
+			velocityContext.put("timestamp", WeiXinHttpUtil.timestamp);
+			velocityContext.put("hdUrl", shaketicket.getHdurl());
+			velocityContext.put("appId", weixinDto.getAppid());
+			velocityContext.put("signature",WeiXinHttpUtil.getRedisSignature(request, weixinDto.getJwid()));
+			//update-begin--Author:zhangweijian  Date: 20180314 for：底部logo修改
+			velocityContext.put("huodong_bottom_copyright", baseApiSystemService.getHuodongLogoBottomCopyright(shaketicket.getCreateBy()));
+			//update-end--Author:zhangweijian  Date: 20180314 for：底部logo修改
+		} catch (ShaketicketHomeException e) {
+			e.printStackTrace();
+			LOG.error("toIndex error:{}", e.getMessage());
+			velocityContext.put("errCode", e.getDefineCode());
+			velocityContext.put("errMsg", e.getMessage());
+			if(e.getDefineCode().equals("02007")){
+				viewName= "system/vm/before.vm";
+			}else if(e.getDefineCode().equals("02008")){
+				viewName= "system/vm/over.vm";
+			}else{
+				viewName= "system/vm/error.vm";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error("toIndex error:{}", e);
+			velocityContext.put("errCode",
+					ShaketicketHomeExceptionEnum.SYS_ERROR.getErrCode());
+			velocityContext.put("errMsg",
+					ShaketicketHomeExceptionEnum.SYS_ERROR.getErrChineseMsg());
+			viewName= "system/vm/error.vm";
+		}
+		ViewVelocity.view(request,response, viewName, velocityContext);
+	}
+	private void validateActDate(WxActShaketicketHome shaketicket) {
+		Date date = new Date();
+		if (shaketicket == null) {
+			throw new ShaketicketHomeException(
+					ShaketicketHomeExceptionEnum.DATA_NOT_EXIST_ERROR, "活动不存在");
+		}
+		if(shaketicket.getBeginTime()!=null){
+			if (date.before(shaketicket.getBeginTime())) {
+				throw new ShaketicketHomeException(
+						ShaketicketHomeExceptionEnum.ACT_BARGAIN_NO_START, "活动未开始");
+			}
+		}
+		if(shaketicket.getEndTime()!=null){
+			if (date.after(shaketicket.getEndTime())) {
+				throw new ShaketicketHomeException(ShaketicketHomeExceptionEnum.ACT_BARGAIN_END,
+						"活动已结束");
+			}
+		}
+	}
+	private Map<String, String> setWeixinDto(WeixinDto weixinDto) {
+		log.info("setWeixinDto parameter weixinDto={}",
+				new Object[] { weixinDto });
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			if (weixinDto.getOpenid() != null) {
+				JSONObject jsonObj = WeiXinHttpUtil.getGzUserInfo(
+						weixinDto.getOpenid(), weixinDto.getJwid());
+				log.info("setWeixinDto Openid getGzUserInfo jsonObj={}",
+						new Object[] { jsonObj });
+				if (jsonObj != null && jsonObj.containsKey("subscribe")) {
+					weixinDto.setSubscribe(jsonObj.getString("subscribe"));
+				} else {
+					weixinDto.setSubscribe("0");
+				}
+				if (jsonObj != null && jsonObj.containsKey("nickname")) {
+					weixinDto.setNickname(jsonObj.getString("nickname"));
+				} else {
+					weixinDto.setNickname("");
+				}
+				if (jsonObj != null && jsonObj.containsKey("headimgurl")) {
+					map.put("headimgurl", jsonObj.getString("headimgurl"));
+				} else {
+					map.put("fxheadimgurl", "");
+				}
+			}
+			if (StringUtils.isNotEmpty(weixinDto.getFxOpenid())) {
+				JSONObject jsonObj = WeiXinHttpUtil.getGzUserInfo(
+						weixinDto.getFxOpenid(), weixinDto.getJwid());
+				log.info("setWeixinDto FxOpenid getGzUserInfo jsonObj={}",
+						new Object[] { jsonObj });
+				if (jsonObj != null && jsonObj.containsKey("nickname")) {
+					weixinDto.setFxNickname(jsonObj.getString("nickname"));
+				} else {
+					weixinDto.setFxNickname("");
+				}
+				if (jsonObj != null && jsonObj.containsKey("headimgurl")) {
+					map.put("fxheadimgurl", jsonObj.getString("headimgurl"));
+				} else {
+					map.put("fxheadimgurl", "");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("setWeixinDto e={}",
+					new Object[] { e });
+		}
+		return map;
 	}
 }

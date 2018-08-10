@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>$!{dictTool.getSysText('winners.title',$!{bargain.id})}</title>
+<title>$!{bargain.title}</title>
 <meta charset="UTF-8">
 <meta content="yes" name="apple-mobile-web-app-capable"></meta>
 <meta content="black" name="apple-mobile-web-app-status-bar-style"></meta>
@@ -15,6 +15,7 @@
 <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link href="$!{basePath}/plug-in/plugin/hplus/css/font-awesome.min.css" rel="stylesheet">
 <link href="$!{basePath}/content/jiugongge/css/style.css$!{version}" type="text/css" rel="stylesheet" />
 <script src="$!{basePath}/content/jiugongge/js/jquery.min.js" type="text/javascript"></script>
 <script src="$!{basePath}/content/jiugongge/js/jquery.js$!{version}" type="text/javascript"></script>
@@ -27,16 +28,17 @@
 	    <div class="title"><img src="../content/jiugongge/img/title_5.png" /></div>
 		<div class="text list">
 			 <ul>
-			 <li><span class="name" ><font color="#FF6600">昵称</font></span><span class="time"><font color="#FF6600">中奖时间</font></span><span class="phone01" ><font color="#FF6600">手机号</font></span><span class="award" ><font color="#FF6600">奖品</font></span> <div class="clr"></div></li>
+			 <li><span class="name" style="width:33%"><font color="#FF6600">昵称</font></span><span class="time" style="width:33%"><font color="#FF6600">中奖时间</font></span><span class="award" style="width:33%"><font color="#FF6600">奖品</font></span> <div class="clr"></div></li>
 			 #foreach($record in $recordList)
-				<li><span class="name">$!record.nickname</span><span class="time">$!{Format.date($!record.recieveTime,'yyyy-MM-dd HH:mm:ss')}</span><span class="phone01">$!record.phone</span><span class="award">$!record.awardsName</span> <div class="clr"></div></li>
+				<li><span class="name" style="width:33%">$!record.nickname</span><span class="time" style="width:33%">$!{Format.date($!record.recieveTime,'yyyy-MM-dd')}</span><span class="award" style="width:33%">$!record.awardsName</span> <div class="clr"></div></li>
 			#end
 			</ul>	
 		</div>
 	</div>
 </div>
 <div class="line"><img src="../content/jiugongge/img/line.png" /></div>
-<div class="copyright" ><a href='http://www.guojusoft.com'>© 2015-2016 北京国炬 版权所有</a></div>
+<div style="height:.5rem"></div>
+$!{huodong_bottom_copyright}
 <div class="top_bar" style="-webkit-transform:translate3d(0,0,0)">
   <nav>
     <ul id="top_menu" class="top_menu">
@@ -59,6 +61,11 @@
 <input type="hidden" name="jwid" id="jwid" value="$!{weixinDto.jwid}"/>
 <input type="hidden" name="appid" id="appid" value="$!{weixinDto.appid}"/>
 </body>
+<script >
+$(function(){
+	$(".copyright").css("bottom","-3.7rem");
+})
+</script>
 <!-- 微信分享功能 -->
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script type="text/javascript">

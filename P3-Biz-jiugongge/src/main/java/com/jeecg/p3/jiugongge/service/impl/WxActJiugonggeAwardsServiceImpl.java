@@ -56,7 +56,6 @@ public class WxActJiugonggeAwardsServiceImpl implements WxActJiugonggeAwardsServ
 
 	@Override
 	public List<WxActJiugonggeAwards> queryAwards(String jwid) {
-		// TODO Auto-generated method stub
 		return wxActJiugonggeAwardsDao.queryAwards(jwid);
 	}
 
@@ -76,6 +75,29 @@ public class WxActJiugonggeAwardsServiceImpl implements WxActJiugonggeAwardsServ
 	public Boolean validUsed(String id) {
 		// TODO Auto-generated method stub
 		return wxActJiugonggeRelationDao.validUsed(id,null);
+	}
+
+	@Override
+	public Integer getMaxAwardsValue(String jwid) {
+		// TODO Auto-generated method stub
+		return wxActJiugonggeAwardsDao.getMaxAwardsValue(jwid);
+	}
+
+	@Override
+	public Integer getMaxAwardsValueByCreateBy(String jwid, String createBy) {
+		// TODO Auto-generated method stub
+		return wxActJiugonggeAwardsDao.getMaxAwardsValueByCreateBy(jwid, createBy);
+	}
+
+	@Override
+	public List<WxActJiugonggeAwards> queryAwards(String jwid, String creatBy) {
+		return wxActJiugonggeAwardsDao.queryAwards(jwid,creatBy);
+	}
+
+	@Override
+	public List<WxActJiugonggeAwards> queryAwardsByName(String jwid, String createBy, String content) {
+		
+		return wxActJiugonggeAwardsDao.queryAwardsByName(jwid,createBy,content);
 	}
 	
 }

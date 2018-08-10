@@ -5,7 +5,7 @@ import org.jeecgframework.p3.core.utils.common.PageQuery;
 import ${domainPackage}.${className};
 
 /**
- * 描述：</b>${className}Service<br>
+ * 描述：</b>${codeName}<br>
  * @author：${author}
  * @since：${nowDate}
  * @version:1.0

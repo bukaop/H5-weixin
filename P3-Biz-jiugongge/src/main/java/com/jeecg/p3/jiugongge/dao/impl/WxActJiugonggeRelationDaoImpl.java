@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.utils.common.PageQueryWrapper;
+import org.jeecgframework.p3.core.utils.persistence.OptimisticLockingException;
 import org.jeecgframework.p3.core.utils.persistence.mybatis.GenericDaoDefault;
 import org.springframework.stereotype.Repository;
 
@@ -89,5 +90,23 @@ public class WxActJiugonggeRelationDaoImpl extends GenericDaoDefault<WxActJiugon
 		}
 	}
 
+	@Override
+	public void updateNum(String id, Integer num) {
+		Map<String,Object> param = Maps.newConcurrentMap();
+		param.put("id", id);
+		param.put("num", num);
+		int row = super.getSqlSession().update(getStatementId("updateNum"), param);
+		if (row == 0) {
+			throw new OptimisticLockingException("乐观锁异常");
+		}
+	}
+
+	@Override
+	public WxActJiugonggeRelation queryByAwardId(String awardsId,String actId) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("awardsId", awardsId);
+		param.put("actId", actId);
+		return (WxActJiugonggeRelation) super.queryOne("queryByAwardId", param);
+	}
 }
 

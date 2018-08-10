@@ -39,5 +39,24 @@ public interface WxActJiugonggeRecordService {
 	public WxActJiugonggePrizes creatAwards(WxActJiugonggeRecord wxActJiugonggeRecord);
 	
 	public InputStream  exportExcel(String actId,String jwid)throws FileNotFoundException;
+
+	//update-begin--Author:zhangweijian  Date: 20180413 for:根据actId和awardCode判断改兑奖码是否存在
+	/**
+	 * @功能：根据actId和awardCode判断改兑奖码是否存在
+	 * @param actId
+	 * @param awardCode
+	 * @return
+	 */
+	public WxActJiugonggeRecord queryByActIdAndawardCode(String actId, String awardCode);
+	//update-end--Author:zhangweijian  Date: 20180413 for:根据actId和awardCode判断改兑奖码是否存在
+
+	//update-begin--Author:zhangweijian  Date: 20180704 for：根据actId获取当前活动的参与总人数
+	/**
+	 * @功能：根据活动id获取当前活动的参与总人数
+	 * @param actId
+	 * @return
+	 */
+	public int getCountByActId(String actId);
+	//update-end--Author:zhangweijian  Date: 20180704 for：根据actId获取当前活动的参与总人数
 }
 

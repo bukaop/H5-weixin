@@ -1,11 +1,15 @@
 package com.jeecg.p3.jiugongge.web.back;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.jeecgframework.p3.core.util.SystemTools;
+import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
+
 import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.VelocityContext;
 import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.jeecgframework.p3.core.utils.common.PageQuery;
+import org.jeecgframework.p3.core.utils.common.StringUtils;
+
 import com.jeecg.p3.jiugongge.entity.WxActJiugonggeAwards;
 import com.jeecg.p3.jiugongge.service.WxActJiugonggeAwardsService;
 import com.jeecg.p3.jiugongge.util.ContextHolderUtils;
@@ -43,16 +49,31 @@ public class WxActJiugonggeAwardsController extends BaseController{
 public void list(@ModelAttribute WxActJiugonggeAwards query,HttpServletResponse response,HttpServletRequest request,
 			@RequestParam(required = false, value = "pageNo", defaultValue = "1") int pageNo,
 			@RequestParam(required = false, value = "pageSize", defaultValue = "10") int pageSize) throws Exception{
-	 	PageQuery<WxActJiugonggeAwards> pageQuery = new PageQuery<WxActJiugonggeAwards>();
-	 	pageQuery.setPageNo(pageNo);
-	 	pageQuery.setPageSize(pageSize);
-	 	VelocityContext velocityContext = new VelocityContext();
-	 	String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
-	 	query.setJwid(jwid);
-		pageQuery.setQuery(query);
-		velocityContext.put("query",query);
-		velocityContext.put("pageInfos",SystemTools.convertPaginatedList(wxActJiugonggeAwardsService.queryPageList(pageQuery)));
+		VelocityContext velocityContext = new VelocityContext();
 		String viewName = "jiugongge/back/wxActJiugonggeAwards-list.vm";
+	 	try {
+	 		PageQuery<WxActJiugonggeAwards> pageQuery = new PageQuery<WxActJiugonggeAwards>();
+		 	pageQuery.setPageNo(pageNo);
+		 	pageQuery.setPageSize(pageSize);
+		 	String jwid =  request.getSession().getAttribute("jwid").toString();
+		 	String defaultJwid = WeiXinHttpUtil.getLocalValue("jiugongge", "defaultJwid");
+		 	if(defaultJwid.equals(jwid)){
+		 		String createBy = request.getSession().getAttribute("system_userid").toString();
+		 		query.setCreateBy(createBy);
+		 	}
+		 	query.setJwid(jwid);
+			pageQuery.setQuery(query);
+			//update-begin--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
+			String showReturnFlag = request.getParameter("showReturnFlag");
+			if(StringUtils.isNotEmpty(showReturnFlag)){
+				velocityContext.put("showReturnFlag", showReturnFlag);
+			}
+			//update-end--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
+			velocityContext.put("query",query);
+			velocityContext.put("pageInfos",SystemTools.convertPaginatedList(wxActJiugonggeAwardsService.queryPageList(pageQuery)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		ViewVelocity.view(request,response,viewName,velocityContext);
 }
 
@@ -66,7 +87,7 @@ public void wxActJiugonggeAwardsDetail(@RequestParam(required = true, value = "i
 		String viewName = "jiugongge/back/wxActJiugonggeAwards-detail.vm";
 		WxActJiugonggeAwards wxActJiugonggeAwards = wxActJiugonggeAwardsService.queryById(id);
 		velocityContext.put("wxActJiugonggeAwards",wxActJiugonggeAwards);
-		ViewVelocity.view(response,viewName,velocityContext);
+		ViewVelocity.view(request,response,viewName,velocityContext);
 }
 
 /**
@@ -77,6 +98,12 @@ public void wxActJiugonggeAwardsDetail(@RequestParam(required = true, value = "i
 public void toAddDialog(HttpServletRequest request,HttpServletResponse response,ModelMap model)throws Exception{
 	 VelocityContext velocityContext = new VelocityContext();
 	 String viewName = "jiugongge/back/wxActJiugonggeAwards-add.vm";
+	//update-begin--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
+	String showReturnFlag = request.getParameter("showReturnFlag");
+	if(StringUtils.isNotEmpty(showReturnFlag)){
+		velocityContext.put("showReturnFlag", showReturnFlag);
+	}
+	//update-end--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
 	 ViewVelocity.view(request,response,viewName,velocityContext);
 }
 
@@ -90,16 +117,44 @@ public AjaxJson doAdd(@ModelAttribute WxActJiugonggeAwards wxActJiugonggeAwards)
 	AjaxJson j = new AjaxJson();
 	try {
 		String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
-		//奖项值验重，统一jwid下不能重复
-		Boolean repeat=wxActJiugonggeAwardsService.validReat(wxActJiugonggeAwards.getAwardsValue(),jwid);	
-		if(repeat){
-			j.setSuccess(false);
-			j.setMsg("奖项值重复，请重新设置");
-		}else{			
-			wxActJiugonggeAwardsService.doAdd(wxActJiugonggeAwards);
-			j.setMsg("保存成功");
-		}
+	 	String defaultJwid = WeiXinHttpUtil.getLocalValue("jiugongge", "defaultJwid");
+	 	String createBy = ContextHolderUtils.getSession().getAttribute("system_userid").toString();
+	 	//如果是H5活动汇
+	 	if(defaultJwid.equals(jwid)){
+	 		List<WxActJiugonggeAwards> queryAwardsByName = wxActJiugonggeAwardsService.queryAwardsByName(jwid, createBy, wxActJiugonggeAwards.getAwardsName());
+	 		if (queryAwardsByName.size()>0) {
+	 			j.setMsg("奖项已存在，无需重复增加");
+				return j;
+			}
+	 		Integer maxAwardsValue =wxActJiugonggeAwardsService.getMaxAwardsValueByCreateBy(jwid,createBy);
+	 		Integer nextAwardsValue = maxAwardsValue+1;
+	 		wxActJiugonggeAwards.setAwardsValue(nextAwardsValue);
+	 	}else{
+	 		List<WxActJiugonggeAwards> queryAwardsByName = wxActJiugonggeAwardsService.queryAwardsByName(jwid, null, wxActJiugonggeAwards.getAwardsName());
+	 		if (queryAwardsByName.size()>0) {
+	 			j.setMsg("奖项已存在，无需重复增加");
+	 			return j;
+	 		}
+	 		Integer maxAwardsValue =wxActJiugonggeAwardsService.getMaxAwardsValue(jwid);
+	 		Integer nextAwardsValue = maxAwardsValue+1;
+	 		wxActJiugonggeAwards.setAwardsValue(nextAwardsValue);
+	 	}
+//		//奖项值验重，统一jwid下不能重复
+//		Boolean repeat=wxActJiugonggeAwardsService.validReat(wxActJiugonggeAwards.getAwardsValue(),jwid);	
+//		if(repeat){
+//			j.setSuccess(false);
+//			j.setMsg("奖项值重复，请重新设置");
+//		}else{
+		    //获取同一jwid中下一个奖项值
+	 	//update-begin-alex Date:20170316 for:保存奖品奖项时记录创建人和当前jwid
+	 	wxActJiugonggeAwards.setCreateBy(createBy);
+	 	wxActJiugonggeAwards.setJwid(jwid);
+		wxActJiugonggeAwardsService.doAdd(wxActJiugonggeAwards);
+		j.setMsg("保存成功");
+		//update-end-alex Date:20170316 for:保存奖品奖项时记录创建人和当前jwid
+//		}
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("保存失败");
 	}
@@ -116,6 +171,12 @@ public void toEdit(@RequestParam(required = true, value = "id" ) String id,HttpS
 		 WxActJiugonggeAwards wxActJiugonggeAwards = wxActJiugonggeAwardsService.queryById(id);
 		 velocityContext.put("wxActJiugonggeAwards",wxActJiugonggeAwards);
 		 String viewName = "jiugongge/back/wxActJiugonggeAwards-edit.vm";
+		//update-begin--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
+			String showReturnFlag = request.getParameter("showReturnFlag");
+			if(StringUtils.isNotEmpty(showReturnFlag)){
+				velocityContext.put("showReturnFlag", showReturnFlag);
+			}
+			//update-end--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
 		 ViewVelocity.view(request,response,viewName,velocityContext);
 }
 
@@ -128,17 +189,18 @@ public void toEdit(@RequestParam(required = true, value = "id" ) String id,HttpS
 public AjaxJson doEdit(@ModelAttribute WxActJiugonggeAwards wxActJiugonggeAwards){
 	AjaxJson j = new AjaxJson();
 	try {
-		String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
-		//奖项值验重，统一jwid下不能重复
-		Boolean repeat=wxActJiugonggeAwardsService.validReat(wxActJiugonggeAwards.getId(),wxActJiugonggeAwards.getAwardsValue(),jwid);	
-		if(repeat){
-			j.setSuccess(false);
-			j.setMsg("奖项值重复，请重新设置");
-		}else{			
+//		String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
+//		//奖项值验重，统一jwid下不能重复
+//		Boolean repeat=wxActJiugonggeAwardsService.validReat(wxActJiugonggeAwards.getId(),wxActJiugonggeAwards.getAwardsValue(),jwid);	
+//		if(repeat){
+//			j.setSuccess(false);
+//			j.setMsg("奖项值重复，请重新设置");
+//		}else{			
 			wxActJiugonggeAwardsService.doEdit(wxActJiugonggeAwards);
 			j.setMsg("编辑成功");
-		}	
+//		}	
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("编辑失败");
 	}
@@ -165,6 +227,7 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 			j.setMsg("删除成功");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg("删除失败");
 		}

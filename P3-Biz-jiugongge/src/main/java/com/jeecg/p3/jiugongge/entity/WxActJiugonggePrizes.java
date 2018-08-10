@@ -13,7 +13,12 @@ import org.jeecgframework.p3.core.utils.persistence.Entity;
 public class WxActJiugonggePrizes implements Entity<String> {
 	private static final long serialVersionUID = 1L;
 		/**	 *	 */	private String id;	/**	 *奖品名称	 */	private String name;	/**	 *奖品图片	 */	private String img;	/**	 *	 */	private String jwid;
-	private String jwidName;	public String getId() {	    return this.id;	}	public void setId(String id) {	    this.id=id;	}	public String getName() {	    return this.name;	}	public void setName(String name) {	    this.name=name;	}	public String getJwid() {	    return this.jwid;	}	public void setJwid(String jwid) {	    this.jwid=jwid;	}
+	private String jwidName;
+	
+	/**
+	 *创建人
+	 */
+	private String createBy;	public String getId() {	    return this.id;	}	public void setId(String id) {	    this.id=id;	}	public String getName() {	    return this.name;	}	public void setName(String name) {	    this.name=name;	}	public String getJwid() {	    return this.jwid;	}	public void setJwid(String jwid) {	    this.jwid=jwid;	}
 	public String getImg() {
 		return img;
 	}
@@ -85,6 +90,12 @@ public class WxActJiugonggePrizes implements Entity<String> {
 	}
 	public void setRemainNum(Integer remainNum) {
 		this.remainNum = remainNum;
+	}
+	public String getCreateBy() {
+		return createBy;
+	}
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
 	}
 	
 	

@@ -13,7 +13,27 @@ import org.jeecgframework.p3.core.utils.persistence.Entity;
  */
 public class WxActJiugongge implements Entity<String> {
 	private static final long serialVersionUID = 1L;
-private List<WxActJiugonggeRelation> awarsList;	/**	 *键主	 */	private String id;	/**	 *活动名称	 */	private String title;	/**	 *活动描述	 */	private String description;	/**	 *开始时间	 */	private Date starttime;	/**	 *结束时间	 */	private Date endtime;	/**	 *背景图	 */	private String banner;	/**	 *抽奖次数	 */	private Integer count;	/**	 *活动链接	 */	private String hdurl;	/**	 *是否关注可参加	 */	private String foucsUserCanJoin;	/**	 *是否绑定手机可参加	 */	private String bindingMobileCanJoin;	/**	 *每日抽奖次数	 */	private Integer numPerDay;	/**	 *是否中奖可参与 0：中奖可继续参与 1:中奖不可参与	 */	private String prizeStatus;	/**	 *微信原始id	 */	private String jwid;	/**	 *微信原始id	 */	private String jwidName;	/**	 *活动项目编码	 */	private String projectCode;	public String getId() {	    return this.id;	}	public void setId(String id) {	    this.id=id;	}	public String getTitle() {	    return this.title;	}	public void setTitle(String title) {	    this.title=title;	}	public String getDescription() {	    return this.description;	}	public void setDescription(String description) {	    this.description=description;	}	public Date getStarttime() {	    return this.starttime;	}	public void setStarttime(Date starttime) {	    this.starttime=starttime;	}	public Date getEndtime() {	    return this.endtime;	}	public void setEndtime(Date endtime) {	    this.endtime=endtime;	}	public String getBanner() {
+private List<WxActJiugonggeRelation> awarsList;	/**	 *键主	 */	private String id;	/**	 *活动名称	 */	private String title;	/**	 *活动描述	 */	private String description;	/**	 *开始时间	 */	private Date starttime;	/**	 *结束时间	 */	private Date endtime;	/**	 *背景图	 */	private String banner;	/**	 *抽奖次数	 */	private Integer count;	/**	 *活动链接	 */	private String hdurl;	/**	 *是否关注可参加	 */	private String foucsUserCanJoin;	/**	 *是否绑定手机可参加	 */	private String bindingMobileCanJoin;	/**	 *每日抽奖次数	 */	private Integer numPerDay;	/**	 *是否中奖可参与 0：中奖可继续参与 1:中奖不可参与	 */	private String prizeStatus;
+	//update-begin--Author:zhangweijian  Date: 20180704 for：主表新增参与总人数	/**
+	 *参与人数限制	 */	private int joinNumLimit;
+	public int getJoinNumLimit() {
+		return joinNumLimit;
+	}
+	public void setJoinNumLimit(int joinNumLimit) {
+		this.joinNumLimit = joinNumLimit;
+	}
+	//update-end--Author:zhangweijian  Date: 20180704 for：主表新增参与总人数
+	/**	 *微信原始id	 */	private String jwid;	/**	 *微信原始id	 */	private String jwidName;	/**	 *活动项目编码	 */	private String projectCode;	/**	 *创建人	 */	private String createBy;
+	
+	private Date createTime;
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	public String getId() {	    return this.id;	}	public void setId(String id) {	    this.id=id;	}	public String getTitle() {	    return this.title;	}	public void setTitle(String title) {	    this.title=title;	}	public String getDescription() {	    return this.description;	}	public void setDescription(String description) {	    this.description=description;	}	public Date getStarttime() {	    return this.starttime;	}	public void setStarttime(Date starttime) {	    this.starttime=starttime;	}	public Date getEndtime() {	    return this.endtime;	}	public void setEndtime(Date endtime) {	    this.endtime=endtime;	}	public String getBanner() {
 		return banner;
 	}
 	public void setBanner(String banner) {
@@ -56,7 +76,36 @@ private List<WxActJiugonggeRelation> awarsList;	/**	 *键主	 */	private Str
 	public void setProjectCode(String projectCode) {
 		this.projectCode = projectCode;
 	}
+	public String getCreateBy() {
+		return createBy;
+	}
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
 	
+	/**
+	 * 短链接
+	 */
+	private String shortUrl;
 	
+	public String getShortUrl() {
+		return shortUrl;
+	}
+	public void setShortUrl(String shortUrl) {
+		this.shortUrl = shortUrl;
+	}
+	@Override
+	public String toString() {
+		return "WxActJiugongge [awarsList=" + awarsList + ", id=" + id
+				+ ", title=" + title + ", description=" + description
+				+ ", starttime=" + starttime + ", endtime=" + endtime
+				+ ", banner=" + banner + ", count=" + count + ", hdurl="
+				+ hdurl + ", foucsUserCanJoin=" + foucsUserCanJoin
+				+ ", bindingMobileCanJoin=" + bindingMobileCanJoin
+				+ ", numPerDay=" + numPerDay + ", prizeStatus=" + prizeStatus
+				+ ", jwid=" + jwid + ", jwidName=" + jwidName
+				+ ", projectCode=" + projectCode + ", createBy=" + createBy
+				+ ", createTime=" + createTime + ", shortUrl=" + shortUrl + "]";
+	}
 }
 

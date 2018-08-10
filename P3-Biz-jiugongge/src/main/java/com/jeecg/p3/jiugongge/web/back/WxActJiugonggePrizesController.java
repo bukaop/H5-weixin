@@ -1,7 +1,8 @@
 package com.jeecg.p3.jiugongge.web.back;
 
 import java.io.File;
-import java.io.PrintWriter;
+import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,13 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.VelocityContext;
 import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.jeecgframework.p3.core.util.SystemTools;
+import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
 import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
 import org.jeecgframework.p3.core.utils.common.PageQuery;
+import org.jeecgframework.p3.core.utils.common.StringUtils;
 import org.jeecgframework.p3.core.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +29,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.jeecg.p3.jiugongge.entity.WxActJiugonggePrizes;
 import com.jeecg.p3.jiugongge.service.WxActJiugonggePrizesService;
 import com.jeecg.p3.jiugongge.util.ContextHolderUtils;
+import com.jeecg.p3.jiugongge.util.ImageZipUtil;
 
  /**
  * 描述：</b>WxActJiugonggePrizesController<br>配置
@@ -48,17 +51,32 @@ public class WxActJiugonggePrizesController extends BaseController{
 public void list(@ModelAttribute WxActJiugonggePrizes query,HttpServletResponse response,HttpServletRequest request,
 			@RequestParam(required = false, value = "pageNo", defaultValue = "1") int pageNo,
 			@RequestParam(required = false, value = "pageSize", defaultValue = "10") int pageSize) throws Exception{
-	 	PageQuery<WxActJiugonggePrizes> pageQuery = new PageQuery<WxActJiugonggePrizes>();
-	 	pageQuery.setPageNo(pageNo);
-	 	pageQuery.setPageSize(pageSize);
-	 	VelocityContext velocityContext = new VelocityContext();
-	 	String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();		
-	 	query.setJwid(jwid);
-		pageQuery.setQuery(query);
-		velocityContext.put("query",query);
-		velocityContext.put("pageInfos",SystemTools.convertPaginatedList(wxActJiugonggePrizesService.queryPageList(pageQuery)));
-		velocityContext.put("jwid",jwid);
+		VelocityContext velocityContext = new VelocityContext();
 		String viewName = "jiugongge/back/wxActJiugonggePrizes-list.vm";
+	 	try {
+	 		PageQuery<WxActJiugonggePrizes> pageQuery = new PageQuery<WxActJiugonggePrizes>();
+		 	pageQuery.setPageNo(pageNo);
+		 	pageQuery.setPageSize(pageSize);
+		 	String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();	
+		 	String defaultJwid = WeiXinHttpUtil.getLocalValue("jiugongge", "defaultJwid");
+		 	if(defaultJwid.equals(jwid)){
+		 		String createBy = request.getSession().getAttribute("system_userid").toString();
+		 		query.setCreateBy(createBy);
+		 	}
+		 	query.setJwid(jwid);
+			pageQuery.setQuery(query);
+			//update-begin--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
+			String showReturnFlag = request.getParameter("showReturnFlag");
+			if(StringUtils.isNotEmpty(showReturnFlag)){
+				velocityContext.put("showReturnFlag", showReturnFlag);
+			}
+			//update-end--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
+			velocityContext.put("query",query);
+			velocityContext.put("pageInfos",SystemTools.convertPaginatedList(wxActJiugonggePrizesService.queryPageList(pageQuery)));
+			velocityContext.put("jwid",jwid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		ViewVelocity.view(request,response,viewName,velocityContext);
 }
 
@@ -88,6 +106,12 @@ public void toAddDialog(HttpServletRequest request,HttpServletResponse response,
 	 velocityContext.put("sessionId",sessionId);
 	 String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
 	 velocityContext.put("jwid",jwid);
+	 //update-begin--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
+	 String showReturnFlag = request.getParameter("showReturnFlag");
+	 if(StringUtils.isNotEmpty(showReturnFlag)){
+		 velocityContext.put("showReturnFlag", showReturnFlag);
+	 }
+	 //update-end--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
 	 String viewName = "jiugongge/back/wxActJiugonggePrizes-add.vm";
 	 ViewVelocity.view(request,response,viewName,velocityContext);
 }
@@ -101,9 +125,21 @@ public void toAddDialog(HttpServletRequest request,HttpServletResponse response,
 public AjaxJson doAdd(@ModelAttribute WxActJiugonggePrizes wxActJiugonggePrizes){
 	AjaxJson j = new AjaxJson();
 	try {
+		//update-begin-alex Date:20170316 for:保存奖品奖项时记录创建人和当前jwid
+		String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
+		String createBy = ContextHolderUtils.getSession().getAttribute("system_userid").toString();
+		List<WxActJiugonggePrizes> queryPrizesByName = wxActJiugonggePrizesService.queryPrizesByName(jwid, createBy, wxActJiugonggePrizes.getName());
+		if (queryPrizesByName.size()>0) {
+			j.setMsg("奖品已存在，无需重复增加");
+			return j;
+		}
+		wxActJiugonggePrizes.setCreateBy(createBy);
+		wxActJiugonggePrizes.setJwid(jwid);
+		//update-end-alex Date:20170316 for:保存奖品奖项时记录创建人和当前jwid
 		wxActJiugonggePrizesService.doAdd(wxActJiugonggePrizes);
 		j.setMsg("保存成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("保存失败");
 	}
@@ -121,6 +157,12 @@ public void toEdit(@RequestParam(required = true, value = "id" ) String id,HttpS
 		 velocityContext.put("wxActJiugonggePrizes",wxActJiugonggePrizes);
 		 String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
 		 velocityContext.put("jwid",jwid);
+		 //update-begin--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
+		 String showReturnFlag = request.getParameter("showReturnFlag");
+		 if(StringUtils.isNotEmpty(showReturnFlag)){
+			 velocityContext.put("showReturnFlag", showReturnFlag);
+		 }
+		 //update-end--liwenhui Date:2018-3-19 13:40:32 for:增加返回按钮是否显示标识
 		 String viewName = "jiugongge/back/wxActJiugonggePrizes-edit.vm";
 		 ViewVelocity.view(request,response,viewName,velocityContext);
 }
@@ -137,6 +179,7 @@ public AjaxJson doEdit(@ModelAttribute WxActJiugonggePrizes wxActJiugonggePrizes
 		wxActJiugonggePrizesService.doEdit(wxActJiugonggePrizes);
 		j.setMsg("编辑成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("编辑失败");
 	}
@@ -163,6 +206,7 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 			j.setMsg("删除成功");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg("删除失败");
 		}
@@ -179,11 +223,9 @@ public AjaxJson doUpload(MultipartHttpServletRequest request,HttpServletResponse
 	AjaxJson j = new AjaxJson();
 	try {
 		MultipartFile uploadify = request.getFile("file");
-        byte[] bytes = uploadify.getBytes();  
         String realFilename=uploadify.getOriginalFilename();
-        String fileNoExtension = realFilename.substring(0,realFilename.lastIndexOf("."));
         String fileExtension = realFilename.substring(realFilename.lastIndexOf("."));
-        String filename=fileNoExtension+System.currentTimeMillis()+fileExtension;
+        String filename=UUID.randomUUID().toString().replace("-", "")+fileExtension;
         String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
         String uploadDir = ContextHolderUtils.getRequest().getSession().getServletContext().getRealPath("upload/img/jiugongge/"+jwid);   
         File dirPath = new File(uploadDir);  
@@ -193,11 +235,12 @@ public AjaxJson doUpload(MultipartHttpServletRequest request,HttpServletResponse
         String sep = System.getProperty("file.separator");  
         File uploadedFile = new File(uploadDir + sep  
                 + filename);  
-        FileCopyUtils.copy(bytes, uploadedFile);  
+        ImageZipUtil.zipImageFile(uploadify.getInputStream(), uploadedFile, 0, 0, 0.7f);
         j.setObj(filename);
         j.setSuccess(true);
 		j.setMsg("保存成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("保存失败");
 	}

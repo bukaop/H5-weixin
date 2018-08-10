@@ -90,6 +90,23 @@ public class WxActJiugonggeRecordDaoImpl extends GenericDaoDefault<WxActJiugongg
 		return maxAwardsSeq==null?0:maxAwardsSeq;
 	}
 
+	//update-begin--Author:zhangweijian  Date: 20180413 for:根据actId和awardCode判断改兑奖码是否存在
+	//根据actId和awardCode判断改兑奖码是否存在
+	@Override
+	public WxActJiugonggeRecord queryByActIdAndawardCode(String actId, String awardCode) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("actId", actId);
+		param.put("awardCode", awardCode);
+		return (WxActJiugonggeRecord) super.queryOne("queryByActIdAndawardCode", param);
+	}
+	//update-end--Author:zhangweijian  Date: 20180413 for:根据actId和awardCode判断改兑奖码是否存在
 
+	//update-begin--Author:zhangweijian  Date: 20180704 for：根据actId获取当前活动的参与总人数
+	//根据活动id获取当前活动的参与总人数
+	@Override
+	public int getCountByActId(String actId) {
+		return (Integer) super.queryOne("getCountByActId", actId);
+	}
+	//update-end--Author:zhangweijian  Date: 20180704 for：根据actId获取当前活动的参与总人数
 }
 

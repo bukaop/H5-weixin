@@ -17,6 +17,7 @@
 		<result column="probability" property="probability" jdbcType="DOUBLE"/>
 		<result column="award_id" property="awardId" jdbcType="VARCHAR"/>
 		<result column="jwname" property="jwidName" jdbcType="VARCHAR"/>
+		<result column="create_by" property="createBy" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -29,6 +30,10 @@
 				 <if test="query.jwid != null and query.jwid != ''" >
 	  		 		/*  */
 			    	AND wajp.jwid =  #{query.jwid,jdbcType=VARCHAR}
+				 </if>
+				<if test="query.createBy != null and query.createBy != ''" >
+	  		 		/* 创建人 */
+			    	AND wajp.create_by =  #{query.createBy,jdbcType=VARCHAR}
 				 </if>
 		</trim>
 	</sql>
@@ -46,12 +51,14 @@
                      ,name                          /* 奖品名称 */ 
                      ,img                          /* 奖品图片 */ 
                      ,jwid                          /*  */ 
+                      ,create_by                          /* 微信原始id */ 
 					)
 			values (
                       #{id,jdbcType=VARCHAR}                            /*  */ 
                      ,#{name,jdbcType=VARCHAR}                          /* 奖品名称 */ 
                      ,#{img,jdbcType=VARCHAR}                          /* 奖品图片 */ 
                      ,#{jwid,jdbcType=VARCHAR}                          /*  */ 
+                     ,#{createBy,jdbcType=VARCHAR} 
 					)
 	</insert>
 
@@ -135,10 +142,8 @@
                   ,wajp.name                          /* 奖品名称 */ 
                   ,wajp.img                          /* 奖品图片 */ 
                   ,wajp.jwid                          /*  */ 
-                  ,jwj.name as jwname
+                  ,wajp.create_by 
 		FROM   	 wx_act_jiugongge_prizes      AS wajp      /* 配置 */ 
-		LEFT JOIN jw_web_jwid      AS jwj
-		ON wajp.jwid=jwj.jwid
 		WHERE 1=1
 		   <include refid="wherecontation"/>
 		LIMIT  #{startRow}  		/* 开始序号 */ 
@@ -214,8 +219,7 @@
 		        AND wajr.award_id = #{awardId}
 		        AND wajr.act_id = #{actId}
 	</select>
-	
-		<select id="queryPrizes" parameterType="Object"  resultMap="WxActJiugonggePrizes">
+	<select id="queryPrizes" parameterType="Object"  resultMap="WxActJiugonggePrizes">
 		    SELECT 
                    wajp.id                            /*  */ 
                   ,wajp.name                          /* 奖品名称 */ 
@@ -223,5 +227,26 @@
                   ,wajp.jwid                          /*  */ 
 		FROM   	 wx_act_jiugongge_prizes      AS wajp      /* 配置 */ 
 		   WHERE wajp.jwid = #{jwid}
-	</select>		
+	</select>
+	<select id="queryPrizes2" parameterType="Object"  resultMap="WxActJiugonggePrizes">
+		    SELECT 
+                   wajp.id                            /*  */ 
+                  ,wajp.name                          /* 奖品名称 */ 
+                  ,wajp.img                          /* 奖品图片 */ 
+                  ,wajp.jwid                          /*  */ 
+		FROM   	 wx_act_jiugongge_prizes      AS wajp      /* 配置 */ 
+		   WHERE wajp.jwid = #{jwid} AND wajp.create_by=#{creatBy}
+	</select>			
+	
+	<select id="queryPrizesByName" parameterType="Object"  resultMap="WxActJiugonggePrizes">
+		    SELECT 
+                   wajp.id                            /*  */ 
+                  ,wajp.name                          /* 奖品名称 */ 
+                  ,wajp.img                          /* 奖品图片 */ 
+                  ,wajp.jwid                          /*  */ 
+		FROM   	 wx_act_jiugongge_prizes      AS wajp      /* 配置 */ 
+		   WHERE wajp.jwid = #{jwid} 
+		   AND wajp.create_by=#{createBy}
+		   AND wajp.name=#{name}
+	</select>			
 </mapper>

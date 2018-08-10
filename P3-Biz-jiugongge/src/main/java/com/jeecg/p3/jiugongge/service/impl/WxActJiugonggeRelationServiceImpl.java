@@ -58,4 +58,11 @@ public class WxActJiugonggeRelationServiceImpl implements WxActJiugonggeRelation
 		return wxActJiugonggePrizesRelationDao.queryByActIdAndJwid(actid, jwid);
 	}
 
+	@Override
+	public WxActJiugonggeRelation queryByAwardId(String awardsId,String actId) {
+		// TODO Auto-generated method stub
+		return wxActJiugonggePrizesRelationDao.queryByAwardId(awardsId,actId);
+	}
+
+
 }

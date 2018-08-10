@@ -1,7 +1,10 @@
 package com.jeecg.p3.shaketicket.util;
 
-import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
-import org.jeecgframework.p3.core.utils.common.StringUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+
 
 public class EmojiFilter {
 	 /**
@@ -9,7 +12,7 @@ public class EmojiFilter {
      * @param source
      * @return 一旦含有就抛出
      */
-    public static boolean containsEmoji(String source) {
+    private static boolean containsEmoji(String source) {
         if (StringUtils.isBlank(source)) {
             return false;
         }
@@ -40,7 +43,13 @@ public class EmojiFilter {
      * @param source
      * @return
      */
-    private static String filterEmoji(String source) {
+    public static String filterEmoji(String source) {
+    	//update-begin-alex 20161216 for:增加新的过滤表情方法
+    	source = filter(source);
+    	//update-end-alex 20161216 for:增加新的过滤表情方法
+    	//update-begin-gengjiajia 20170104 for:增加新的过滤表情方法
+    	source = removeFourChar(source);
+    	//update-end-gengjiajia 20170104 for:增加新的过滤表情方法
         if (!containsEmoji(source)) {
             return source;//如果不包含，直接返回
         }
@@ -70,17 +79,39 @@ public class EmojiFilter {
         }
     }
     
+    /**
+     * add-by-alex 20161216 for:增加新的过滤表情方法
+     * @param str
+     * @return
+     */
+    private static String filter(String str) {
+	    if (str.trim().isEmpty()) {
+	        return str;
+	    }
+	    String pattern = "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]";
+	    String reStr = "";
+	    Pattern emoji = Pattern.compile(pattern);
+	    Matcher emojiMatcher = emoji.matcher(str);
+	    str = emojiMatcher.replaceAll(reStr);
+	    return str;
+	}
     
-    public static String filterNickName(String nickName){
-	   	 try {
-	   		 nickName =  filterEmoji(nickName);
-			 nickName =  WeiXinHttpUtil.encode(nickName.getBytes());
-			 nickName =  new String(WeiXinHttpUtil.decode(nickName));
-		 } catch (Exception e) {
-		 }
-	   	 if(StringUtils.isEmpty(nickName)){
-	   		 nickName = "匿名";
-	   	 }
-	   	 return nickName;
+    /**
+     * add-by-gengjiajia 20170104 for:增加新的过滤表情方法
+     * @param content
+     * @return
+     */
+    private static String removeFourChar(String content) {
+        byte[] conbyte = content.getBytes();
+        for (int i = 0; i < conbyte.length; i++) {
+            if ((conbyte[i] & 0xF8) == 0xF0) {
+                for (int j = 0; j < 4; j++) {                          
+                    conbyte[i+j]=0x30;                     
+                }  
+                i += 3;
+            }
+        }
+        content = new String(conbyte);
+        return content.replaceAll("0000", "");
     }
 }

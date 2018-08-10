@@ -18,8 +18,8 @@ import ${servicePackage}.${className}Service;
 import ${serviceTestPackage}.base.BaseTest;
 
 /**
- * 描述：</b>${className}ServiceTest<br>
- * @author：<a href="mailto:zhoujunfeng@jd.com">周俊峰</a>
+ * 描述：</b>${codeName}<br>
+ * @author：${author}
  * @since：${nowDate}
  * @version:1.0
  */

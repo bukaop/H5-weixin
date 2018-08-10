@@ -57,8 +57,11 @@ function shakeTicket() {
 		if (data.success) {
 			var drawStatus = data.attributes.shaketicketRecord.drawStatus;//抽奖状态
 			var awardsName = data.attributes.shaketicketAward.awardsName;//奖品名称
+			var jwid = data.attributes.shaketicketAward.jwid;//奖品名称
 			var owner = data.attributes.shaketicketAward.owner;//发奖公司
 			var cardId = data.attributes.shaketicketAward.cardId;//卡券ID
+			var isCard = data.attributes.shaketicketAward.isCard;//是否卡券
+			var img = data.attributes.shaketicketAward.img;//奖品图片
 			if(drawStatus == '0'){//未中奖					
 				var msg = "真遗憾，再接再厉";
 				if(msg==null||msg==""){
@@ -71,9 +74,22 @@ function shakeTicket() {
 				});
 				
 			}else{//已中奖
-				var gift = '<div><span style="margin:4px 0;display:inline-block;color:#999">恭喜你获得</span><br><b style="font-size:16px;">' + owner + '提供的</b><br><b style="font-size:16px;">' + awardsName + '</b></div>';
-				var dlg = box_dialog({ title:'恭喜！中奖啦！', content:gift });
-				dlg.find('.foot .-gifts').attr('onclick', 'addCard()');					
+				var gift ="";
+				if(isCard=='1'){//是卡券
+					gift = '<div><span style="margin:4px 0;display:inline-block;color:#999">恭喜你获得</span><br><b style="font-size:16px;"></b><br><b style="font-size:16px;">' + awardsName + '</b></div>';
+					var dlg = box_dialog2({ title:'恭喜！中奖啦！', content:gift });
+					dlg.find('.foot .-gifts').attr('onclick', 'addCard()');					
+				}else{
+					gift = '<div><span style="margin:4px 0;display:inline-block;color:#999">恭喜你获得</span>'
+						  +'<br><b style="font-size:16px;"></b><br><b style="font-size:16px;">' + awardsName + '</b><br>'
+						  +'<img src="../upload/img/shaketicket/'+jwid+'/'+img+'"  style="width:50%;height:50%;">'
+						  +'</div>';
+					var dlg = box_dialog({ title:'恭喜！中奖啦！', content:gift });
+					dlg.find('.foot .-gifts').text('关闭').click(function(){
+						dlg.remove();
+						shakeEvent.start();
+					});
+				}
 			}	
 			var use_times = $("#count").html();//每天剩余抽奖次数
 			if(use_times==null){

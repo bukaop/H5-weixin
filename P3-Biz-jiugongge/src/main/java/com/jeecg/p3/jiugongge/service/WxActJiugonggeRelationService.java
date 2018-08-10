@@ -25,5 +25,7 @@ public interface WxActJiugonggeRelationService {
 	
 	public PageList<WxActJiugonggeRelation> queryPageList(PageQuery<WxActJiugonggeRelation> pageQuery);
 	public List<WxActJiugonggeRelation> queryByActIdAndJwid(String actid,String jwid);
+
+	public WxActJiugonggeRelation queryByAwardId(String awardsId, String actId);
 }
 

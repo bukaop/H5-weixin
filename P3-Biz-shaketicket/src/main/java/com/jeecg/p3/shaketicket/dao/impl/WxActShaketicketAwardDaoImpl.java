@@ -1,11 +1,14 @@
 package com.jeecg.p3.shaketicket.dao.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.utils.common.PageQueryWrapper;
 import org.jeecgframework.p3.core.utils.persistence.mybatis.GenericDaoDefault;
 import org.springframework.stereotype.Repository;
+
+import com.google.common.collect.Maps;
 import com.jeecg.p3.shaketicket.dao.WxActShaketicketAwardDao;
 import com.jeecg.p3.shaketicket.entity.WxActShaketicketAward;
 
@@ -43,6 +46,25 @@ public class WxActShaketicketAwardDaoImpl extends GenericDaoDefault<WxActShaketi
 		return (List<WxActShaketicketAward>)super.query("queryAwards",jwid);
 	}
 
+	@Override
+	public List<WxActShaketicketAward> queryAwards(String jwid, String createBy) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("jwid", jwid);
+		param.put("createBy", createBy);
+		return (List<WxActShaketicketAward>)super.query("queryAwards2",param);
+	}
+
+	//update-begin--Author:zhangweijian  Date: 20180329 for：根据jwid，创建人，奖项名称查询奖项表
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<WxActShaketicketAward> queryAwardsByName(String jwid, String createBy, String awardsName) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("jwid", jwid);
+		param.put("createBy", createBy);
+		param.put("awardsName", awardsName);
+		return super.query("queryAwardsByName",param);
+	}
+	//update-end--Author:zhangweijian  Date: 20180329 for：根据jwid，创建人，奖项名称查询奖项表
 
 }
 

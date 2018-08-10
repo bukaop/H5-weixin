@@ -77,15 +77,14 @@
 		<servlet-name>springmvc</servlet-name>
 	</filter-mapping>
 	
-	
 	<!-- session timeout -->
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config> 
 	
-	
+	<!-- 默认官网首页 -->
 	<welcome-file-list>
-		<welcome-file>content/index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	
 </web-app>

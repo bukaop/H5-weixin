@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 #parse("content/base/back/common/head.vm")
+<link href="$!{basePath}/plug-in/plugin/hplus/css/style.css" type="text/css" rel="stylesheet"/>
+<link href="$!{basePath}/plug-in/plugin/hplus/css/font-awesome.min.css" type="text/css" rel="stylesheet"/>
 <body style='overflow:scroll;overflow-x:hidden'>
 	<div class="container bs-docs-container" style="width:100%;">
 		<div class="row">
 			<div class="panel panel-default">
-				<div class="panel-heading">详情</div>
+				<div class="panel-heading">
+					<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/jiugongge/back/wxActJiugonggeRecord/list.do?actId=$!{wxActJiugonggeRecord.actId}')"><span class="glyphicon glyphicon-circle-arrow-left"></span> 返回</button>
+				</div>
 				  	<div class="panel-body">
 				   		<form class="form-horizontal" role="form">
 							  <fieldset disabled>
@@ -58,11 +62,6 @@
 													    </div>
 													  </div>
 							  </fieldset>
-							  			<div class="form-group mno">
-											<div class="col-sm-offset-1 col-sm-6">
-												<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/jiugongge/back/wxActJiugonggeRecord/list.do')">返回</button>
-        									 </div>
-        							    </div>
 						</form>
 					</div>
 			</div>

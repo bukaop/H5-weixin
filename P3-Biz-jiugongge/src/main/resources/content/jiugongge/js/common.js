@@ -333,7 +333,14 @@ function resetIndex(idv) {
 
 //手机号数字正则验证
 function isMobile(s){
-	var patrn= /^1((3\d)|(4[57])|(5[01256789])|(7[678])|(8\d))\d{8}$/;
-	if (!patrn.exec(s)) return false;
+	//更新中国大陆手机号验证规则
+	var patrn= /^1((3\d)|(4[579])|(5[012356789])|(7[01235678])|(8\d))\d{8}$/;
+	if (!patrn.exec(s)) {
+		//增加澳大利亚手机号规则，0开头，共10位
+		var patrn2= /^0\d{9}$/;
+		if (!patrn2.exec(s)) {
+			return false;
+		}
+	}
 	return true;
 }

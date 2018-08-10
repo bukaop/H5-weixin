@@ -2,6 +2,7 @@ package com.jeecg.p3.jiugongge.entity;
 
 import java.util.Date;
 
+import org.jeecgframework.p3.core.common.utils.DateUtil;
 import org.jeecgframework.p3.core.utils.persistence.Entity;
 
 import com.jeecg.p3.jiugongge.annotation.Excel;
@@ -34,9 +35,9 @@ public class WxActJiugonggeRecord implements Entity<String> {
 	@Excel(exportName="昵称", exportConvertSign = 0, exportFieldWidth = 30, importConvertSign = 0)
 	private String nickname;
 	/**
-	 *中奖时间
+	 *抽奖时间
 	 */
-	@Excel(exportName="中奖时间", exportConvertSign = 0, exportFieldWidth = 30, importConvertSign = 0)
+	@Excel(exportName="抽奖时间", exportConvertSign = 1, exportFieldWidth = 30, importConvertSign = 0)
 	private Date recieveTime;
 	/**
 	 *奖项
@@ -65,7 +66,55 @@ public class WxActJiugonggeRecord implements Entity<String> {
 	private String jwidName;
 	private String actName;
 	private Integer seq;
-	
+	//update-begin--Author:zhangweijian  Date: 20180413 for:新增领奖状态，兑奖码，中奖状态，中奖时间字段
+	/**
+	 * 领奖状态：'0':否；'1':是
+	 */
+	private String recieveStatus;
+	/**
+	 * 兑奖码
+	 */
+	private String awardCode;
+	/**
+	 * 中奖状态： '0':否；'1':是 
+	 */
+	private String awardStatus;
+	/**
+	 * 中奖时间 
+	 */
+	private Date awardTime;
+	//update-end--Author:zhangweijian  Date: 20180413 for:新增领奖状态，兑奖码，中奖状态，中奖时间字段
+	private String verifyId;
+	public String getVerifyId() {
+		return verifyId;
+	}
+	public void setVerifyId(String verifyId) {
+		this.verifyId = verifyId;
+	}
+	public Date getAwardTime() {
+		return awardTime;
+	}
+	public void setAwardTime(Date awardTime) {
+		this.awardTime = awardTime;
+	}
+	public String getRecieveStatus() {
+		return recieveStatus;
+	}
+	public void setRecieveStatus(String recieveStatus) {
+		this.recieveStatus = recieveStatus;
+	}
+	public String getAwardCode() {
+		return awardCode;
+	}
+	public void setAwardCode(String awardCode) {
+		this.awardCode = awardCode;
+	}
+	public String getAwardStatus() {
+		return awardStatus;
+	}
+	public void setAwardStatus(String awardStatus) {
+		this.awardStatus = awardStatus;
+	}
 	public Integer getSeq() {
 		return seq;
 	}
@@ -104,6 +153,10 @@ public class WxActJiugonggeRecord implements Entity<String> {
 	public Date getRecieveTime() {
 	    return this.recieveTime;
 	}
+	public String getRecieveTimeConvert() {
+	    return DateUtil.formatDateTime(this.recieveTime, "yyyy-MM-dd HH:mm:ss");
+	}
+	
 	public void setRecieveTime(Date recieveTime) {
 	    this.recieveTime=recieveTime;
 	}
@@ -155,7 +208,16 @@ public class WxActJiugonggeRecord implements Entity<String> {
 	public void setActName(String actName) {
 		this.actName = actName;
 	}
-	
-	
+	/**
+	 * 中奖状态，数据库无该值
+	 */
+	private String status;
+
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
 

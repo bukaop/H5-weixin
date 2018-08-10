@@ -45,16 +45,20 @@ public class WxActShaketicketRecordController extends BaseController{
 public void list(@ModelAttribute WxActShaketicketRecord query,HttpServletResponse response,HttpServletRequest request,
 			@RequestParam(required = false, value = "pageNo", defaultValue = "1") int pageNo,
 			@RequestParam(required = false, value = "pageSize", defaultValue = "10") int pageSize) throws Exception{
-	 	PageQuery<WxActShaketicketRecord> pageQuery = new PageQuery<WxActShaketicketRecord>();
-	 	pageQuery.setPageNo(pageNo);
-	 	pageQuery.setPageSize(pageSize);
-	 	VelocityContext velocityContext = new VelocityContext();
-		pageQuery.setQuery(query);
-		velocityContext.put("wxActShaketicketRecord",query);
-		String backurl =  ContextHolderUtils.getRequest().getParameter("backurl");//返回时的url
-		velocityContext.put("backurl",backurl);
-		velocityContext.put("pageInfos",SystemTools.convertPaginatedList(wxActShaketicketRecordService.queryPageList(pageQuery)));
+		VelocityContext velocityContext = new VelocityContext();
 		String viewName = "shaketicket/back/wxActShaketicketRecord-list.vm";
+		try {
+			PageQuery<WxActShaketicketRecord> pageQuery = new PageQuery<WxActShaketicketRecord>();
+		 	pageQuery.setPageNo(pageNo);
+		 	pageQuery.setPageSize(pageSize);
+			pageQuery.setQuery(query);
+			velocityContext.put("wxActShaketicketRecord",query);
+			String backurl =  ContextHolderUtils.getRequest().getParameter("backurl");//返回时的url
+			velocityContext.put("backurl",backurl);
+			velocityContext.put("pageInfos",SystemTools.convertPaginatedList(wxActShaketicketRecordService.queryPageList(pageQuery)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		ViewVelocity.view(request,response,viewName,velocityContext);
 }
 
@@ -96,6 +100,7 @@ public AjaxJson doAdd(@ModelAttribute WxActShaketicketRecord wxActShaketicketRec
 		wxActShaketicketRecordService.doAdd(wxActShaketicketRecord);
 		j.setMsg("保存成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("保存失败");
 	}
@@ -127,6 +132,7 @@ public AjaxJson doEdit(@ModelAttribute WxActShaketicketRecord wxActShaketicketRe
 		wxActShaketicketRecordService.doEdit(wxActShaketicketRecord);
 		j.setMsg("编辑成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("编辑失败");
 	}
@@ -146,6 +152,7 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 			wxActShaketicketRecordService.doDelete(id);
 			j.setMsg("删除成功");
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg("删除失败");
 		}
@@ -197,7 +204,7 @@ public AjaxJson exportExcelWin(HttpServletRequest request,HttpServletResponse re
 	AjaxJson j = new AjaxJson();
 	response.setCharacterEncoding("utf-8");
 	response.setContentType("multipart/form-data");
-	String fileName = "导出信息.xls";  
+	String fileName = "摇一摇中奖记录.xls";  
 	try {  
 		response.setHeader("Content-disposition", "attachment; filename="  
 				+ new String(fileName.getBytes("utf-8"), "ISO8859-1"));

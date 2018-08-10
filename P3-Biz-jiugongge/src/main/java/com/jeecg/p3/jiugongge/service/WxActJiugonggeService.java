@@ -27,5 +27,12 @@ public interface WxActJiugonggeService {
 	public PageList<WxActJiugongge> queryPageList(PageQuery<WxActJiugongge> pageQuery);
 	
 	public List<WxActJiugongge> queryActs(String jwid);
+	
+	/**
+	 * 短链接
+	 * @param id
+	 * @param shortUrl
+	 */
+	public void doUpdateShortUrl(String id,String shortUrl);
 }
 

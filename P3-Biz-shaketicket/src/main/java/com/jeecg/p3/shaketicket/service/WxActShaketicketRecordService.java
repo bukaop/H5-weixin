@@ -11,6 +11,7 @@ import org.jeecgframework.p3.core.utils.common.PageList;
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 
 import com.jeecg.p3.shaketicket.entity.WxActShaketicketAward;
+import com.jeecg.p3.shaketicket.entity.WxActShaketicketCoupon;
 import com.jeecg.p3.shaketicket.entity.WxActShaketicketRecord;
 
 /**
@@ -39,5 +40,8 @@ public interface WxActShaketicketRecordService {
 	
 	public InputStream  exportExcel(String actId)throws FileNotFoundException;
 	public InputStream  exportExcelWin(String actId)throws FileNotFoundException;
+	
+	
+	public void creatRecord(WxActShaketicketRecord shaketicketRecord,WeixinDto weixinDto,WxActShaketicketAward award,WxActShaketicketCoupon coupon);
 }
 

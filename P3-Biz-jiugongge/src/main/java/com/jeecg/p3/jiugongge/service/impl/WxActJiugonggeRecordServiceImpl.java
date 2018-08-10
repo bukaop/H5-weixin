@@ -106,6 +106,7 @@ public class WxActJiugonggeRecordServiceImpl implements WxActJiugonggeRecordServ
 		Integer maxAwardsSeq = wxActJiugonggeRecordDao.getMaxAwardsSeq(wxActJiugonggeRecord.getActId());
 		Integer nextAwardsSeq = maxAwardsSeq+1;
 		wxActJiugonggeRecord.setSeq(nextAwardsSeq);
+		wxActJiugonggeRecord.setRecieveTime(new Date());
 		wxActJiugonggeRecordDao.add(wxActJiugonggeRecord);
 		 //查询访问人的信息 
 		 WxActJiugonggeRegistration wxActJiugonggeRegistration =  wxActJiugonggeRegistrationDao.queryRegistrationByOpenidAndActIdAndJwid(wxActJiugonggeRecord.getOpenid(), wxActJiugonggeRecord.getActId(), wxActJiugonggeRecord.getJwid());
@@ -133,10 +134,26 @@ public class WxActJiugonggeRecordServiceImpl implements WxActJiugonggeRecordServ
 	    File file = new File(new Date(0).getTime()+".xls");  
 	    OutputStream outputStream;
 			outputStream = new FileOutputStream(file);
-	    ExcelUtil.exportExcel("导出信息", WxActJiugonggeRecord.class, listUser, outputStream);  
+	    ExcelUtil.exportExcel("九宫格活动中奖记录", WxActJiugonggeRecord.class, listUser, outputStream);  
 	    InputStream is = new BufferedInputStream(new FileInputStream(file.getPath()));  
 	    file.delete();        
 	    return is;  
 	}
+
+	//update-begin--Author:zhangweijian  Date: 20180413 for:根据actId和awardCode判断改兑奖码是否存在
+	//根据actId和awardCode判断改兑奖码是否存在
+	@Override
+	public WxActJiugonggeRecord queryByActIdAndawardCode(String actId, String awardCode) {
+		return wxActJiugonggeRecordDao.queryByActIdAndawardCode(actId,awardCode);
+	}
+	//update-end--Author:zhangweijian  Date: 20180413 for:根据actId和awardCode判断改兑奖码是否存在
+
+	//update-begin--Author:zhangweijian  Date: 20180704 for：根据actId获取当前活动的参与总人数
+	//根据活动id获取当前活动的参与总人数
+	@Override
+	public int getCountByActId(String actId) {
+		return wxActJiugonggeRecordDao.getCountByActId(actId);
+	}
+	//update-end--Author:zhangweijian  Date: 20180704 for：根据actId获取当前活动的参与总人数
 
 }

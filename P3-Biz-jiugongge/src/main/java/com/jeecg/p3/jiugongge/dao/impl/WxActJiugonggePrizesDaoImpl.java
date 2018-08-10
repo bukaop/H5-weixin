@@ -1,5 +1,6 @@
 package com.jeecg.p3.jiugongge.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,24 @@ public class WxActJiugonggePrizesDaoImpl extends GenericDaoDefault<WxActJiugongg
 	public List<WxActJiugonggePrizes> queryRemainAwardsByActId(String actid) {
 		// TODO Auto-generated method stub
 		return (List)super.query("queryRemainAwardsByActId",actid);
+	}
+
+	@Override
+	public List<WxActJiugonggePrizes> queryPrizes(String jwid, String creatBy) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("jwid", jwid);
+		param.put("creatBy", creatBy);
+		return (List)super.query("queryPrizes2",param);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<WxActJiugonggePrizes> queryPrizesByName(String jwid, String createBy, String name) {
+		Map<String, String> param=new HashMap<String, String>();
+		param.put("jwid", jwid);
+		param.put("createBy", createBy);
+		param.put("name", name);
+		return super.query("queryPrizesByName", param);
 	}
 
 

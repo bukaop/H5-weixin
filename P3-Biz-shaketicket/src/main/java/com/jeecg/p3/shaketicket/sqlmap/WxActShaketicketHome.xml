@@ -13,12 +13,19 @@
 		<result column="count" property="count" jdbcType="INTEGER"/>
 		<result column="num_per_day" property="numPerDay" jdbcType="INTEGER"/>
 		<result column="hdurl" property="hdurl" jdbcType="VARCHAR"/>
+		<result column="short_url" property="shortUrl" jdbcType="VARCHAR"/>
 		<result column="foucs_user_can_join" property="foucsUserCanJoin" jdbcType="VARCHAR"/>
 		<result column="binding_mobile_can_join" property="bindingMobileCanJoin" jdbcType="VARCHAR"/>
 		<result column="win_can_join" property="winCanJoin" jdbcType="VARCHAR"/>
 		<result column="jwid" property="jwid" jdbcType="VARCHAR"/>
 		<result column="project_code" property="projectCode" jdbcType="VARCHAR"/>
+		<result column="create_by" property="createBy" jdbcType="VARCHAR"/>
 		<result column="name" property="jwidName" jdbcType="VARCHAR"/>
+		<result column="deadlinetime" property="deadlinetime" jdbcType="TIMESTAMP"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="detail" property="detail" jdbcType="TIMESTAMP"/>
+		<result column="begin_time" property="beginTime" jdbcType="TIMESTAMP"/>
+		<result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -26,7 +33,7 @@
 		<trim  suffixOverrides="," >
 				 <if test="query.actName != null and query.actName != ''" >
 	  		 		/* 活动名称 */
-			    	AND wash.act_name =  #{query.actName,jdbcType=VARCHAR}
+			    	AND wash.act_name like concat(concat('%',#{query.actName}),'%')
 				 </if>
 				 <if test="query.activeFlag != null and query.activeFlag != ''" >
 	  		 		/* 启用状态（0：停用；1：激活） */
@@ -35,6 +42,10 @@
 				 <if test="query.jwid != null and query.jwid != ''" >
 	  		 		/* 微信原始id */
 			    	AND wash.jwid =  #{query.jwid,jdbcType=VARCHAR}
+				 </if>
+				 <if test="query.createBy != null and query.createBy != ''" >
+	  		 		/* 创建人 */
+			    	AND wash.create_by =  #{query.createBy,jdbcType=VARCHAR}
 				 </if>
 		</trim>
 	</sql>
@@ -51,6 +62,7 @@
                       id                            /* 键主 */ 
                      ,act_name                      /* 活动名称 */ 
                      ,active_flag                   /* 启用状态（0：停用；1：激活） */ 
+                     ,deadlinetime   
                      ,template                        /* 背景图 */ 
                      ,count                         /* 抽奖次数 */ 
                      ,num_per_day                   /* 每日抽奖次数 */ 
@@ -60,11 +72,17 @@
                      ,win_can_join                  /* 是否中奖可参与 0：中奖可继续参与 1:中奖不可参与 */ 
                      ,jwid                          /* 微信原始id */ 
                      ,project_code                  /* 所属项目编码 */ 
+                     ,create_by                  /* 所属项目编码 */ 
+                     ,create_time
+                     ,detail
+                     ,begin_time
+                     ,end_time
 					)
 			values (
                       #{id,jdbcType=VARCHAR}                            /* 键主 */ 
                      ,#{actName,jdbcType=VARCHAR}                       /* 活动名称 */ 
-                     ,#{activeFlag,jdbcType=VARCHAR}                    /* 启用状态（0：停用；1：激活） */ 
+                     ,#{activeFlag,jdbcType=VARCHAR}                    /* 启用状态（0：停用；1：激活） */
+                     ,#{deadlinetime,jdbcType=TIMESTAMP}  
                      ,#{template,jdbcType=VARCHAR}                        /* 背景图 */ 
                      ,#{count,jdbcType=INTEGER}                         /* 抽奖次数 */ 
                      ,#{numPerDay,jdbcType=INTEGER}                     /* 每日抽奖次数 */ 
@@ -73,7 +91,12 @@
                      ,#{bindingMobileCanJoin,jdbcType=VARCHAR}          /* 是否绑定手机可参加 0否1是 */ 
                      ,#{winCanJoin,jdbcType=VARCHAR}                    /* 是否中奖可参与 0：中奖可继续参与 1:中奖不可参与 */ 
                      ,#{jwid,jdbcType=VARCHAR}                          /* 微信原始id */ 
-                     ,#{projectCode,jdbcType=VARCHAR}                   /* 所属项目编码 */ 
+                     ,#{projectCode,jdbcType=VARCHAR}                  /* 所属项目编码 */ 
+                     ,#{createBy,jdbcType=VARCHAR}                   /* 所属项目编码 */ 
+                     ,now()
+                     ,#{detail,jdbcType=VARCHAR}
+                     ,#{beginTime,jdbcType=TIMESTAMP}
+                     ,#{endTime,jdbcType=TIMESTAMP}
 					)
 	</insert>
 
@@ -95,6 +118,9 @@
 		    		 		/* 启用状态（0：停用；1：激活） */ 
 	    		 			active_flag = #{activeFlag,jdbcType=VARCHAR},
 						 </if>
+						 <if test="deadlinetime != null">
+	    		 			deadlinetime = #{deadlinetime,jdbcType=TIMESTAMP},
+						 </if>
 						 <if test="template != null">
 		    		 		/* 背景图 */ 
 	    		 			template = #{template,jdbcType=VARCHAR},
@@ -110,6 +136,10 @@
 						 <if test="hdurl != null">
 		    		 		/* 入口地址 */ 
 	    		 			hdurl = #{hdurl,jdbcType=VARCHAR},
+						 </if>
+						 <if test="shortUrl != null">
+		    		 		/* 入口地址 */ 
+	    		 			short_url = #{shortUrl,jdbcType=VARCHAR},
 						 </if>
 						 <if test="foucsUserCanJoin != null">
 		    		 		/* 是否关注可参加 0否1是 */ 
@@ -131,6 +161,16 @@
 		    		 		/* 所属项目编码 */ 
 	    		 			project_code = #{projectCode,jdbcType=VARCHAR},
 						 </if>
+						 <if test="detail != null">
+		    		 		/* 所属项目编码 */ 
+	    		 			detail = #{detail,jdbcType=VARCHAR},
+						 </if>
+						 <if test="beginTime != null">
+	    		 			begin_time = #{beginTime,jdbcType=TIMESTAMP},
+						 </if>
+						 <if test="endTime != null">
+	    		 			end_time = #{endTime,jdbcType=TIMESTAMP},
+						 </if>
 	  	  		</trim>
 				WHERE
 	  	 		 		id = #{id}		/* 序号 */ 
@@ -146,16 +186,23 @@
 		   SELECT   
                    wash.id                            /* 键主 */ 
                   ,wash.act_name                      /* 活动名称 */ 
-                  ,wash.active_flag                   /* 启用状态（0：停用；1：激活） */ 
+                  ,wash.active_flag                   /* 启用状态（0：停用；1：激活） */
+                  ,wash.deadlinetime 
                   ,wash.template                        /* 背景图 */ 
                   ,wash.count                         /* 抽奖次数 */ 
                   ,wash.num_per_day                   /* 每日抽奖次数 */ 
                   ,wash.hdurl                         /* 入口地址 */ 
+                  ,wash.short_url                     /* 短链接 */ 
                   ,wash.foucs_user_can_join           /* 是否关注可参加 0否1是 */ 
                   ,wash.binding_mobile_can_join       /* 是否绑定手机可参加 0否1是 */ 
                   ,wash.win_can_join                  /* 是否中奖可参与 0：中奖可继续参与 1:中奖不可参与 */ 
                   ,wash.jwid                          /* 微信原始id */ 
                   ,wash.project_code                  /* 所属项目编码 */ 
+                  ,wash.create_time
+                  ,wash.detail
+                  ,wash.begin_time
+                  ,wash.end_time
+                  ,wash.create_by                  /* 创建人 */ 
 		   FROM   wx_act_shaketicket_home      AS wash      /* 九宫格活动表 */ 
 		   WHERE
 				id = #{id}				/* 序号 */ 
@@ -196,19 +243,23 @@
                    wash.id                            /* 键主 */ 
                   ,wash.act_name                      /* 活动名称 */ 
                   ,wash.active_flag                   /* 启用状态（0：停用；1：激活） */ 
+                  ,wash.deadlinetime                        /* 背景图 */ 
                   ,wash.template                        /* 背景图 */ 
                   ,wash.count                         /* 抽奖次数 */ 
                   ,wash.num_per_day                   /* 每日抽奖次数 */ 
                   ,wash.hdurl                         /* 入口地址 */ 
+                  ,wash.short_url                     /* 短链接 */ 
                   ,wash.foucs_user_can_join           /* 是否关注可参加 0否1是 */ 
                   ,wash.binding_mobile_can_join       /* 是否绑定手机可参加 0否1是 */ 
                   ,wash.win_can_join                  /* 是否中奖可参与 0：中奖可继续参与 1:中奖不可参与 */ 
                   ,wash.jwid                          /* 微信原始id */ 
                   ,wash.project_code                  /* 所属项目编码 */ 
-                  ,jwj.name
+                  ,wash.create_by                  /* 所属项目编码 */ 
+                   ,wash.create_time
+                   ,wash.detail
+                   ,wash.begin_time
+                  ,wash.end_time
 		FROM   	 wx_act_shaketicket_home      AS wash      /* 摇一摇活动表 */ 
-		LEFT JOIN jw_web_jwid      AS jwj
-		ON wash.jwid=jwj.jwid
 		WHERE 1=1
 		   <include refid="wherecontation"/>
 		LIMIT  #{startRow}  		/* 开始序号 */ 

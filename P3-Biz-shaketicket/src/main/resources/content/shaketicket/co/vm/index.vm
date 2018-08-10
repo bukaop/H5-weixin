@@ -1,4 +1,4 @@
-#set($version='?v=0.6.9')
+#set($version='?v=0.7.8')
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -14,16 +14,16 @@
 <meta content="application" name="browsermode"></meta>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-<link href="$!{basePath}/content/shaketicket/co/css/shake.css$!{version}" type="text/css" rel="stylesheet" />
-<link href="$!{basePath}/content/shaketicket/co/css/site.css$!{version}" type="text/css" rel="stylesheet" />
-<link href="$!{basePath}/content/shaketicket/co/css/font-awesome.css$!{version}" type="text/css" rel="stylesheet" />
-<link href="$!{basePath}/content/shaketicket/co/css/common-site.r4409.css$!{version}" type="text/css" rel="stylesheet" />
-<script src="$!{basePath}/content/shaketicket/co/js/jquery-1.10.2.min.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/co/js/common-site.r4443.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/co/js/shake.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/co/js/common.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/co/js/jQueryRotate.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/co/js/wxcheck.js$!{version}" type="text/javascript"></script>
+<link href="$!{basePath}/content/shaketicket/default/css/shake.css$!{version}" type="text/css" rel="stylesheet" />
+<link href="$!{basePath}/content/shaketicket/default/css/site.css$!{version}" type="text/css" rel="stylesheet" />
+<link href="$!{basePath}/content/shaketicket/default/css/font-awesome.css$!{version}" type="text/css" rel="stylesheet" />
+<link href="$!{basePath}/content/shaketicket/default/css/common-site.r4409.css$!{version}" type="text/css" rel="stylesheet" />
+<script src="$!{basePath}/content/shaketicket/default/js/jquery-1.10.2.min.js$!{version}" type="text/javascript"></script>
+<script src="$!{basePath}/content/shaketicket/default/js/common-site.r4443.js$!{version}" type="text/javascript"></script>
+<script src="$!{basePath}/content/shaketicket/default/js/shake.js$!{version}" type="text/javascript"></script>
+<script src="$!{basePath}/content/shaketicket/default/js/common.js$!{version}" type="text/javascript"></script>
+<script src="$!{basePath}/content/shaketicket/default/js/jQueryRotate.js$!{version}" type="text/javascript"></script>
+<script src="$!{basePath}/content/shaketicket/default/js/wxcheck.js$!{version}" type="text/javascript"></script>
 </head>
 <body style="background-color:red;">
 <!--摇一摇首页-->
@@ -31,24 +31,24 @@
 	<div class="light hide"><div class="ss"></div></div>
 	<div class="shake-box">
 		<div class="title">摇一摇</div>
-		<div class="hand"><img alt="摇一摇" src="$!{basePath}/content/shaketicket/co/img/hand.png"></div>
+		<div class="hand"><img alt="摇一摇" src="$!{basePath}/content/shaketicket/default/img/hand.png"></div>
 		<div class="inner"></div>
 	</div>
 	#if($perday)
-	<div class="join-man" id="hdcountStr">本次活动每人可抽$!{shaketicket.count}次，您还有<span id="num">#set($newNum=$!{shaketicket.count} - $!{count})$newNum</span>次机会</div>
+	<div class="join-man" id="hdcountStr">本次活动每人可抽$!{shaketicket.count}次，您还有<span id="num">#set($newNum=$!{shaketicket.count} - $!{count})$!{newNum}</span>次机会</div>
 	#else
-	<div class="join-man" id="hdcountStr">本次活动每人可抽$!{shaketicket.count}次。每天可抽$!{shaketicket.numPerDay}次，您今天还有<span id="count">#set($newNum=$!{shaketicket.numPerDay} - $!{countday})$newNum</span>次机会</div>
+	<div class="join-man" id="hdcountStr">本次活动每人可抽$!{shaketicket.count}次。每天可抽$!{shaketicket.numPerDay}次，您今天还有<span id="count">#set($newNum=$!{shaketicket.numPerDay} - $!{countday})$!{newNum}</span>次机会</div>
 	#end
 	<div class="gift-rule">
 		<a class="btn" id="rule-btn"><i class="fa fa-file-text-o" style="font-size:12px;"></i> 活动规则</a>
 		&nbsp;&nbsp;
-		<a class="btn" onclick="addCard()"><i class="fa fa-gift"></i>  我的卡券</a>
+		<a class="btn" onclick="addCard()"><i class="fa fa-gift"></i>  我的奖品</a>
 	</div>
-	<div class="copyright"><a href="">&copy;营销活动</a></div>
+	<div class="copyright">免费创建一个活动？-><a href="http://mp.weixin.qq.com/s?__biz=MzI0MzA3MjI3MA==&mid=2656414114&idx=1&sn=962977778fd377b20c5e69c821ad29d5&chksm=f2d3a5c3c5a42cd5a1255fb4858a0749a24d339d3ad17c9d075026b607699ecaea5661dca16f#rd">H5活动之家</a></div>
 </div>
 <!--摇一摇首页-->
 <!--摇一摇活动说明-->
-<div id="rule" class="hide"><div style="text-align:left">活动说明：<br><br>$!{dictTool.getSysText('detail',$!{shaketicket.id})}</div></div>
+<div id="rule" class="hide"><div style="text-align:left">活动说明：<br><br>$!{shaketicket.detail}</div></div>
 <!--摇一摇活动说明-->
 <!--摇一摇没有绑定手机提示-->
 <div id="no_binding_phone" class="hide"><div style="text-align:left">没有绑定手机号：<br><br>$!{dictTool.getSysText('index.tip.nobindingphone',$!{shaketicket.id})}</div></div>
@@ -57,12 +57,12 @@
 <div id="no_focus" class="hide"><div style="text-align:left">没有关注：<br><br>$!{dictTool.getSysText('index.tip.nofocus',$!{shaketicket.id})}</div></div>
 <!--摇一摇未关注提示-->
 <!--摇一摇音效-->
-<audio id="audio_shake" src="$!{basePath}/content/shaketicket/co/vedio/wechat_shake.mp3" preload></audio>
+<audio id="audio_shake" src="$!{basePath}/content/shaketicket/default/vedio/wechat_shake.mp3" preload></audio>
 <!--摇一摇音效-->
 
-<img src="$!{basePath}/content/shaketicket/co/img/index.gif" style="height:0;width:0;display:none;" border="0">
+<img src="$!{basePath}/content/shaketicket/default/img/index.gif" style="height:0;width:0;display:none;" border="0">
 <!--摇一摇背景图-->
-<input type="hidden" value="$!{basePath}/content/shaketicket/co/img/picurl-shake.jpg" id="share_img_url">
+<input type="hidden" value="$!{basePath}/content/shaketicket/default/img/picurl-shake.jpg" id="share_img_url">
 <!--摇一摇背景图-->
 	 	<input type="hidden" name="jwid" id="jwid" value="$!{weixinDto.jwid}"/>
 		<input type="hidden" name="openid" id="openid" value="$!{weixinDto.openid}"/>
@@ -130,10 +130,18 @@
 		var actId='$!{weixinDto.actId}';
 		var jwid='$!{weixinDto.jwid}';
 		var url = "$!{basePath}/shaketicket/getMyAwards.do";
-			jQuery.getJSON(url, {"actId": actId,"openid" : openid,"jwid" : jwid}, function(data,status,xhr){	
-					var cardId=data.obj.card_id;
-					var recordId=data.obj.recordid;
+			jQuery.getJSON(url, {"actId": actId,"openid" : openid,"jwid" : jwid}, function(data,status,xhr){
+				var cardId='';
+					try{
+						cardId=data.obj.card_id;
+					}catch(e){
+						alert("还没有获得奖品");
+						return;
+					}
+					
+					var recordId=data.obj.record_id;
 				       if(cardId==null||cardId==''){
+					   	alert("还没有获得奖品");
 						return;
 						}
 						var openid = data.obj.openid;

@@ -27,8 +27,27 @@ public interface WxActJiugonggeAwardsService {
 	public Boolean validReat(String id,int value,String jwid);
 	
 	public PageList<WxActJiugonggeAwards> queryPageList(PageQuery<WxActJiugonggeAwards> pageQuery);
+	
+	
 	public List<WxActJiugonggeAwards> queryAwards(String jwid);
 	
+	public List<WxActJiugonggeAwards> queryAwards(String jwid,String creatBy);
+	
+	/**
+	 * @功能:通过奖项名称查询奖项
+	 * @作者:liwenhui 
+	 * @时间:2018-3-28 下午02:54:25
+	 * @修改：
+	 * @param jwid
+	 * @param creatBy
+	 * @param content
+	 * @return  
+	 */
+	public List<WxActJiugonggeAwards> queryAwardsByName(String jwid,String createBy,String content);
+	
 	public Boolean validUsed(String id);
+	
+	public Integer getMaxAwardsValue(String jwid);
+	public Integer getMaxAwardsValueByCreateBy(String jwid,String createBy);
 }
 

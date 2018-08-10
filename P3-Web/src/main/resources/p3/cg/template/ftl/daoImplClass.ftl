@@ -10,7 +10,7 @@ import ${daoPackage}.${className}Dao;
 import ${domainPackage}.${className};
 
 /**
- * 描述：</b>${className}DaoImpl<br>
+ * 描述：</b>${codeName}<br>
  * @author：${author}
  * @since：${nowDate}
  * @version:1.0

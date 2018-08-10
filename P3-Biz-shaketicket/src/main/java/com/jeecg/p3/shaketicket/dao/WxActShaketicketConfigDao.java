@@ -25,5 +25,14 @@ public interface WxActShaketicketConfigDao extends GenericDao<WxActShaketicketCo
 	public void batchDeleteByActId( String actid) ;
 	
 	public void bactchDeleteOldAwards(List<String> ids,String actId) ;
+	
+	public void updateNum(String id,Integer num);
+
+	//update-begin--Author:zhangweijian  Date: 20180330 for：根据awardid判断该奖项是否使用
+	/**
+	 * 根据awardid判断该奖项是否使用
+	 * */
+	public Boolean validUsed(String awardId);
+	//update-end--Author:zhangweijian  Date: 20180330 for：根据awardid判断该奖项是否使用
 }
 

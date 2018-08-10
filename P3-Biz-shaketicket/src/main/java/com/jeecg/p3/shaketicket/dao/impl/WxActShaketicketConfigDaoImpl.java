@@ -67,6 +67,30 @@ public class WxActShaketicketConfigDaoImpl extends GenericDaoDefault<WxActShaket
 		super.delete("bactchDeleteOldAwards",param);
 	}
 
+	@Override
+	public void updateNum(String id, Integer num) {
+		Map<String,Object> param = Maps.newConcurrentMap();
+		param.put("id", id);
+		param.put("num", num);
+		super.update("updateNum", param);
+	}
+
+	//update-begin--Author:zhangweijian  Date: 20180330 for：根据awardid判断该奖项是否使用
+	/**
+	 * 根据awardid判断该奖项是否使用
+	 * */
+	@Override
+	public Boolean validUsed(String awardId) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("awardId", awardId);
+		List<WxActShaketicketConfig> relations=(List<WxActShaketicketConfig>)super.query("validUsed",param);
+		if(relations.size()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	//update-end--Author:zhangweijian  Date: 20180330 for：根据awardid判断该奖项是否使用
 
 }
 

@@ -1,11 +1,14 @@
 package com.jeecg.p3.jiugongge.dao.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.utils.common.PageQueryWrapper;
 import org.jeecgframework.p3.core.utils.persistence.mybatis.GenericDaoDefault;
 import org.springframework.stereotype.Repository;
+
+import com.google.common.collect.Maps;
 import com.jeecg.p3.jiugongge.dao.WxActJiugonggeDao;
 import com.jeecg.p3.jiugongge.entity.WxActJiugongge;
 import com.jeecg.p3.jiugongge.entity.WxActJiugonggeAwards;
@@ -36,6 +39,14 @@ public class WxActJiugonggeDaoImpl extends GenericDaoDefault<WxActJiugongge> imp
 	public List<WxActJiugongge> queryActs(String jwid) {
 		// TODO Auto-generated method stub
 		return (List<WxActJiugongge>)super.query("queryActs",jwid);
+	}
+
+	@Override
+	public void doUpdateShortUrl(String id, String shortUrl) {
+		Map<String, String> param=Maps.newConcurrentMap();
+		param.put("id", id);
+		param.put("shortUrl", shortUrl);
+		super.update("doUpdateShortUrl",param);
 	}
 
 

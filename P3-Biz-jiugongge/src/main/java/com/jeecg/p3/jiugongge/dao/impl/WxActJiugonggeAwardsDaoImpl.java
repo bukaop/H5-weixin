@@ -69,6 +69,38 @@ public class WxActJiugonggeAwardsDaoImpl extends GenericDaoDefault<WxActJiugongg
 		}
 	}
 
+	@Override
+	public Integer getMaxAwardsValue(String jwid) {
+		Integer maxAwardsValue = (Integer) super.queryOne("getMaxValue",jwid);
+		return maxAwardsValue==null?0:maxAwardsValue;
+	}
+
+	@Override
+	public Integer getMaxAwardsValueByCreateBy(String jwid, String createBy) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("jwid", jwid);
+		param.put("createBy", createBy);
+		Integer maxAwardsValue = (Integer) super.queryOne("getMaxValueByCreateBy",param);
+		return maxAwardsValue==null?0:maxAwardsValue;
+	}
+
+	@Override
+	public List<WxActJiugonggeAwards> queryAwards(String jwid, String creatBy) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("jwid", jwid);
+		param.put("creatBy", creatBy);
+		return (List<WxActJiugonggeAwards>)super.query("queryAwards2",param);
+	}
+
+	@Override
+	public List<WxActJiugonggeAwards> queryAwardsByName(String jwid, String createBy, String content) {
+		Map<String,String> param = Maps.newConcurrentMap();
+		param.put("jwid", jwid);
+		param.put("createBy", createBy);
+		param.put("content", content);
+		return (List<WxActJiugonggeAwards>)super.query("queryAwardsByName",param);
+	}
+
 
 }
 

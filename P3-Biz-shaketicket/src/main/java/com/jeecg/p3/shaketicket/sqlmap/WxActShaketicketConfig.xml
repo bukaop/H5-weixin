@@ -13,6 +13,7 @@
 		<result column="amount" property="amount" jdbcType="INTEGER"/>
 		<result column="remain_num" property="remainNum" jdbcType="INTEGER"/>
 		<result column="jwid" property="jwid" jdbcType="VARCHAR"/>
+		<result column="active" property="active" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -60,7 +61,8 @@
                      ,probability                   /* 中奖概率 */ 
                      ,amount                        /* 总数量 */ 
                      ,remain_num                    /* 剩余数量 */ 
-                     ,jwid                          /* 微信公众号 */ 
+                     ,jwid                          /* 微信公众号 */
+                     ,active                          /* 微信公众号 */  
 					)
 			values (
                       #{id,jdbcType=VARCHAR}                            /* 活动ID */ 
@@ -70,6 +72,7 @@
                      ,#{amount,jdbcType=INTEGER}                        /* 总数量 */ 
                      ,#{amount,jdbcType=INTEGER}                     /* 剩余数量 */ 
                      ,#{jwid,jdbcType=VARCHAR}                          /* 微信公众号 */ 
+                     ,#{active,jdbcType=VARCHAR}                          /* 微信公众号 */ 
 					)
 	</insert>
 
@@ -107,6 +110,10 @@
 		    		 		/* 微信公众号 */ 
 	    		 			jwid = #{jwid,jdbcType=VARCHAR},
 						 </if>
+						 <if test="active != null">
+		    		 		/* 微信公众号 */ 
+	    		 			active = #{active,jdbcType=VARCHAR},
+						 </if>
 	  	  		</trim>
 				WHERE
 	  	 		 		id = #{id}		/* 序号 */ 
@@ -127,6 +134,7 @@
                   ,wasc.amount                        /* 总数量 */ 
                   ,wasc.remain_num                    /* 剩余数量 */ 
                   ,wasc.jwid                          /* 微信公众号 */ 
+                  ,wasc.active                         /* 微信公众号 */ 
 		   FROM   wx_act_shaketicket_config      AS wasc      /* 活动奖项配置表 */ 
 		   WHERE
 				id = #{id}				/* 序号 */ 
@@ -171,6 +179,7 @@
                   ,wasc.amount                        /* 总数量 */ 
                   ,wasc.remain_num                    /* 剩余数量 */ 
                   ,wasc.jwid                          /* 微信公众号 */ 
+                  ,wasc.active                         /* 微信公众号 */ 
 		FROM   	 wx_act_shaketicket_config      AS wasc      /* 活动奖项配置表 */ 
 		WHERE 1=1
 		   <include refid="wherecontation"/>
@@ -185,6 +194,7 @@
                   ,wasc.probability                   /* 中奖概率 */ 
                   ,wasc.amount                        /* 总数量 */ 
                   ,wasc.remain_num                    /* 剩余数量 */ 
+                  ,wasc.active                    /* 剩余数量 */ 
 		FROM   	 wx_act_shaketicket_config      AS wasc      /* 活动奖项配置表 */ 
 		WHERE 1=1
 		   AND wasc.act_id=#{actId} 
@@ -212,4 +222,26 @@
 		</if>
            
 	</delete>
+	
+	
+	<update id="updateNum" parameterType="Object" >
+	  UPDATE   wx_act_shaketicket_config
+	  SET amount=amount+#{num},
+	  remain_num=remain_num+#{num}
+	  where id=#{id}
+	  <if test="num &lt; 0">
+	  AND remain_num>=0-#{num}
+	  </if>
+	</update>
+	
+	<select id="validUsed" parameterType="Object" resultMap="WxActShaketicketConfig">
+		SELECT 
+                   wasc.id                            /*  */ 
+                  ,wasc.award_id                      /*  */ 
+		FROM   	 wx_act_shaketicket_config      AS wasc      /* 配置 */ 
+		   WHERE 1=1	
+		    <if test="awardId != null">
+		    	AND wasc.award_id = #{awardId}				/* 奖项id  */ 
+			</if>
+	 </select>
 </mapper>

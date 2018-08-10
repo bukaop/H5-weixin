@@ -29,6 +29,19 @@ public interface WxActJiugonggePrizesService {
 	public PageList<WxActJiugonggePrizes> queryPageList(PageQuery<WxActJiugonggePrizes> pageQuery);
 	
 	public List<WxActJiugonggePrizes> queryPrizes(String jwid);
+	public List<WxActJiugonggePrizes> queryPrizes(String jwid,String creatBy);
 	public Boolean validUsed(String id);
+	
+	/**
+	 * @功能:通过奖品名称查询
+	 * @作者:liwenhui 
+	 * @时间:2018-3-28 下午02:56:57
+	 * @修改：
+	 * @param jwid
+	 * @param createBy
+	 * @param name
+	 * @return  
+	 */
+	public List<WxActJiugonggePrizes> queryPrizesByName(String jwid,String createBy,String name);
 }
 

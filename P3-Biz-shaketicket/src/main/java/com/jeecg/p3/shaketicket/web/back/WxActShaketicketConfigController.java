@@ -88,6 +88,7 @@ public AjaxJson doAdd(@ModelAttribute WxActShaketicketConfig wxActShaketicketCon
 		wxActShaketicketConfigService.doAdd(wxActShaketicketConfig);
 		j.setMsg("保存成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("保存失败");
 	}
@@ -119,6 +120,7 @@ public AjaxJson doEdit(@ModelAttribute WxActShaketicketConfig wxActShaketicketCo
 		wxActShaketicketConfigService.doEdit(wxActShaketicketConfig);
 		j.setMsg("编辑成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("编辑失败");
 	}
@@ -138,6 +140,7 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 			wxActShaketicketConfigService.doDelete(id);
 			j.setMsg("删除成功");
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg("删除失败");
 		}

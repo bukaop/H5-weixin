@@ -17,7 +17,13 @@
 		<result column="receive_time" property="receiveTime" jdbcType="TIMESTAMP"/>
 		<result column="jwid" property="jwid" jdbcType="VARCHAR"/>
 		<result column="awards_name" property="awardsName" jdbcType="VARCHAR"/>
+		<result column="card_psd" property="cardPsd" jdbcType="VARCHAR"/>
 		<result column="card_id" property="cardId" jdbcType="VARCHAR"/>
+		<result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+		<result column="is_card" property="isCard" jdbcType="VARCHAR"/>
+		<result column="img" property="img" jdbcType="VARCHAR"/>
+		<result column="rel_name" property="relName" jdbcType="VARCHAR"/>
+		<result column="address" property="address" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -47,6 +53,10 @@
 	  		 		/* 微信公众号 */
 			    	AND wasr.jwid =  #{query.jwid,jdbcType=VARCHAR}
 				 </if>
+				  <if test="query.mobile != null and query.mobile != ''" >
+	  		 		/* 微信公众号 */
+			    	AND wasr.mobile =  #{query.mobile,jdbcType=VARCHAR}
+				 </if>
 		</trim>
 	</sql>
 
@@ -69,6 +79,8 @@
                      ,draw_time                     /* 抽奖时间 */ 
                      ,receive_time                  /* 领奖时间 */ 
                      ,jwid                          /* 微信公众号 */ 
+                     ,mobile
+                     ,card_psd
 					)
 			values (
                       #{id,jdbcType=VARCHAR}                            /* ID */ 
@@ -81,6 +93,8 @@
                      ,#{drawTime,jdbcType=TIMESTAMP}                      /* 抽奖时间 */ 
                      ,#{receiveTime,jdbcType=TIMESTAMP}                   /* 领奖时间 */ 
                      ,#{jwid,jdbcType=VARCHAR}                          /* 微信公众号 */ 
+                      ,#{mobile,jdbcType=VARCHAR}                          /* 微信公众号 */ 
+                       ,#{cardPsd,jdbcType=VARCHAR}  
 					)
 	</insert>
 
@@ -130,6 +144,18 @@
 		    		 		/* 微信公众号 */ 
 	    		 			jwid = #{jwid,jdbcType=VARCHAR},
 						 </if>
+						 <if test="mobile != null">
+		    		 		/* 微信公众号 */ 
+	    		 			mobile = #{mobile,jdbcType=VARCHAR},
+						 </if>
+						  <if test="relName != null">
+		    		 		/* 微信公众号 */ 
+	    		 			rel_name = #{relName,jdbcType=VARCHAR},
+						 </if>
+						 <if test="address != null">
+		    		 		/* 微信公众号 */ 
+	    		 			address = #{address,jdbcType=VARCHAR},
+						 </if>
 	  	  		</trim>
 				WHERE
 	  	 		 		id = #{id}		/* 序号 */ 
@@ -154,6 +180,14 @@
                   ,wasr.receive_time                  /* 领奖时间 */ 
                   ,wasr.jwid                          /* 微信公众号 */ 
                   ,wasa.awards_name
+                  ,wasa.card_id
+                  ,wasa.is_card
+                  ,wasr.card_psd
+                   ,wasr.mobile
+                  ,wasa.awards_describe
+                  ,wasa.img  
+                  ,wasr.rel_name  
+                  ,wasr.address  
 		   FROM   wx_act_shaketicket_record      AS wasr      /* 抽奖记录表 */ ,
 		   wx_act_shaketicket_award      AS wasa
 		WHERE wasr.award_id = wasa.id
@@ -204,11 +238,15 @@
                   ,wasr.jwid                          /* 微信公众号 */ 
                   ,wasa.awards_name
                   ,wasa.card_id
-		FROM   	 wx_act_shaketicket_record      AS wasr      /* 抽奖记录表 */ ,
-		wx_act_shaketicket_award      AS wasa
+                   ,wasr.mobile
+                   ,wasr.card_psd
+                  ,wasa.awards_describe  
+		FROM   	 wx_act_shaketicket_record      AS wasr      /* 抽奖记录表 */ 
+		LEFT JOIN wx_act_shaketicket_award      AS wasa
+		ON wasr.award_id = wasa.id
 		WHERE 1=1
-		AND wasr.award_id = wasa.id
 		   <include refid="wherecontation"/>
+		ORDER BY wasr.draw_time DESC
 		LIMIT  #{startRow}  		/* 开始序号 */ 
 			  ,#{pageSize}		/* 每页显示条数 */ 
 	</select>
@@ -223,9 +261,12 @@
                   ,wasr.receive_status                /* 领取状态 0 未领取 1已领取 */ 
                   ,wasr.draw_time                     /* 抽奖时间 */ 
                   ,wasr.receive_time                  /* 领奖时间 */ 
-                  ,wasr.jwid                          /* 微信公众号 */ 
+                  ,wasr.jwid  
+                  ,wasr.card_psd                        /* 微信公众号 */ 
                   ,wasa.awards_name
                   ,wasa.card_id
+                   ,wasr.mobile
+                  ,wasa.awards_describe  
 		FROM   	 wx_act_shaketicket_record      AS wasr      /* 抽奖记录表 */ ,
 		wx_act_shaketicket_award      AS wasa
 		WHERE 1=1
@@ -246,11 +287,13 @@
                   ,wasr.jwid                          /* 微信公众号 */ 
                   ,wasa.awards_name
                   ,wasa.card_id
-		FROM   	 wx_act_shaketicket_record      AS wasr      /* 抽奖记录表 */ ,
-		wx_act_shaketicket_award      AS wasa
-		WHERE 1=1
-		AND wasr.award_id = wasa.id
-		AND wasr.act_id = #{actId}		
+                   ,wasr.mobile
+                   ,wasr.card_psd
+                  ,wasa.awards_describe  
+		FROM   	 wx_act_shaketicket_record      AS wasr
+		LEFT JOIN wx_act_shaketicket_award      AS wasa
+		ON wasr.award_id = wasa.id
+		where wasr.act_id = #{actId}		
 		AND wasr.draw_status = '1';	
 	</select>
 	<select id="getRecordCountByActIdAndOpenid" parameterType="Object"  resultType="java.util.Map">
@@ -284,6 +327,13 @@
                   ,wasr.jwid                          /* 微信公众号 */ 
                   ,wasa.awards_name
                   ,wasa.card_id
+                  ,wasa.is_card
+                  ,wasr.card_psd
+                   ,wasr.mobile
+                   ,wasr.rel_name
+                   ,wasr.address
+                  ,wasa.awards_describe
+                  ,wasa.img  
 		FROM   	 wx_act_shaketicket_record      AS wasr      /* 抽奖记录表 */ ,
 				 wx_act_shaketicket_award      AS wasa
 		WHERE wasr.award_id = wasa.id

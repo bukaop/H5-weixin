@@ -31,8 +31,9 @@
 	<mvc:resources location="classpath:/plug-in/" mapping="/plug-in/**" cache-period="864000" /><!-- 24 * 3600 * 10 -->
     <mvc:resources location="classpath:/content/" mapping="/content/**" cache-period="864000" /><!-- 24 * 3600 * 10 -->
     <mvc:resources location="/upload/" mapping="/upload/**" cache-period="864000" /><!-- 24 * 3600 * 10 -->
-    <mvc:resources location="/template/" mapping="/template/**" cache-period="864000" /><!-- 24 * 3600 * 10 -->
-		
+	<mvc:resources location="/template/" mapping="/template/**" cache-period="864000" /><!-- 24 * 3600 * 10 -->
+	<mvc:resources location="/h5/" mapping="/h5/**" cache-period="864000" /><!-- 24 * 3600 * 10 -->
+	<mvc:resources location="/index.html" mapping="/**" cache-period="864000" /><!-- 24 * 3600 * 10 -->
     
     <!-- 注册默认转换器 --><!-- 加载DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter -->
 	<!-- StringHttpMessageConverter -->
@@ -103,25 +104,29 @@
         <property name="maxInMemorySize" value="10240" />
     </bean>
     
+    <!-- 异常处理类 -->
+	<bean id="exceptionHandler"
+		class="com.jeecg.p3.system.exception.GlobalExceptionResolver" />
+    
     <!-- 异常处理 -->
-    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-        <property name="defaultErrorView" value="error"/><!--错误页处理-->
+    <!-- <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="defaultErrorView" value="error"/>错误页处理
         <property name="exceptionMappings">
             <props>
                 <prop key="java.lang.Exception">error</prop> 
             </props>
         </property>
-    </bean>
+    </bean> -->
     
     <!-- 拦截器 -->
-    <mvc:interceptors>
+   <mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**/*.do" />
 			<bean class="org.jeecgframework.p3.core.interceptors.SignInterceptor">
 				<!-- mode: DEV开发模式(拦截器禁用);PUB发布模式(拦截器启用) -->
 				<property name="mode"><value>DEV</value></property>
 				<!-- signKey: 签名的密钥 -->
-				<property name="signKey"><value>4B6CAED6F7B2E839CC47B1912B6CAED753F19126F7278037</value></property>
+				<property name="signKey"><value>4B6CAED6F7B19126F72780372E839CC47B1912B6CAED753F</value></property>
 				<!-- excludeUrls:不进行拦截的url -->
 				<property name="excludeUrls">
 					<list>
@@ -134,34 +139,52 @@
 						<value>system/syncJwid.do</value>
 						<value>back/backIndex/home.do</value>
 						<value>system/back/home.do</value>
+						<value>commongivebless/wjs/ad.do</value>
+						<value>commongivebless/wjs/addetail.do</value>
+						<value>qrcodeinvite/js/toHome.do</value>
+						<value>qrcodeinvite/js/detail.do</value>
+						
+						<!-- 智能搭配-->
+						<value>dzdp/toIndex.do</value>
+						<value>dzdp/toStep.do</value>
+						<value>dzdp/toReport.do</value>
+						
+						<!-- 素材链接-->
+						<value>weixinLinksucai/link.do</value>
+						
+						<!-- 素材链接-->
+						<value>linksucai/link.do</value>
+						<!-- 扫码支付-->
+						<value>ali/pay/pay.do</value>
+						<value>ali/pay/paysuccess.do</value>
+						<value>ali/pay/notify.do</value>
+						<value>ali/pay/refundNotify.do</value>
+						
 					</list>
 				</property>
 			</bean>
 		</mvc:interceptor>
-	
+		
 		<mvc:interceptor>
 			<mvc:mapping path="/**/back/**/*.do" />
 			<bean class="com.jeecg.p3.system.interceptors.AuthInterceptor">
 				<!-- mode: DEV开发模式(拦截器禁用);PUB发布模式(拦截器启用) -->
-				<property name="mode"><value>PUB</value></property>
+				<property name="mode"><value>DEV</value></property>
 				<!-- excludeUrls:不进行拦截的url -->
 				<property name="excludeUrls">
 					<list>
 						<value>back/backIndex/home.do</value>
 						<value>system/back/home.do</value>
+						<value>system/back/article/toIndex.do</value>
+						<value>system/back/article/toArticle.do</value>
 					</list>
 				</property>
 			</bean>
 		</mvc:interceptor>
 	</mvc:interceptors>  
-
-    <!-- 默认首页 -->
-    <mvc:view-controller path="/" view-name="redirect:content/index.html"/>
     
-    <!-- 读取p3-web-sysconfig.properties -->
+    <!-- 读取server.properties -->
+    <!-- <util:properties id="scp" location="classpath:server.properties"  local-override="true"/> -->
     <util:properties id="sysconfig" location="classpath:p3-web-sysconfig.properties"  local-override="true"/> 
-    
-    
-
 	
 </beans>

@@ -20,5 +20,16 @@ public interface WxActShaketicketAwardDao extends GenericDao<WxActShaketicketAwa
 	public List<WxActShaketicketAward> queryPageList(PageQuery<WxActShaketicketAward> pageQuery,Integer itemCount);
 	public List<WxActShaketicketAward> queryRemainAwardsByActId(String actId);
 	public List<WxActShaketicketAward> queryAwards(String jwid);
+	public List<WxActShaketicketAward> queryAwards(String jwid,String createBy);
+
+	//update-begin--Author:zhangweijian  Date: 20180329 for：根据jwid，创建人，奖项名称查询奖项表
+	/**
+	 * 根据jwid，创建人，awardsName查询奖项表
+	 * @param jwid
+	 * @param createBy
+	 * @param awardsName
+	 * */
+	public List<WxActShaketicketAward> queryAwardsByName(String jwid, String createBy, String awardsName);
+	//update-end--Author:zhangweijian  Date: 20180329 for：根据jwid，创建人，奖项名称查询奖项表
 }
 

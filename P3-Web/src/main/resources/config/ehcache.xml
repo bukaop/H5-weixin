@@ -11,12 +11,17 @@
 		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU" />
 		
 	<cache name="txtCache" maxElementsInMemory="10000"
-		maxElementsOnDisk="1000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="20" timeToIdleSeconds="300" timeToLiveSeconds="600"
+		maxElementsOnDisk="1000" eternal="true" overflowToDisk="true"
+		diskSpoolBufferSizeMB="20" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
 		memoryStoreEvictionPolicy="LFU" />
 		
 	<cache name="commonxrs" maxElementsInMemory="10000"
 		maxElementsOnDisk="1000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="20" timeToIdleSeconds="300" timeToLiveSeconds="600"
+		memoryStoreEvictionPolicy="LFU" />
+		
+    <cache name="system_error_config" maxElementsInMemory="10000"
+		maxElementsOnDisk="1000" eternal="true" overflowToDisk="true"
 		diskSpoolBufferSizeMB="20" timeToIdleSeconds="300" timeToLiveSeconds="600"
 		memoryStoreEvictionPolicy="LFU" />
 		

@@ -14,13 +14,17 @@
 		<result column="banner" property="banner" jdbcType="VARCHAR"/>
 		<result column="count" property="count" jdbcType="INTEGER"/>
 		<result column="hdurl" property="hdurl" jdbcType="VARCHAR"/>
+		<result column="short_url" property="shortUrl" jdbcType="VARCHAR"/>
 		<result column="foucs_user_can_join" property="foucsUserCanJoin" jdbcType="VARCHAR"/>
 		<result column="binding_mobile_can_join" property="bindingMobileCanJoin" jdbcType="VARCHAR"/>
 		<result column="num_per_day" property="numPerDay" jdbcType="INTEGER"/>
 		<result column="prize_status" property="prizeStatus" jdbcType="VARCHAR"/>
+		<result column="join_num_limit" property="joinNumLimit" jdbcType="INTEGER"/>
 		<result column="jwid" property="jwid" jdbcType="VARCHAR"/>
 		<result column="name" property="jwidName" jdbcType="VARCHAR"/>
 		<result column="project_code" property="projectCode" jdbcType="VARCHAR"/>
+		<result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -28,11 +32,15 @@
 		<trim  suffixOverrides="," >
 				 <if test="query.title != null and query.title != ''" >
 	  		 		/* 活动名称 */
-			    	AND waj.title =  #{query.title,jdbcType=VARCHAR}
+			    	AND waj.title like concat('%',#{query.title,jdbcType=VARCHAR},'%') 
 				 </if>
 				 <if test="query.jwid != null and query.jwid != ''" >
-	  		 		/* 活动名称 */
+	  		 		/* jwid */
 			    	AND waj.jwid =  #{query.jwid,jdbcType=VARCHAR}
+				 </if>
+				 <if test="query.createBy != null and query.createBy != ''" >
+	  		 		/* 创建人 */
+			    	AND waj.create_by =  #{query.createBy,jdbcType=VARCHAR}
 				 </if>
 		</trim>
 	</sql>
@@ -58,8 +66,11 @@
                      ,binding_mobile_can_join       /* 是否绑定手机可参加 */ 
                      ,num_per_day                   /* 每日抽奖次数 */ 
                      ,prize_status                  /* 是否中奖可参与 1：中奖可继续参与 0:中奖不可参与 */ 
+                     ,join_num_limit                          /* 参与人数 */ 
                      ,jwid                          /* 微信原始id */ 
                      ,project_code                          /* 微信原始id */ 
+                     ,create_by                          /* 微信原始id */ 
+                     ,create_time
 					)
 			values (
                       #{id,jdbcType=VARCHAR}                            /* 键主 */ 
@@ -74,8 +85,11 @@
                      ,#{bindingMobileCanJoin,jdbcType=VARCHAR}          /* 是否绑定手机可参加 */ 
                      ,#{numPerDay,jdbcType=INTEGER}                     /* 每日抽奖次数 */ 
                      ,#{prizeStatus,jdbcType=INTEGER}                   /* 是否中奖可参与 1：中奖可继续参与 0:中奖不可参与 */ 
+                     ,#{joinNumLimit,jdbcType=INTEGER}                          /* 参与人数 */ 
                      ,#{jwid,jdbcType=VARCHAR}                          /* 微信原始id */ 
                      ,#{projectCode,jdbcType=VARCHAR}                          /* 活动项目编码*/ 
+                     ,#{createBy,jdbcType=VARCHAR}                          /* 活动项目编码*/ 
+                     ,now()
 					)
 	</insert>
 
@@ -117,6 +131,10 @@
 		    		 		/* 活动链接 */ 
 	    		 			hdurl = #{hdurl,jdbcType=VARCHAR},
 						 </if>
+						 <if test="shortUrl != null">
+		    		 		/* 活动链接 */ 
+	    		 			short_url = #{shortUrl,jdbcType=VARCHAR},
+						 </if>
 						 <if test="foucsUserCanJoin != null">
 		    		 		/* 是否关注可参加 */ 
 	    		 			foucs_user_can_join = #{foucsUserCanJoin,jdbcType=VARCHAR},
@@ -132,6 +150,10 @@
 						 <if test="prizeStatus != null">
 		    		 		/* 是否中奖可参与 1：中奖可继续参与 0:中奖不可参与 */ 
 	    		 			prize_status = #{prizeStatus,jdbcType=INTEGER},
+						 </if>
+						 <if test="joinNumLimit != null">
+		    		 		/* 参与人数 */ 
+	    		 			join_num_limit = #{joinNumLimit,jdbcType=INTEGER},
 						 </if>
 	  	  		</trim>
 				WHERE
@@ -154,11 +176,15 @@
                   ,waj.banner                          /* 活动背景图 */ 
                   ,waj.count                         /* 抽奖次数 */ 
                   ,waj.hdurl                           /* 活动链接 */ 
+                  ,waj.short_url                     /* 短链接 */
                   ,waj.foucs_user_can_join           /* 是否关注可参加 */ 
                   ,waj.binding_mobile_can_join       /* 是否绑定手机可参加 */ 
                   ,waj.num_per_day                   /* 每日抽奖次数 */ 
                   ,waj.prize_status                  /* 是否中奖可参与 1：中奖可继续参与 0:中奖不可参与 */ 
+                  ,waj.join_num_limit                      /* 参与人数 */ 
                   ,waj.jwid                          /* 微信原始id */ 
+                  ,waj.create_time
+                  ,waj.create_by
 		   FROM   wx_act_jiugongge      AS waj      /* 配置 */ 
 		   WHERE
 				id = #{id}				/* 序号 */ 
@@ -204,15 +230,16 @@
                   ,waj.banner                          /* 背景图 */ 
                   ,waj.count                         /* 抽奖次数 */ 
                   ,waj.hdurl                           /* 活动链接 */ 
+                  ,waj.short_url                     /* 短链接 */
                   ,waj.foucs_user_can_join           /* 是否关注可参加 */ 
                   ,waj.binding_mobile_can_join       /* 是否绑定手机可参加 */ 
                   ,waj.num_per_day                   /* 每日抽奖次数 */ 
                   ,waj.prize_status                  /* 是否中奖可参与 1：中奖可继续参与 0:中奖不可参与 */ 
+                  ,waj.join_num_limit                      /* 参与人数 */
                   ,waj.jwid                          /* 微信原始id */ 
-                  ,jwj.name
+                  ,waj.create_by                          /* 微信原始id */ 
+                  ,waj.create_time
 		FROM   	 wx_act_jiugongge      AS waj      /* 配置 */ 
-		LEFT JOIN jw_web_jwid      AS jwj
-		ON waj.jwid=jwj.jwid
 		WHERE 1=1
 		   <include refid="wherecontation"/>
 		LIMIT  #{startRow}  		/* 开始序号 */ 
@@ -226,4 +253,12 @@
 		   WHERE
 		    waj.jwid = #{jwid}
 	</select>
+	<!-- 更新短链接 -->
+	<update id="doUpdateShortUrl" parameterType="Object" >
+	  UPDATE   wx_act_jiugongge  	/* 配置 */
+	  	set	
+	    short_url = #{shortUrl,jdbcType=VARCHAR}
+		WHERE
+	  	 	id = #{id}
+	 </update>
 </mapper>

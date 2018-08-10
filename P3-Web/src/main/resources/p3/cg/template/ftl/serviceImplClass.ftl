@@ -13,6 +13,12 @@ import ${servicePackage}.${className}Service;
 import ${domainPackage}.${className};
 import ${daoPackage}.${className}Dao;
 
+/**
+ * 描述：</b>${codeName}<br>
+ * @author：${author}
+ * @since：${nowDate}
+ * @version:1.0
+ */
 @Service("${lowerName}Service")
 public class ${className}ServiceImpl implements ${className}Service {
 	@Resource

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>$!{dictTool.getSysText('myprizes.title',$!{shaketicket.id})}</title>
+<title>$!{shaketicket.actName}</title>
 <meta charset="UTF-8">
 <meta content="yes" name="apple-mobile-web-app-capable"></meta>
 <meta content="black" name="apple-mobile-web-app-status-bar-style"></meta>
@@ -15,53 +15,66 @@
 <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link href="$!{basePath}/content/shaketicket/default/css/shake.css$!{version}" type="text/css" rel="stylesheet" />
-<link href="$!{basePath}/content/shaketicket/default/css/site.css$!{version}" type="text/css" rel="stylesheet" />
-<link href="$!{basePath}/content/shaketicket/default/css/font-awesome.css$!{version}" type="text/css" rel="stylesheet" />
-<link href="$!{basePath}/content/shaketicket/default/css/common-site.r4409.css$!{version}" type="text/css" rel="stylesheet" />
-<script src="$!{basePath}/content/shaketicket/default/js/jquery-1.10.2.min.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/default/js/common-site.r4443.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/default/js/common.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/default/js/jQueryRotate.js$!{version}" type="text/javascript"></script>
-<script src="$!{basePath}/content/shaketicket/default/js/shake.js$!{version}" type="text/javascript"></script>
+<link href="$!{basePath}/plug-in/plugin/hplus/css/font-awesome.min.css" rel="stylesheet">
 <script src="$!{basePath}/content/shaketicket/default/js/wxcheck.js$!{version}" type="text/javascript"></script>
+<link href="$!{basePath}/content/shaketicket/default/css/style.css$!{version}" type="text/css" rel="stylesheet" />
+<script src="$!{basePath}/content/shaketicket/default/js/jquery.js$!{version}" type="text/javascript"></script>
 </head>
-<style>
-.x_word{
-	font-size:1rem;
-	color:#085530;
-	line-height:2rem;
-}
-</style>
-<body>
-<div class="content-wrap">
-   	<div align="center" class="x_word">
-		<h1  style="margin-top:8px;">我的奖品</h1>
-		<table align="center" font-family="Microsoft Yahei" border="3" bordercolor="#0066FF" cellpadding="2" cellspacing="0" width="95%"  style="font-size:18px;margin-top:8px;">
-		  <tbody font-family="Microsoft Yahei">
-			<tr >
-				<th align="center">
-					奖品
-				</th>
-				<th align="center">
-					中奖时间
-				</th>
-			</tr>
-			<!--list-->
-	       #foreach($record in $recordList)
-			<tr >
-				<td align="center" >
-					$!record.awardsName
-				</td>
-				<td align="center" >
-					$!{Format.date($!record.drawTime,'yyyy-MM-dd HH:mm:ss')}
-				</td>
-			</tr>
-		   #end
-		  </tbody>
-		</table>
+<body style="background-color:#FF0000">
+<div class="content-wrap" style="background-color:#FF0000">
+	<div id="mcovear" class="pop" style="display:none;"><div class="promptbox">
+	<div class="box"><h1><span id="sncode"></span></h1>
+		<div class="line"><img src="$!{basePath}/content/shaketicket/default/img/line_yellow.png" width="100%" /></div>
+			<div class="user">
+				<div class="input"><input type="text" id="username" placeholder="请认真输入姓名" /> </div>
+				<div class="input id"> <input type="text" id="tel" placeholder="请输入手机号" /></div>
+				<div class="input"> <input type="text" id="address" placeholder="请输入地址" /></div>
+				<input name="recordId"  id="recordId" type="hidden">
+				<div class="but_con"  >
+					<button onclick="updateMyrecord();" class="button_01 but">保存</button><button class="button_02 but"  onclick="document.getElementById('mcovear').style.display='none'"  style="margin-left:18%">关闭</button>
+					<div class="clr"></div>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div class="copyright"><a href="">&copy;营销活动</a></div>
+</div>
+<div class="content">
+	<div class="mylist">
+		<div class="title"><img src="$!{basePath}/content/shaketicket/default/img/title_4.png" /></div>
+		<div class="text list">
+			 <!--list-->
+			 <ul>
+			 <li><span class="time" style="width:33%"><font color="#FF6600"> 中奖时间</font></span><span class="award" style="width:33%"><font color="#FF6600">奖品名</font></span><span class="button" style="width:33%"><font color="#FF6600">操作</font></span> <div class="clr"></div></li>
+			 #foreach($record in $recordList)
+				<li><span class="time" style="width:33%">$!{Format.date($!record.drawTime,'yyyy-MM-dd')}</span><span class="award" style="width:33%">$!record.awardsName</span> 
+					#if($!{record.isCard}=="0")
+					<span class="button" style="width:33%"><a style="color:#6699FF;"  onclick="javascript:updateRecord('$!record.id','$!record.mobile','$!record.relName','$!record.address');">编辑</a></span> 
+					#else
+						<span class="button" style="width:33%"><a style="color:#6699FF;"  onclick="javascript:addCard('$!record.id');">编辑</a></span> 
+					#end
+					<div class="clr"></div></li>
+			#end
+			</ul>				       
+             <!--list end-->	
+		</div>
+	</div>
+</div>
+<div class="line"><img src="$!{basePath}/content/shaketicket/default/img/line.png" /></div>
+$!{huodong_bottom_copyright}
+<div class="top_bar" style="-webkit-transform:translate3d(0,0,0)">
+  <nav>
+    <ul id="top_menu" class="top_menu">
+	    <li>
+	      <a href="$!{basePath}/shaketicket/toDetail.do?actId=$!{weixinDto.actId}&appid=$!{weixinDto.appid}&jwid=$!{weixinDto.jwid}&openid=$!{weixinDto.openid}&subscribe=$!{weixinDto.subscribe}"><img src="$!{basePath}/content/shaketicket/default/img/plugmenu9.png"><label>活动规则</label></a>
+	    </li>  
+		<li class="home">
+		  <a href="$!{basePath}/shaketicket/toIndex.do?actId=$!{weixinDto.actId}&appid=$!{weixinDto.appid}&jwid=$!{weixinDto.jwid}&openid=$!{weixinDto.openid}&subscribe=$!{weixinDto.subscribe}" style="background: url('$!{basePath}/content/shaketicket/default/img/home.png') no-repeat center center;opacity:0.75;"></a>
+		</li>
+	    <li>
+	      <a href="javascript:void(0)"><img src="$!{basePath}/content/shaketicket/default/img/plugmenu11.png"><label>我的奖品</label></a>
+	    </li>   
+    </ul>
+  </nav>
 </div>
 <input type="hidden" name="actId" id="actId" value="$!{bargain.id}"/>
 <input type="hidden" name="openid" id="openid" value="$!{weixinDto.openid}"/>
@@ -70,6 +83,11 @@
 <input type="hidden" name="jwid" id="jwid" value="$!{weixinDto.jwid}"/>
 <input type="hidden" name="appid" id="appid" value="$!{weixinDto.appid}"/>
 </body>
+<script >
+$(function(){
+	$(".copyright").css("bottom","-3.7rem");
+})
+</script>
 <!-- 微信分享功能 -->
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script type="text/javascript">
@@ -113,15 +131,102 @@
             dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
             success: function () { 
                 // 用户确认分享后执行的回调函数
-				alert('已分享');
+				//alert('已分享');
             },
             cancel: function () { 
                 // 用户取消分享后执行的回调函数
-				 alert('已取消');
+				 //alert('已取消');
             }
         });
 
   	});
-	
+function addCard(id){
+		var openid='$!{weixinDto.openid}';
+		var actId='$!{weixinDto.actId}';
+		var jwid='$!{weixinDto.jwid}';
+		var url = "$!{basePath}/shaketicket/getMyAwards.do";
+			jQuery.getJSON(url, {id:id,"actId": actId,"openid" : openid,"jwid" : jwid}, function(data,status,xhr){
+				if(data.success){
+					var cardId=data.obj.card_id;
+					var recordId=data.obj.record_id;
+					var openid = data.obj.openid;
+					var timestamp = data.obj.timestamp;
+					var nonce_str = data.obj.nonce_str;
+					var signature = data.obj.signature;
+					//alert("cardId:"+cardId+";openid:"+openid+";timestamp:"+timestamp+";nonce_str:"+nonce_str+";signature:"+signature);
+					wx.addCard({
+					    cardList: [{
+					        cardId:cardId,
+					        cardExt: '{"code":"","openid":"'+openid+'","nonce_str":"'+nonce_str+'", "timestamp": '+timestamp+', "signature":"'+signature+'"}'
+					    }], // 需要添加的卡券列表
+					    success: function (res) {
+					        var cardList = res.cardList; // 添加的卡券列表信息
+					        addCardCallback(recordId);
+					    },
+					    cancel:function (res) {
+					        close();
+					    }
+					});
+				}else{
+					alert("还没有获得奖品");
+				}
+			});
+		
+	    }
+
+function updateRecord(id,phone,relName,address){
+	$("#username").val(relName);
+	$("#tel").val(phone);
+	$("#address").val(address);
+	$("#recordId").val(id);
+	document.getElementById('mcovear').style.display='block'
+}
+function updateMyrecord(){
+	var tel = $("#tel").val();
+	var name  = $("#username").val();
+	var address = $("#address").val();
+	var username = $("#username").val();
+	var recordId = $("#recordId").val();
+	if (username == '') {
+		alert("请认真输入姓名");
+		return
+	}
+	if (tel == '') {
+		alert("请输入手机号");
+		return
+	}else if (!isMobile(tel)){
+		alert("手机号格式不正确，请重新输入！");
+		return
+	}
+
+	var url = "$!{basePath}/shaketicket/updateMyAwards.do";
+	jQuery.ajax({
+		url : url,
+		type:"post",
+		dataType : "json",
+		data:{
+			id:recordId,
+			mobile:tel,
+			address:address,
+			name:username
+		},
+		success : function(data){
+			if(data.success){		
+				$("#mcovear").hide("slow");
+				setTimeout("location.reload()",1000);
+			}else{
+				
+			}
+		},
+		complete :function() {
+			
+		}
+	});
+}
+function isMobile(s){
+	var patrn= /^1((3\d)|(4[579])|(5[012356789])|(7[01235678])|(8\d))\d{8}$/;
+	if (!patrn.exec(s)) return false;
+	return true;
+}
 </script>
 </html>

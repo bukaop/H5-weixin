@@ -22,5 +22,7 @@ public interface WxActShaketicketHomeService {
 	public WxActShaketicketHome queryById(String id);
 	
 	public PageList<WxActShaketicketHome> queryPageList(PageQuery<WxActShaketicketHome> pageQuery);
+	
+	public void doedit(WxActShaketicketHome wxActShaketicketHome);
 }
 

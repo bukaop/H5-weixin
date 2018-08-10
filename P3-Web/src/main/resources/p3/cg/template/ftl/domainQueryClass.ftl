@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.qunar.pay.g2.utils.persistence.Entity;
 
 /**
- * 描述：</b>${className}Vo:${codeName}<br>
+ * 描述：</b>${codeName}<br>
  * @author ${author}
  * @since：${nowDate}
  * @version:1.0

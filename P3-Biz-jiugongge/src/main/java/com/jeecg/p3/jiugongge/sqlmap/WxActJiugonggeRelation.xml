@@ -209,6 +209,20 @@
 		   WHERE	wajr.act_id = #{actId}				/* 活动id  */ 
 			AND wajr.jwid = #{jwid}				/* jwid   */
 	</select>
+	
+	<select id="queryByAwardId" parameterType="Object"  resultMap="WxActJiugonggeRelation">
+		    SELECT 
+                   wajr.id                            /*  */ 
+                  ,wajr.prize_id                      /*  */ 
+                  ,wajr.act_id                        /*  */ 
+                  ,wajr.jwid                          /*  */ 
+                  ,wajr.award_id                      /*  */ 
+                  ,wajr.amount                        /* 数量 */ 
+                  ,wajr.remain_num                        /* 数量 */ 
+                  ,wajr.probability                       /* 概率 */ 
+		FROM   	 wx_act_jiugongge_relation      AS wajr      /* 配置 */ 
+		   WHERE	wajr.award_id = #{awardsId}	AND wajr.act_id = #{actId}		 
+	</select>
 	<update id="updateRemainNum" parameterType="Object" >
 	    UPDATE   wx_act_jiugongge_relation  	 /* 奖品配置表 */ 
 	  		  set remain_num = remain_num -1 
@@ -231,4 +245,16 @@
 			</if>
 		   
 	 </select>	
+	 <!-- 更新数量 -->
+	 <update id="updateNum" parameterType="Object" >
+	  UPDATE   wx_act_jiugongge_relation  	/* 配置 */
+	  	SET
+			amount =amount+#{num},
+			remain_num = remain_num+#{num}
+		WHERE
+	  	 	id = #{id}
+	  	<if test="num &lt; 0">
+	  		AND remain_num>=0-#{num}
+	  	</if>
+	 </update>
 </mapper>

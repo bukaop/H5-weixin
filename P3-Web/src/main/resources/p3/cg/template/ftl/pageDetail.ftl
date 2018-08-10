@@ -5,13 +5,27 @@
 	<div class="container bs-docs-container" style="width:100%;">
 		<div class="row">
 			<div class="panel panel-default">
-				<div class="panel-heading">详情</div>
+				<div class="panel-heading">
+				<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/${bussPackage}/back/${lowerName}/list.do')"><span class="glyphicon glyphicon-circle-arrow-left"></span> 返回</button>
+				</div>
 				  	<div class="panel-body">
 				   		<form class="form-horizontal" role="form">
 							  <fieldset disabled>
 							  			<#list columnDatas as item>
 										  	<#if item.domainPropertyName != 'id'>
-											<#if item.columnName != 'del_stat' && item.columnName != 'creator' && item.columnName != 'editor' && item.columnName != 'create_dt' && item.columnName != 'edit_dt' && item.columnName != 'last_edit_dt' && item.columnName != 'record_version'>
+										  	<#if item.columnName?lower_case != 'del_stat' 
+											    && item.columnName?lower_case != 'create_by'
+												&& item.columnName?lower_case != 'create_name' 
+												&& item.columnName?lower_case != 'create_date' 
+												&& item.columnName?lower_case != 'update_by'
+												&& item.columnName?lower_case != 'update_name' 
+												&& item.columnName?lower_case != 'update_date' 
+												&& item.columnName?lower_case != 'creator'
+												&& item.columnName?lower_case != 'editor' 
+												&& item.columnName?lower_case != 'create_dt' 
+												&& item.columnName?lower_case != 'edit_dt' 
+												&& item.columnName?lower_case != 'last_edit_dt' 
+												&& item.columnName?lower_case != 'record_version'>
 												<#if item.columnType == "datetime" ||item.columnType == "date" || item.columnType == "timestamp">
 													  <div class="form-group mno">
 													    <label for="inputEmail3" class="col-sm-1 control-label" style="text-align:left;">${item.columnComment}</label>
@@ -31,11 +45,6 @@
 											</#if>
 										</#list> 
 							  </fieldset>
-							  			<div class="form-group mno">
-											<div class="col-sm-offset-1 col-sm-6">
-												<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/${bussPackage}/back/${lowerName}/list.do')">返回</button>
-        									 </div>
-        							    </div>
 						</form>
 					</div>
 			</div>

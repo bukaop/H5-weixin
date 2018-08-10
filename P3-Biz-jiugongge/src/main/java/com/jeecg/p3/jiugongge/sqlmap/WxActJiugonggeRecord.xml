@@ -12,14 +12,19 @@
 		<result column="openid" property="openid" jdbcType="VARCHAR"/>
 		<result column="nickname" property="nickname" jdbcType="VARCHAR"/>
 		<result column="recieve_time" property="recieveTime" jdbcType="TIMESTAMP"/>
+		<result column="award_time" property="awardTime" jdbcType="TIMESTAMP"/>
 		<result column="awards_id" property="awardsId" jdbcType="VARCHAR"/>
 		<result column="awards_name" property="awardsName" jdbcType="VARCHAR"/>
+		<result column="award_status" property="awardStatus" jdbcType="VARCHAR"/>
+		<result column="award_code" property="awardCode" jdbcType="VARCHAR"/>
+		<result column="recieve_status" property="recieveStatus" jdbcType="VARCHAR"/>
 		<result column="realname" property="realname" jdbcType="VARCHAR"/>
 		<result column="phone" property="phone" jdbcType="VARCHAR"/>
 		<result column="address" property="address" jdbcType="VARCHAR"/>
 		<result column="seq" property="seq" jdbcType="INTEGER"/>
 		<result column="jwid" property="jwid" jdbcType="VARCHAR"/>
 		<result column="jwname" property="jwidName" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -38,16 +43,32 @@
 			    	AND wajr.nickname =  #{query.nickname,jdbcType=VARCHAR}
 				 </if>
 				 <if test="query.recieveTime != null and query.recieveTime != ''" >
-	  		 		/* 中奖时间 */
+	  		 		/* 领奖时间 */
 			    	AND wajr.recieve_time =  #{query.recieveTime,jdbcType=TIMESTAMP}
+				 </if>
+				 <if test="query.awardTime != null and query.awardTime != ''" >
+	  		 		/* 抽奖时间 */
+			    	AND wajr.award_time =  #{query.awardTime,jdbcType=TIMESTAMP}
 				 </if>
 				 <if test="query.awardsId != null and query.awardsId != ''" >
 	  		 		/* 奖项 */
 			    	AND wajr.awards_id =  #{query.awardsId,jdbcType=VARCHAR}
 				 </if>
+				  <if test="query.awardStatus != null and query.awardStatus != ''" >
+	  		 		/* 是否中奖：’0‘:否；’1‘:是 */
+			    	AND wajr.award_status =  #{query.awardStatus,jdbcType=VARCHAR}
+				 </if>
+				  <if test="query.awardCode != null and query.awardCode != ''" >
+	  		 		/* 兑奖码 */
+			    	AND wajr.award_code =  #{query.awardCode,jdbcType=VARCHAR}
+				 </if>
+				 <if test="query.recieveStatus != null and query.recieveStatus != ''" >
+	  		 		/* 领奖状态：‘0’：未领取；‘1’：已领取  */
+			    	AND wajr.recieve_status =  #{query.recieveStatus,jdbcType=VARCHAR}
+				 </if>
 				 <if test="query.realname != null and query.realname != ''" >
 	  		 		/* 收货人姓名 */
-			    	AND wajr.realname =  #{query.realname,jdbcType=VARCHAR}
+			    	AND wajr.realname like (CONCAT('%',#{query.realname,jdbcType=VARCHAR},'%'))
 				 </if>
 				 <if test="query.phone != null and query.phone != ''" >
 	  		 		/* 手机号 */
@@ -55,7 +76,7 @@
 				 </if>
 				 <if test="query.address != null and query.address != ''" >
 	  		 		/* 地址 */
-			    	AND wajr.address =  #{query.address,jdbcType=VARCHAR}
+			    	AND wajr.address like (CONCAT('%',#{query.address,jdbcType=VARCHAR},'%'))
 				 </if>
 				 <if test="query.jwid != null and query.jwid != ''" >
 	  		 		/* 对应微信平台原始id */
@@ -77,8 +98,12 @@
                      ,act_id                        /*  */ 
                      ,openid                        /* openid */ 
                      ,nickname                      /* 昵称 */ 
-                     ,recieve_time                  /* 中奖时间 */ 
+                     ,recieve_time                  /* 领奖时间 */ 
+                     ,award_time                    /* 抽奖时间 */ 
                      ,awards_id                     /* 奖项 */ 
+                     ,award_status                  /* 是否中奖：’0‘:否；’1‘:是 */
+                     ,award_code                    /* 兑奖码 */
+                     ,recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取 */
                      ,realname                      /* 收货人姓名 */ 
                      ,phone                         /* 手机号 */ 
                      ,address                       /* 地址 */ 
@@ -90,8 +115,12 @@
                      ,#{actId,jdbcType=VARCHAR}                         /*  */ 
                      ,#{openid,jdbcType=VARCHAR}                        /* openid */ 
                      ,#{nickname,jdbcType=VARCHAR}                      /* 昵称 */ 
-                     ,#{recieveTime,jdbcType=TIMESTAMP}                   /* 中奖时间 */ 
+                     ,#{recieveTime,jdbcType=TIMESTAMP}                   /* 领奖时间 */ 
+                     ,#{awardTime,jdbcType=TIMESTAMP}                   /* 抽奖时间 */ 
                      ,#{awardsId,jdbcType=VARCHAR}                      /* 奖项 */ 
+                     ,#{awardStatus,jdbcType=VARCHAR}                   /* 是否中奖：’0‘:否；’1‘:是 */
+                     ,#{awardCode,jdbcType=VARCHAR}                     /* 兑奖码 */
+                     ,#{recieveStatus,jdbcType=VARCHAR}                 /* 领奖状态：‘0’：未领取；‘1’：已领取 */
                      ,#{realname,jdbcType=VARCHAR}                      /* 收货人姓名 */ 
                      ,#{phone,jdbcType=VARCHAR}                         /* 手机号 */ 
                      ,#{address,jdbcType=VARCHAR}                       /* 地址 */ 
@@ -123,12 +152,28 @@
 	    		 			nickname = #{nickname,jdbcType=VARCHAR},
 						 </if>
 						 <if test="recieveTime != null">
-		    		 		/* 中奖时间 */ 
+		    		 		/* 领奖时间 */ 
 	    		 			recieve_time = #{recieveTime,jdbcType=TIMESTAMP},
+						 </if>
+						 <if test="awardTime != null">
+		    		 		/* 抽奖时间 */ 
+	    		 			award_time = #{awardTime,jdbcType=TIMESTAMP},
 						 </if>
 						 <if test="awardsId != null">
 		    		 		/* 奖项 */ 
 	    		 			awards_id = #{awardsId,jdbcType=VARCHAR},
+						 </if>
+						  <if test="awardStatus != null">
+		    		 		/* 是否中奖：’0‘:否；’1‘:是 */ 
+	    		 			award_status = #{awardStatus,jdbcType=VARCHAR},
+						 </if>
+						 <if test="awardCode != null">
+		    		 		/* 兑奖码*/ 
+	    		 			award_code = #{awardCode,jdbcType=VARCHAR},
+						 </if>
+						 <if test="recieveStatus != null">
+		    		 		/* 领奖状态：‘0’：未领取；‘1’：已领取 */ 
+	    		 			recieve_status = #{recieveStatus,jdbcType=VARCHAR},
 						 </if>
 						 <if test="realname != null">
 		    		 		/* 收货人姓名 */ 
@@ -145,6 +190,10 @@
 						 <if test="jwid != null">
 		    		 		/* 对应微信平台原始id */ 
 	    		 			jwid = #{jwid,jdbcType=VARCHAR},
+						 </if>
+						 <if test="verifyId != null">
+		    		 		/* 审核员id */ 
+	    		 			verify_id = #{verifyId,jdbcType=VARCHAR},
 						 </if>
 	  	  		</trim>
 				WHERE
@@ -163,18 +212,23 @@
                   ,wajr.act_id                        /*  */ 
                   ,wajr.openid                        /* openid */ 
                   ,wajr.nickname                      /* 昵称 */ 
-                  ,wajr.recieve_time                  /* 中奖时间 */ 
+                  ,wajr.recieve_time                  /* 领奖时间 */ 
+                  ,wajr.award_time                    /* 抽奖时间 */ 
                   ,wajr.awards_id                     /* 奖项 */ 
-                   ,waja.awards_name                   /* 奖项名称 */ 
+                  ,waja.awards_name                   /* 奖项名称 */ 
+                  ,wajr.award_status                  /* 是否中奖：’0‘:否；’1‘:是 */
+                  ,wajr.award_code                    /* 兑奖码*/
+                  ,wajr.recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取 */
                   ,wajr.realname                      /* 收货人姓名 */ 
                   ,wajr.phone                         /* 手机号 */ 
                   ,wajr.address                       /* 地址 */ 
                   ,wajr.jwid                          /* 对应微信平台原始id */ 
-		   FROM   wx_act_jiugongge_record      AS wajr      /* 抽奖记录 */  , 
+		   FROM   wx_act_jiugongge_record      AS wajr LEFT JOIN 
 		  wx_act_jiugongge_awards      AS waja
-		   WHERE
+		   ON
 			wajr.awards_id = waja.id	
-		   AND wajr.id = #{id}				/* 序号 */ 
+			WHERE
+		 wajr.id = #{id}				/* 序号 */ 
 	</select>
 	
 	<!--
@@ -214,19 +268,20 @@
                   ,waj.title                       /*  */ 
                   ,wajr.openid                        /* openid */ 
                   ,wajr.nickname                      /* 昵称 */ 
-                  ,wajr.recieve_time                  /* 中奖时间 */ 
+                  ,wajr.recieve_time                  /* 领奖时间 */ 
+                  ,wajr.award_time                    /* 抽奖时间 */
                   ,wajr.awards_id                     /* 奖项 */ 
                   ,waja.awards_name                   /* 奖项名称 */ 
+                  ,wajr.award_status                  /* 是否中奖：’0‘:否；’1‘:是 */
+                  ,wajr.award_code                    /* 兑奖码*/
+                  ,wajr.recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取*/
                   ,wajr.realname                      /* 收货人姓名 */ 
                   ,wajr.phone                         /* 手机号 */ 
                   ,wajr.address                       /* 地址 */ 
                   ,wajr.jwid                          /* 对应微信平台原始id */ 
-                  ,jwj.name as jwname
 		FROM   	 wx_act_jiugongge_record      AS wajr      /* 抽奖记录 */ 
 		LEFT JOIN wx_act_jiugongge      AS waj
 		ON wajr.act_id=waj.id 
-		LEFT JOIN jw_web_jwid      AS jwj 
-		ON wajr.jwid=jwj.jwid 
 		LEFT JOIN wx_act_jiugongge_awards      AS waja
 		ON wajr.awards_id = waja.id
 		WHERE 1=1
@@ -248,19 +303,20 @@
                   ,waj.title                       /*  */ 
                   ,wajr.openid                        /* openid */ 
                   ,wajr.nickname                      /* 昵称 */ 
-                  ,wajr.recieve_time                  /* 中奖时间 */ 
+                  ,wajr.recieve_time                  /* 领奖时间 */ 
+                  ,wajr.award_time                    /* 抽奖时间 */
                   ,wajr.awards_id                     /* 奖项 */ 
                   ,waja.awards_name                   /* 奖项名称 */ 
+                  ,wajr.award_status                  /* 是否中奖：’0‘:否；’1‘:是 */
+                  ,wajr.award_code                    /* 兑奖码*/
+                  ,wajr.recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取*/
                   ,wajr.realname                      /* 收货人姓名 */ 
                   ,wajr.phone                         /* 手机号 */ 
                   ,wajr.address                       /* 地址 */ 
                   ,wajr.jwid                          /* 对应微信平台原始id */ 
-                  ,jwj.name as jwname
 		FROM   	 wx_act_jiugongge_record      AS wajr      /* 抽奖记录 */ 
 		LEFT JOIN wx_act_jiugongge      AS waj
 		ON wajr.act_id=waj.id 
-		LEFT JOIN jw_web_jwid      AS jwj 
-		ON wajr.jwid=jwj.jwid 
 		WHERE 1=1
 		   <include refid="wherecontation"/>
 		ORDER BY wajr.recieve_time desc				
@@ -280,8 +336,12 @@
                   ,wajr.act_id                        /* openid */
                    ,wajr.openid                        /* openid */  
                   ,wajr.nickname       /* 昵称 */ 
-                  ,wajr.recieve_time    /* 中奖时间 */ 
+                  ,wajr.recieve_time    /* 领奖时间 */ 
+                  ,wajr.award_time                    /* 抽奖时间 */
                   ,wajr.awards_id                     /* 奖项 */
+                  ,wajr.award_status                  /* 是否中奖：’0‘:否；’1‘:是 */
+                  ,wajr.award_code                    /* 兑奖码*/
+                  ,wajr.recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取 */
                   ,wajr.realname                      /* 收货人姓名 */ 
                   ,wajr.phone                       /* 手机号 */ 
                   ,wajr.address                       /* 地址 */ 
@@ -298,9 +358,13 @@
                   ,wajr.act_id                        /* openid */ 
                    ,wajr.openid                        /* openid */ 
                   ,REPLACE(wajr.nickname,wajr.nickname,CONCAT(left(wajr.nickname,1),"*")) AS nickname                      /* 昵称 */ 
-                  ,wajr.recieve_time    /* 中奖时间 */ 
+                  ,wajr.recieve_time    /* 领奖时间 */ 
+                  ,wajr.award_time                    /* 抽奖时间 */
                   ,wajr.awards_id                     /* 奖项 */
                   ,waja.awards_name                   /* 奖项名称 */ 
+                  ,wajr.award_status                  /* 是否中奖：’0‘:否；’1‘:是 */
+                  ,wajr.award_code                    /* 兑奖码*/
+                  ,wajr.recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取 */
                   ,wajr.realname                      /* 收货人姓名 */ 
                   ,wajr.phone                       /* 手机号 */ 
                   ,wajr.address                       /* 地址 */ 
@@ -321,9 +385,13 @@
                   ,wajr.act_id                        /* openid */ 
                   ,wajr.openid                        /* openid */ 
                   ,wajr.nickname                      /* 昵称 */ 
-                  ,wajr.recieve_time  /* 中奖时间 */ 
+                  ,wajr.recieve_time  /* 领奖时间 */ 
+                  ,wajr.award_time                    /* 抽奖时间 */
                   ,wajr.awards_id                     /* 奖项 */
                   ,waja.awards_name                   /* 奖项名称 */ 
+                  ,wajr.award_status                  /* 是否中奖：’0‘:否；’1‘:是 */
+                  ,wajr.award_code                    /* 兑奖码*/
+                  ,wajr.recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取 */
                   ,wajr.realname                      /* 收货人姓名 */ 
                   ,wajr.phone                         /* 手机号 */ 
                   ,wajr.address                       /* 地址 */ 
@@ -331,9 +399,10 @@
 		FROM   	 wx_act_jiugongge_record      AS wajr ,     /* 配置 */ 
 		 wx_act_jiugongge_awards      AS waja
 		   WHERE
-			wajr.awards_id = waja.id	
-			AND	wajr.act_id = #{actId}				/* 活动id  */ 
+			wajr.act_id = #{actId}				/* 活动id  */ 
 			AND wajr.jwid = #{jwid}				/* jwid   */
+			AND wajr.awards_id=waja.id
+			AND NOT ISNULL(wajr.awards_id)
 			 ORDER BY wajr.recieve_time desc
 	</select>
 	<select id="queryBargainRecordListByActidAndJwid" parameterType="Object"  resultMap="WxActJiugonggeRecord">
@@ -342,9 +411,13 @@
                   ,wajr.act_id                        /* openid */ 
                   ,wajr.openid                        /* openid */ 
                   ,REPLACE(wajr.nickname,wajr.nickname,CONCAT(left(wajr.nickname,1),"*")) AS nickname                      /* 昵称 */ 
-                  ,wajr.recieve_time  /* 中奖时间 */ 
+                  ,wajr.recieve_time  /* 领奖时间 */ 
+                  ,wajr.award_time                    /* 抽奖时间 */
                   ,wajr.awards_id                     /* 奖项 */
                   ,waja.awards_name                   /* 奖项名称 */ 
+                  ,wajr.award_status                  /* 是否中奖：’0‘:否；’1‘:是 */
+                  ,wajr.award_code                    /* 兑奖码*/
+                  ,wajr.recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取 */
                   ,wajr.realname                      /* 收货人姓名 */ 
                   ,REPLACE(wajr.phone,wajr.phone,CONCAT(left(wajr.phone,9),"**")) AS phone                         /* 手机号 */ 
                   ,wajr.address                       /* 地址 */ 
@@ -363,8 +436,12 @@
                   ,wajr.act_id                        /* openid */ 
                    ,wajr.openid                        /* openid */ 
                   ,wajr.nickname                      /* 昵称 */ 
-                  ,wajr.recieve_time                  /* 中奖时间 */ 
-                  ,wajr.awards_id                     /* 奖项 */                 
+                  ,wajr.recieve_time                  /* 领奖时间 */ 
+                  ,wajr.award_time                    /* 抽奖时间 */
+                  ,wajr.awards_id                     /* 奖项 */     
+                  ,wajr.award_status                  /* 是否中奖：’0‘:否；’1‘:是 */            
+                  ,wajr.award_code                    /* 兑奖码*/
+                  ,wajr.recieve_status                /* 领奖状态：‘0’：未领取；‘1’：已领取 */
                   ,wajr.realname                      /* 收货人姓名 */ 
                   ,wajr.phone                         /* 手机号 */ 
                   ,wajr.address                       /* 地址 */  
@@ -374,10 +451,25 @@
 		    	wajr.act_id = #{actId}				/* 活动id  */ 
 			AND wajr.openid = #{openid}				/* 活动所属人openid   */ 
 			AND wajr.jwid = #{jwid}				/* jwid   */		    		 		
-	    	AND  DATE_FORMAT(recieve_time, '%Y-%m-%d')=#{currDate} /* 中奖时间 */ 
+	    	AND  DATE_FORMAT(award_time, '%Y-%m-%d')=#{currDate} /* 抽奖时间 */ 
 	</select>
 	<select id="getMaxSeq" resultType="java.lang.Integer"  parameterType="Object">
 		SELECT max(wajr.seq)  FROM  wx_act_jiugongge_record      AS wajr      /* 配置 */
 		 WHERE wajr.act_id = #{value}
 	</select>	
+	
+	<!-- 根据actId和awardCode判断改兑奖码是否存在 -->
+	<select id="queryByActIdAndawardCode" parameterType="Object" resultMap="WxActJiugonggeRecord" >
+		SELECT * FROM wx_act_jiugongge_record
+		WHERE act_id=#{actId}
+		AND award_code=#{awardCode}
+	</select>
+	
+	<select id="getCountByActId" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT
+			count(DISTINCT(openid))
+		FROM wx_act_jiugongge_record
+		WHERE 1=1
+		AND act_id = #{actId}
+	</select>
 </mapper>

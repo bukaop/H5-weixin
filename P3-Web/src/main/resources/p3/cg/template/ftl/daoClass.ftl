@@ -8,7 +8,7 @@ import org.jeecgframework.p3.core.utils.persistence.GenericDao;
 import ${domainPackage}.${className};
 
 /**
- * 描述：</b>${className}Dao<br>
+ * 描述：</b>${codeName}<br>
  * @author：${author}
  * @since：${nowDate}
  * @version:1.0

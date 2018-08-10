@@ -28,5 +28,13 @@ public interface WxActShaketicketAwardService {
 	public List<WxActShaketicketAward> queryRemainAwardsByActId(String actId);
 	
 	public List<WxActShaketicketAward> queryAwards(String jwid);
+	public List<WxActShaketicketAward> queryAwards(String jwid,String createBy);
+
+	//update-begin--Author:zhangweijian  Date: 20180330 for：根据awardid判断该奖项是否使用
+	/**
+	 * 根据award判断奖项是否被使用
+	 * */
+	public Boolean validUsed(String id);
+	//update-end--Author:zhangweijian  Date: 20180330 for：根据awardid判断该奖项是否使用
 }
 

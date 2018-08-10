@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 #parse("content/base/back/common/head.vm")
+<link href="$!{basePath}/plug-in/plugin/hplus/css/style.css" type="text/css" rel="stylesheet"/>
+<link href="$!{basePath}/plug-in/plugin/hplus/css/font-awesome.min.css" type="text/css" rel="stylesheet"/>
 <body style='overflow:scroll;overflow-x:hidden'>
 	<div class="container bs-docs-container" style="width:100%;">
 		<div class="row">
@@ -74,9 +76,9 @@
 																	<td>$!{info.remainNum}</td>
 																	<td>$!{info.jwid}</td>
 										                <td class="last">
-							                			<a href="javascript:doUrl('$!{basePath}/shaketicket/back/wxActShaketicketConfig/toEdit.do?id=$!{info.id}')" >编辑</a>
-							                			<a href="javascript:delData('$!{basePath}/shaketicket/back/wxActShaketicketConfig/doDelete.do?id=$!{info.id}')">删除</a>
-							                			<a href="javascript:doUrl('$!{basePath}/shaketicket/back/wxActShaketicketConfig/toDetail.do?id=$!{info.id}')">详情</a>
+							                			<a class="btn btn-info btn-xs" href="javascript:doUrl('$!{basePath}/shaketicket/back/wxActShaketicketConfig/toEdit.do?id=$!{info.id}')" ><i class="fa fa-edit"></i> 编辑</a>
+							                			<a class="btn btn-danger btn-xs" href="javascript:delData('$!{basePath}/shaketicket/back/wxActShaketicketConfig/doDelete.do?id=$!{info.id}')"><i class="fa fa-trash-o"></i> 删除</a>
+							                			<a class="btn btn-info btn-xs" href="javascript:doUrl('$!{basePath}/shaketicket/back/wxActShaketicketConfig/toDetail.do?id=$!{info.id}')"><i class="fa fa-list-alt"></i> 详情</a>
 						                				</td>
 									           		</tr>
 									             #end

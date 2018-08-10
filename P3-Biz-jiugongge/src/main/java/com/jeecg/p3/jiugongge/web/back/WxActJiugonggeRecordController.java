@@ -1,13 +1,7 @@
 package com.jeecg.p3.jiugongge.web.back;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.VelocityContext;
 import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.jeecgframework.p3.core.util.SystemTools;
+import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
 import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.web.BaseController;
@@ -36,7 +31,6 @@ import com.jeecg.p3.jiugongge.service.WxActJiugonggeAwardsService;
 import com.jeecg.p3.jiugongge.service.WxActJiugonggeRecordService;
 import com.jeecg.p3.jiugongge.service.WxActJiugonggeService;
 import com.jeecg.p3.jiugongge.util.ContextHolderUtils;
-import com.jeecg.p3.jiugongge.util.ExcelUtil;
 
  /**
  * 描述：</b>WxActJiugonggeRecordController<br>砍价帮砍记录表
@@ -61,23 +55,32 @@ public class WxActJiugonggeRecordController extends BaseController{
 public void list(@ModelAttribute WxActJiugonggeRecord query,HttpServletResponse response,HttpServletRequest request,
 			@RequestParam(required = false, value = "pageNo", defaultValue = "1") int pageNo,
 			@RequestParam(required = false, value = "pageSize", defaultValue = "10") int pageSize) throws Exception{
-	 	PageQuery<WxActJiugonggeRecord> pageQuery = new PageQuery<WxActJiugonggeRecord>();
-	 	pageQuery.setPageNo(pageNo);
-	 	pageQuery.setPageSize(pageSize);
-	 	VelocityContext velocityContext = new VelocityContext();
-	 	String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
-	 	query.setJwid(jwid);
-		pageQuery.setQuery(query);
-		velocityContext.put("wxActJiugonggeRecord",query);
-		List<WxActJiugongge> acts = (List<WxActJiugongge>) wxActJiugonggeService.queryActs(jwid);//活动
-		velocityContext.put("acts",acts);
-		List<WxActJiugonggeAwards> awards = wxActJiugonggeAwardsService.queryAwards(jwid);//奖项
-		velocityContext.put("awards",awards);
-		String backurl =  ContextHolderUtils.getRequest().getParameter("backurl");//返回时的url
-		velocityContext.put("backurl",backurl);
-		velocityContext.put("pageInfos",SystemTools.convertPaginatedList(wxActJiugonggeRecordService.queryPageList(pageQuery)));
-		String viewName = "jiugongge/back/wxActJiugonggeRecord-list.vm";
-		ViewVelocity.view(request,response,viewName,velocityContext);
+		try {
+			PageQuery<WxActJiugonggeRecord> pageQuery = new PageQuery<WxActJiugonggeRecord>();
+		 	pageQuery.setPageNo(pageNo);
+		 	pageQuery.setPageSize(pageSize);
+		 	VelocityContext velocityContext = new VelocityContext();
+		 	String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
+		 	query.setJwid(jwid);
+			pageQuery.setQuery(query);
+			velocityContext.put("wxActJiugonggeRecord",query);
+			String defaultJwid = WeiXinHttpUtil.getLocalValue("jiugongge",
+			"defaultJwid");
+			List<WxActJiugonggeAwards> awards=null;
+			if (defaultJwid.equals(jwid)) {
+				String createBy = ContextHolderUtils.getSession()
+						.getAttribute("system_userid").toString();
+				awards = wxActJiugonggeAwardsService.queryAwards(jwid,createBy);//奖项
+			}else{
+				awards = wxActJiugonggeAwardsService.queryAwards(jwid);//奖项
+			}
+			velocityContext.put("awards",awards);
+			velocityContext.put("pageInfos",SystemTools.convertPaginatedList(wxActJiugonggeRecordService.queryPageList(pageQuery)));
+			String viewName = "jiugongge/back/wxActJiugonggeRecord-list.vm";
+			ViewVelocity.view(request,response,viewName,velocityContext);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 }
 /**
  * 抽奖列表页面
@@ -116,8 +119,6 @@ public void wxActJiugonggeRecordDetail(@RequestParam(required = true, value = "i
 		String viewName = "jiugongge/back/wxActJiugonggeRecord-detail.vm";
 		WxActJiugonggeRecord wxActJiugonggeRecord = wxActJiugonggeRecordService.queryById(id);
 		velocityContext.put("wxActJiugonggeRecord",wxActJiugonggeRecord);
-		String backurl =  ContextHolderUtils.getRequest().getParameter("backurl");//返回时的url
-		velocityContext.put("backurl",backurl);
 		ViewVelocity.view(request,response,viewName,velocityContext);
 }
 
@@ -144,6 +145,7 @@ public AjaxJson doAdd(@ModelAttribute WxActJiugonggeRecord wxActJiugonggeRecord)
 		wxActJiugonggeRecordService.doAdd(wxActJiugonggeRecord);
 		j.setMsg("保存成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("保存失败");
 	}
@@ -172,9 +174,15 @@ public void toEdit(@RequestParam(required = true, value = "id" ) String id,HttpS
 public AjaxJson doEdit(@ModelAttribute WxActJiugonggeRecord wxActJiugonggeRecord){
 	AjaxJson j = new AjaxJson();
 	try {
+		//update-begin--Author:zhangweijian  Date: 20180413 for:增加领奖时间
+		if(wxActJiugonggeRecord!=null&&"1".equals(wxActJiugonggeRecord.getRecieveStatus())){
+			wxActJiugonggeRecord.setRecieveTime(new Date());
+		}
+		//update-end--Author:zhangweijian  Date: 20180413 for:增加领奖时间
 		wxActJiugonggeRecordService.doEdit(wxActJiugonggeRecord);
 		j.setMsg("编辑成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("编辑失败");
 	}
@@ -194,6 +202,7 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 			wxActJiugonggeRecordService.doDelete(id);
 			j.setMsg("删除成功");
 		} catch (Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 			j.setMsg("删除失败");
 		}
@@ -214,12 +223,12 @@ public AjaxJson exportExcel(HttpServletRequest request,HttpServletResponse respo
 	AjaxJson j = new AjaxJson();
 	response.setCharacterEncoding("utf-8");
     response.setContentType("multipart/form-data");
-    String fileName = "导出信息.xls";  
+    String fileName = "九宫格活动中奖记录.xls";  
     try {  
     	response.setHeader("Content-disposition", "attachment; filename="  
 				   + new String(fileName.getBytes("utf-8"), "ISO8859-1"));
     	String jwid =  ContextHolderUtils.getSession().getAttribute("jwid").toString();
-    	String actId =  ContextHolderUtils.getRequest().getParameter("actId");//返回时的url
+    	String actId =  request.getParameter("actId");//返回时的url
         InputStream inputStream = wxActJiugonggeRecordService.exportExcel(actId,jwid); 
         OutputStream os = response.getOutputStream();
         byte[] b = new byte[2048];

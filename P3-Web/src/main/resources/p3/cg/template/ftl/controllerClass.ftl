@@ -2,6 +2,8 @@ package ${controllerPackage};
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jeecgframework.p3.core.logger.Logger;
+import org.jeecgframework.p3.core.logger.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,7 +24,7 @@ import ${servicePackage}.${className}Service;
 import org.jeecgframework.p3.core.web.BaseController;
 
  /**
- * 描述：</b>${className}Controller<br>${codeName}
+ * 描述：</b>${codeName}<br>
  * @author ${author}
  * @since：${nowDate}
  * @version:1.0
@@ -30,6 +32,8 @@ import org.jeecgframework.p3.core.web.BaseController;
 @Controller
 @RequestMapping("/${bussPackage}/back/${lowerName}")
 public class ${className}Controller extends BaseController{
+
+  public final static Logger log = LoggerFactory.getLogger(${className}Controller.class);
   @Autowired
   private ${className}Service ${lowerName}Service;
   
@@ -88,6 +92,7 @@ public AjaxJson doAdd(@ModelAttribute ${className} ${lowerName}){
 		${lowerName}Service.doAdd(${lowerName});
 		j.setMsg("保存成功");
 	} catch (Exception e) {
+		log.error(e.getMessage());
 		j.setSuccess(false);
 		j.setMsg("保存失败");
 	}
@@ -119,6 +124,7 @@ public AjaxJson doEdit(@ModelAttribute ${className} ${lowerName}){
 		${lowerName}Service.doEdit(${lowerName});
 		j.setMsg("编辑成功");
 	} catch (Exception e) {
+		log.error(e.getMessage());
 		j.setSuccess(false);
 		j.setMsg("编辑失败");
 	}
@@ -138,6 +144,7 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 			${lowerName}Service.doDelete(id);
 			j.setMsg("删除成功");
 		} catch (Exception e) {
+		    log.error(e.getMessage());
 			j.setSuccess(false);
 			j.setMsg("删除失败");
 		}

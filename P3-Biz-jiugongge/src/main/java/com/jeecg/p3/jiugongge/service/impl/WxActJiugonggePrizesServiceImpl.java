@@ -82,5 +82,17 @@ public class WxActJiugonggePrizesServiceImpl implements WxActJiugonggePrizesServ
 		// TODO Auto-generated method stub
 		return wxActJiugonggeRelationDao.validUsed(null,id);
 	}
+
+	@Override
+	public List<WxActJiugonggePrizes> queryPrizes(String jwid, String creatBy) {
+		// TODO Auto-generated method stub
+		return wxActJiugonggePrizesDao.queryPrizes(jwid, creatBy);
+	}
+
+	@Override
+	public List<WxActJiugonggePrizes> queryPrizesByName(String jwid, String createBy, String name) {
+		
+		return wxActJiugonggePrizesDao.queryPrizesByName(jwid, createBy, name);
+	}
 	
 }

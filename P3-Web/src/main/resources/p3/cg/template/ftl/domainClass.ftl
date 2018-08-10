@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.jeecgframework.p3.core.utils.persistence.Entity;
 
 /**
- * 描述：</b>${className}:${codeName}<br>
+ * 描述：</b>${codeName}<br>
  * @author ${author}
  * @since：${nowDate}
  * @version:1.0
