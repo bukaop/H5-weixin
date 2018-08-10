@@ -9,9 +9,7 @@
 * 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
 * 捷微技术QQ群 : 97460170
 
-官方公众号（H5活动之家）
-==========
-![github](http://www.jeecg.org/data/attachment/forum/201601/25/180314mjvputsot6hhtvoa.jpg "jeewx521")
+
 
 ### 捷微 - H5活动源码列表（陆续更新..）
 	  1.微信公众号管理   P3-Biz-commonweixin
@@ -59,6 +57,11 @@
 
 	1.工具类：P3-Web/src/main/java/org/jeecgframework/p3/cg/util/CodeToolUtil.java
 	2.配置文件：P3-Web/src/main/resources/p3-cg-config.properties
+
+
+官方公众号（体验活动）
+==========
+![github](http://www.jeecg.org/data/attachment/forum/201601/25/180314mjvputsot6hhtvoa.jpg "jeewx521")
 
 
 ### 砍价活动-效果图
