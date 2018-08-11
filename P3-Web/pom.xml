@@ -16,6 +16,14 @@
     
 	<repositories>
 		<repository>
+            <id>aliyun</id>
+            <name>aliyun Repository</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+            <snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+        </repository>
+		<repository>
             <id>jeecg</id>
             <name>jeecg Repository</name>
             <url>http://maven.jeecg.org/nexus/content/repositories/jeecg</url>
@@ -89,20 +97,6 @@
 		</testResources>
 	</build>
 	<dependencies>
-		<!-- P3 base jar -->
- 	    <dependency>
-			<groupId>org.h5huodong</groupId>
-			<artifactId>P3-Base-system</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		
-		 <dependency>
-			<groupId>org.h5huodong</groupId>
-			<artifactId>P3-Biz-commonweixin</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<!-- P3 base jar -->
-		
 		<!-- commons-email -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -110,18 +104,29 @@
 			<version>1.2</version>
 		</dependency>
 		<!-- commons-email -->
+		
+		<!-- P3 base jar -->
+ 	    <dependency>
+			<groupId>org.h5huodong</groupId>
+			<artifactId>P3-Base-system</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		 <dependency>
+			<groupId>org.h5huodong</groupId>
+			<artifactId>P3-Biz-commonweixin</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!-- P3 base jar -->
+		
 		<dependency>
 			<groupId>org.h5huodong</groupId>
 			<artifactId>P3-Biz-jiugongge</artifactId>
 			<version>1.0.0</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.h5huodong</groupId>
 			<artifactId>P3-Biz-shaketicket</artifactId>
 			<version>1.0.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
