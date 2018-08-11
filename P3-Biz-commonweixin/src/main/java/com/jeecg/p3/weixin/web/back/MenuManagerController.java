@@ -43,19 +43,19 @@ public class MenuManagerController {
 		String accessToken =WeiXinHttpUtil.getRedisWeixinToken(jwid);
 		if(oConvertUtils.isEmpty(accessToken)){
 			j.setSuccess(false);
-			j.setObj("未获取到公众号accessToken");
+			j.setMsg("未获取到公众号accessToken");
 		}
 		//判断如果菜单为空的话，则调用删除菜单的接口
 		if(firstMenus.size()==0){
 			try {
 				JwMenuAPI.deleteMenu("");
 				j.setSuccess(true);
-				j.setObj("同步微信菜单成功！");
+				j.setMsg("同步微信菜单成功！");
 				return j;
 			} catch (WexinReqException e) {
 				e.printStackTrace();
 				j.setSuccess(false);
-				j.setObj("同步微信菜单失败！");
+				j.setMsg("同步微信菜单失败！");
 			}
 		}
 		//获取二级菜单
@@ -84,7 +84,7 @@ public class MenuManagerController {
 		//TODO 提示改造
 		try {
 			JwMenuAPI.createMenu(accessToken, resultList);
-			j.setObj("同步微信菜单成功！");
+			j.setMsg("同步微信菜单成功！");
 			j.setSuccess(true);
 		} catch (WexinReqException e) {
 			e.printStackTrace();

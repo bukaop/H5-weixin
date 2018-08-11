@@ -167,8 +167,10 @@ function doSyncMenu(){
 		type:'post',
 		dataType:'json',
 		success:function(data){
+			layer.alert(data.msg);
 		},
 		error:function(data){
+			layer.alert(data.msg);
 		}
 	});
 }

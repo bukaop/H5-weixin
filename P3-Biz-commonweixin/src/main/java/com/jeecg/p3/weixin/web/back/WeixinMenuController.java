@@ -60,7 +60,8 @@ public class WeixinMenuController extends BaseController{
 public void list(@ModelAttribute WeixinMenu query,HttpServletResponse response,HttpServletRequest request,
 			@RequestParam(required = false, value = "pageNo", defaultValue = "1") int pageNo,
 			@RequestParam(required = false, value = "pageSize", defaultValue = "10") int pageSize) throws Exception{
-	 	PageQuery<WeixinMenu> pageQuery = new PageQuery<WeixinMenu>();
+		pageSize = 20;//自定义菜单树形结构，默认展示全部
+		PageQuery<WeixinMenu> pageQuery = new PageQuery<WeixinMenu>();
 	 	pageQuery.setPageNo(pageNo);
 	 	pageQuery.setPageSize(pageSize);
 	 	VelocityContext velocityContext = new VelocityContext();
