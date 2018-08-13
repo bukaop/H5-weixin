@@ -3,13 +3,6 @@
 特点：采用微服务架构，插件式开发、专业微信营销活动平台，具备大用户、高并发支撑能力
 
 
-技术交流
-==========
-* 捷微H5官网：[www.h5huodong.com](http://www.h5huodong.com)
-* 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
-* 捷微技术QQ群 : 97460170
-
-
 
 ### 捷微 - H5活动源码列表（陆续更新..）
 	  1.微信公众号管理   P3-Biz-commonweixin
@@ -40,6 +33,16 @@
 	  src/main/resources/db.properties
 	  
 	  
+技术交流
+==========
+* 捷微H5官网：[www.h5huodong.com](http://www.h5huodong.com)
+* 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
+* 捷微技术QQ群 : 97460170
+* 在线开发文档： [http://jeewx-h5.mydoc.io](http://http://jeewx-h5.mydoc.io)
+
+
+
+
 【开发入门】
 
 	1.Eclipse + Maven + JDK7
