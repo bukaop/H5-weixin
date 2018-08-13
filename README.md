@@ -3,6 +3,11 @@
 特点：采用微服务架构，插件式开发、专业微信营销活动平台，具备大用户、高并发支撑能力
 
 
+官方公众号（体验活动）
+==========
+![github](http://www.jeecg.org/data/attachment/forum/201601/25/180314mjvputsot6hhtvoa.jpg "jeewx521")
+
+
 
 ### 捷微 - H5活动源码列表（陆续更新..）
 	  1.微信公众号管理   P3-Biz-commonweixin
@@ -62,9 +67,7 @@
 	2.配置文件：P3-Web/src/main/resources/p3-cg-config.properties
 
 
-官方公众号（体验活动）
-==========
-![github](http://www.jeecg.org/data/attachment/forum/201601/25/180314mjvputsot6hhtvoa.jpg "jeewx521")
+
 
 
 ### 砍价活动-效果图
