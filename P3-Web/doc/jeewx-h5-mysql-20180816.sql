@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50037
 File Encoding         : 65001
 
-Date: 2018-08-10 18:48:20
+Date: 2018-08-16 16:29:26
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -192,7 +192,7 @@ INSERT INTO `jw_system_auth` VALUES ('9', '210204', '删除角色', '', '1', '�
 INSERT INTO `jw_system_auth` VALUES ('10', '2103', '菜单管理', null, '0', null, '/system/back/jwSystemAuth/list.do', '21', '3', '2', 'Y', '0', '');
 INSERT INTO `jw_system_auth` VALUES ('11', '210301', '新增权限', null, '1', '新增权限', '/system/back/jwSystemAuth/doAdd.do', '2103', '1', '3', null, '0', null);
 INSERT INTO `jw_system_auth` VALUES ('12', '210302', '编辑权限', null, '1', '编辑权限', '/system/back/jwSystemAuth/doEdit.do', '2103', '2', '3', null, '0', null);
-INSERT INTO `jw_system_auth` VALUES ('31', '2104', '项目管理', '', '0', '', '/system/back/jwSystemProject/list.do', '21', '4', '2', 'Y', '0', null);
+INSERT INTO `jw_system_auth` VALUES ('31', '2104', '活动管理', '', '0', '', '/system/back/jwSystemProject/list.do', '21', '4', '2', 'Y', '0', '');
 INSERT INTO `jw_system_auth` VALUES ('1533613596', 'aa735943eb4410368c0028dacd75e20f', '抽奖活动', null, '0', null, '', '', '9', '1', null, '0', 'fa-gift fa-lg');
 INSERT INTO `jw_system_auth` VALUES ('1533720237', 'f5ab2658ec3c103696ca5352a33c439c', '微信配置', null, '0', null, '', '', '1', '1', null, '0', 'fa-weixin fa-lg');
 INSERT INTO `jw_system_auth` VALUES ('1533720281', '0fff2fc4ec3d103696ca5352a33c439c', '公众号管理', null, '0', null, '/commonweixin/back/myJwWebJwid/list.do', 'f5ab2658ec3c103696ca5352a33c439c', '1', '2', null, '0', '');
@@ -347,6 +347,12 @@ CREATE TABLE `jw_system_qrcode_record` (
 -- ----------------------------
 -- Records of jw_system_qrcode_record
 -- ----------------------------
+INSERT INTO `jw_system_qrcode_record` VALUES ('402881116541cd0e016541cd0eb80000', 'gh_f268aa85d1c7', null, '3764929467', '300', 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQF57jwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAydDNiamhQZXJkZDExaXZQUmhyMVYAAgRzMnVbAwQsAQAA', '2018-08-16 16:14:42');
+INSERT INTO `jw_system_qrcode_record` VALUES ('402881116541ce03016541ce03be0000', 'gh_f268aa85d1c7', null, '2275369697', '300', 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQGY7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyV09NZGczZXJkZDExanVQUjFyMWkAAgSyMnVbAwQsAQAA', '2018-08-16 16:15:45');
+INSERT INTO `jw_system_qrcode_record` VALUES ('402881116541ce03016541ce6bad0001', 'gh_f268aa85d1c7', null, '979958463', '300', 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQFJ7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyZ3JoV2d6ZXJkZDExalVQUjFyMTYAAgTMMnVbAwQsAQAA', '2018-08-16 16:16:11');
+INSERT INTO `jw_system_qrcode_record` VALUES ('402881116541ce03016541ce898f0002', 'gh_f268aa85d1c7', null, '806468767', '300', 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQGZ7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyeThyUGhYZXJkZDExZzBRUjFyMUsAAgTUMnVbAwQsAQAA', '2018-08-16 16:16:19');
+INSERT INTO `jw_system_qrcode_record` VALUES ('402881116541d085016541d0855b0000', 'gh_f268aa85d1c7', null, '1306154108', '300', 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQEW7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyaEluSmc0ZXJkZDExaTJRUk5yMVkAAgRWM3VbAwQsAQAA', '2018-08-16 16:18:29');
+INSERT INTO `jw_system_qrcode_record` VALUES ('402881116541d085016541d092610001', 'gh_f268aa85d1c7', null, '1537961873', '300', 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQHz7jwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyNHZ6QmhlZXJkZDExaTVRUk5yMUcAAgRZM3VbAwQsAQAA', '2018-08-16 16:18:32');
 
 -- ----------------------------
 -- Table structure for jw_system_register
@@ -697,6 +703,9 @@ INSERT INTO `weixin_huodong_biz_jwid` VALUES ('ff80808152a2abd20153592394830021'
 INSERT INTO `weixin_huodong_biz_jwid` VALUES ('ff80808152a2abd20153592394830024', 'weixin_autoresponse_default', '未识别回复语');
 INSERT INTO `weixin_huodong_biz_jwid` VALUES ('ff80808152a2abd20153592394830025', 'weixin_autoresponse', '关键字表');
 INSERT INTO `weixin_huodong_biz_jwid` VALUES ('ff80808152a2abd20153592394830026', 'weixin_receivetext', '消息存储表');
+INSERT INTO `weixin_huodong_biz_jwid` VALUES ('ff80808152a2abd20153592394830032', 'wx_act_jiugongge_awards', '九宫格奖项表');
+INSERT INTO `weixin_huodong_biz_jwid` VALUES ('ff80808152a2abd20153592394830033', 'wx_act_jiugongge_prizes', '九宫格奖品表');
+INSERT INTO `weixin_huodong_biz_jwid` VALUES ('ff80808152a2abd20153592394830038', 'wx_act_shaketicket_award', '摇一摇奖项表');
 
 -- ----------------------------
 -- Table structure for weixin_linksucai
