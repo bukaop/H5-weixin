@@ -43,7 +43,7 @@
 * 捷微H5官网：[www.h5huodong.com](http://www.h5huodong.com)
 * 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
 * 捷微技术QQ群 : 97460170
-* 在线开发文档： [http://jeewx-h5.mydoc.io](http://http://jeewx-h5.mydoc.io)
+* 在线开发文档： [http://jeewx-h5.mydoc.io](http://jeewx-h5.mydoc.io)
 
 
 
