@@ -73,7 +73,7 @@
   
 ### 四、技术交流
 
-* 捷微H5官网：[www.h5huodong.com](http://www.h5huodong.com)
+* 在线体验(微信扫描登录)：[http://www.h5huodong.com/system/login.do](http://www.h5huodong.com/system/login.do)
 * 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
 * 技术QQ群 : 97460170
 * 在线文档： [http://jeewx-h5.mydoc.io](http://jeewx-h5.mydoc.io)
