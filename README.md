@@ -2,17 +2,10 @@
 ==========
 捷微H5，是一款开源免费的微信运营平台，是jeewx的新一代产品，平台涵盖了、微信公众号管理、微信H5活动、小程序、微网站、微商城、分销商城、小程序商城、小程序网站、砍价、投票等等功能，是一套成熟的互联网运营产品。架构层面，采用JAVA语言，具备更高的并发能力和大数据能力，采用微服务架构，插件式开发、模块化、UI体验更好；另外强大的代码生成器，便于用户二次开发，开发效率很高；最大的优势： 插件模式，每个功能模块以插件方式提供，方便插拔集成，个性化定制。
 
-官方公众号（体验活动）
-==========
+###公众号体验（小程序）
+
 ![github](http://www.jeecg.org/data/attachment/forum/201601/25/180314mjvputsot6hhtvoa.jpg "jeewx521")
-
-
-
-### 捷微 - H5活动源码列表（陆续更新..）
-	  1.微信公众号管理   P3-Biz-commonweixin
-	  2.摇一摇送卡券     P3-Biz-shaketicket
-	  3.九宫格活动       P3-Biz-jiugongge
-	  4.启动项目         P3-Web
+![github](https://static.oschina.net/uploads/img/201810/15180859_25Ok.jpg "jeewx521")
 	  
 	  
 ### 平台功能
@@ -45,6 +38,16 @@
 *   1、九宫格
 *   2、摇一摇
 
+
+
+### 项目说明
+	  1.微信公众号管理   P3-Biz-commonweixin
+	  2.摇一摇送卡券     P3-Biz-shaketicket
+	  3.九宫格活动       P3-Biz-jiugongge
+	  4.启动项目         P3-Web
+	  
+	  
+	  
 	  
 ### 架构说明
 
@@ -72,8 +75,8 @@
 
 * 捷微H5官网：[www.h5huodong.com](http://www.h5huodong.com)
 * 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
-* 捷微技术QQ群 : 97460170
-* 在线开发文档： [http://jeewx-h5.mydoc.io](http://jeewx-h5.mydoc.io)
+* 技术QQ群 : 97460170
+* 在线文档： [http://jeewx-h5.mydoc.io](http://jeewx-h5.mydoc.io)
 
 
 
