@@ -37,7 +37,7 @@
 	6.数据库配置文件：
 	  src/main/resources/db.properties
 	  
-【平台功能】
+### 平台功能
 
 【微信公众号】
 *   1、微信公众号管理
@@ -68,8 +68,8 @@
 *   2、摇一摇
 
   
-技术交流
-==========
+### 技术交流
+
 * 捷微H5官网：[www.h5huodong.com](http://www.h5huodong.com)
 * 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
 * 捷微技术QQ群 : 97460170
