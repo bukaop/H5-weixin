@@ -107,14 +107,14 @@
 
 
 
-### H5活动之家（管理后台）
+### 捷微H5活动平台（管理后台）
 ![github](https://static.oschina.net/uploads/img/201808/13105211_M0FW.png "jeecg")
 ![github](https://static.oschina.net/uploads/img/201808/13105211_AVY4.png "jeecg")
 ![github](https://static.oschina.net/uploads/img/201808/11172049_s7hH.png "jeecg")
 ![github](https://static.oschina.net/uploads/img/201808/11153109_73Aj.png "jeecg")
 ![github](https://static.oschina.net/uploads/img/201808/11221430_KZ1b.png "jeecg")
 
-### H5活动之家（H5活动）
+### 捷微H5活动平台（H5微信活动）
 1.砍价活动-效果图
 
 ![github](http://www.jeecg.org/data/attachment/forum/201601/25/180710anjfgtn677nojgg0.png "jeecg")
