@@ -104,14 +104,7 @@
 
 
 
-### 砍价活动-效果图
-![github](http://www.jeecg.org/data/attachment/forum/201601/25/180710anjfgtn677nojgg0.png "jeecg")
-### 九宫格活动-效果图
-![github](https://static.oschina.net/uploads/img/201808/13105211_lMFh.jpg "jeecg")
-### 斧头帮砍价-效果图
-![github](http://www.jeecg.org/data/attachment/forum/201601/25/180500iwpg1agqm778wggp.png "jeecg")
-### 摇一摇送卡券-效果图
-![github](https://static.oschina.net/uploads/img/201808/11195358_bi9e.png "jeecg")
+
 
 
 ### H5活动之家（管理后台）
@@ -120,3 +113,13 @@
 ![github](https://static.oschina.net/uploads/img/201808/11172049_s7hH.png "jeecg")
 ![github](https://static.oschina.net/uploads/img/201808/11153109_73Aj.png "jeecg")
 ![github](https://static.oschina.net/uploads/img/201808/11221430_KZ1b.png "jeecg")
+
+### H5活动之家（H5活动）
+1.砍价活动-效果图
+![github](http://www.jeecg.org/data/attachment/forum/201601/25/180710anjfgtn677nojgg0.png "jeecg")
+2.九宫格活动-效果图
+![github](https://static.oschina.net/uploads/img/201808/13105211_lMFh.jpg "jeecg")
+3.斧头帮砍价-效果图
+![github](http://www.jeecg.org/data/attachment/forum/201601/25/180500iwpg1agqm778wggp.png "jeecg")
+4.摇一摇送卡券-效果图
+![github](https://static.oschina.net/uploads/img/201808/11195358_bi9e.png "jeecg")
