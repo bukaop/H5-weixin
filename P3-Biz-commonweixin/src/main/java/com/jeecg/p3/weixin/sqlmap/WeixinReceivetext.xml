@@ -15,6 +15,8 @@
 		<result column="to_user_name" property="toUserName" jdbcType="VARCHAR"/>
 		<result column="jwid" property="jwid" jdbcType="VARCHAR"/>
 		<result column="media_id" property="mediaId" jdbcType="VARCHAR"/>
+		<result column="nickname_txt" property="nicknameTxt" jdbcType="VARCHAR"/>
+		<result column="headimgurl" property="headimgurl" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -189,11 +191,72 @@
                   ,wr.to_user_name                  /* JWID */ 
                   ,wr.jwid                          /* 公众号原始ID */ 
                   ,wr.media_id                      /* 多媒体ID */ 
+                  ,wg.nickname_txt                      /* 昵称 */ 
+                  ,wg.headimgurl                     /* 头像 */ 
 		FROM   	 weixin_receivetext      AS wr      /* 文本消息存储实体类 */ 
+		LEFT JOIN weixin_gzuser AS wg ON wg.openid=wr.from_user_name
 		WHERE 1=1
 		   <include refid="wherecontation"/>
+		ORDER BY wr.create_time DESC
 		LIMIT  #{startRow}  		/* 开始序号 */ 
 			  ,#{pageSize}		/* 每页显示条数 */ 
+	</select>
+  	<!--
+	方法名称: queryAllChatLog
+	调用路径: com.jeecg.p3.weixin.entity.WeixinReceivetext.queryAllChatLog
+	开发信息: 
+	处理信息: 列表
+	-->
+	<select id="queryAllChatLog" parameterType="Object"  resultType="java.util.Map">
+		  SELECT
+				chatall.content  as content/* 消息内容 */
+				,
+				chatall.create_time as time/* 创建日期 */
+				,
+				chatall.type as type
+				,
+				chatall.msgtype as msgtype
+				,
+				chatall.fromUserName as fromUserName
+		  FROM
+				 (
+					SELECT
+						wr.content /* 消息内容 */
+						,
+						wr.create_time /* 创建日期 */
+						,
+						1 AS type
+						,
+						wr.msg_type AS msgtype
+						,
+						wr.from_user_name AS fromUserName
+					FROM
+						weixin_receivetext AS wr /* 文本消息存储实体类 */
+					WHERE
+						wr.from_user_name = #{fromUserName}
+					AND	wr.to_user_name = #{toUserName}
+						
+					UNION ALL
+						SELECT
+							wrm.content /* 消息内容 */
+							,
+							wrm.create_time /* 创建日期 */
+							,
+							2 AS type
+							,
+							wrm.msgtype
+							,
+							wrm.from_username AS fromUserName
+						FROM
+							weixin_recept_msg AS wrm /* 文本消息存储实体类 */
+						WHERE
+							wrm.to_username = #{fromUserName}
+						AND	wrm.jwid = #{toUserName}
+				) chatall
+				<if test="inRecentTime !=null and inRecentTime != ''">
+				 	<![CDATA[WHERE DATE_FORMAT(chatall.create_time,'%Y-%m-%d %H:%i:%s') > #{inRecentTime}]]>
+		 		</if>
+			ORDER BY chatall.create_time 
 	</select>
 	
 </mapper>

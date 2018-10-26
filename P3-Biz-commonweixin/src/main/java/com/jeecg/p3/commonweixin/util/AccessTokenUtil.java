@@ -56,7 +56,16 @@ public class AccessTokenUtil {
 					if(jsonObj.containsKey("errcode")){
 						LOG.error("AccseeToken request error={}.", new Object[]{jsonObj.getString("errmsg")});
 						data.put("status", "responseErr");
-						data.put("msg", jsonObj.getString("errmsg"));
+						//author:sunkai  date:2018-09-26  for:全局返回码说明
+						data.put("errcode", jsonObj.getString("errcode"));
+						String msg = "";
+						if(jsonObj.getString("errcode").equals("40164")){
+							msg = "当前平台的IP未添加到微信公众号IP白名单中，请前往微信公众平台配置";
+						}else{
+							msg = "AppID或AppSecret不正确，请认真检查您的 AppID和AppSecret";
+						}
+						data.put("msg",msg);
+						//author:sunkai  date:2018-09-26  for:全局返回码说明
 					}
 				}
 			}

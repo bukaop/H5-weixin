@@ -19,20 +19,23 @@ public interface WeixinMenuDao extends GenericDao<WeixinMenu>{
 	
 	public List<WeixinMenu> queryPageList(PageQuery<WeixinMenu> pageQuery,Integer itemCount);
 
+	//update-begin--Author:zhangweijian Date:20181017 for：添加jwid参数
 	/**
 	 * @功能：根据orders获取父级id
 	 * @param orders
+	 * @param jwid 
 	 * @return
 	 */
-	public String getFatherIdByorders(String orders);
+	public String getFatherIdByorders(String orders, String jwid);
 
 	/**
 	 * @功能：根据orders查询菜单信息
 	 * @param orders
+	 * @param jwid 
 	 * @return
 	 */
-	public WeixinMenu queryByOrders(String orders);
-
+	public WeixinMenu queryByOrders(String orders, String jwid);
+	//update-end--Author:zhangweijian Date:20181017 for：添加jwid参数
 	/**
 	 * @功能：根据fatherId查询其子级菜单
 	 * @param id

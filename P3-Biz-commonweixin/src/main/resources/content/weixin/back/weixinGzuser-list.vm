@@ -10,7 +10,7 @@
 			<form role="form" class="form-inline" action="$!{basePath}/weixin/back/weixinGzuser/list.do" method="post"  id="formSubmit">
 				<div  class="col-md-10" style="width:100%">
 					<div class="panel panel-default">
-					  <div class="panel-heading">列表</div>
+					  <div class="panel-heading">关注用户信息</div>
 					  <div class="panel-body">
     			  		<div class="search">
     						 <div class="form-group col-sm-3">
@@ -46,23 +46,6 @@
                                     </select>
     						  	</div>
     						 </div>
-    						 #*<div class="form-group col-sm-3">
-    						    <label for="mobile" class="control-label col-sm-3 line34">手机号</label>
-    						     <div class="col-sm-8">
-    						    <input type="text" name="mobile" id="mobile" value="$!{weixinGzuser.mobile}" class="form-control">
-    						  	</div>
-    						 </div>
-    						 <div class="form-group col-sm-3">
-    						    <label for="bindStatus" class="control-label col-sm-3 line34">绑定状态</label>
-    						     <div class="col-sm-8">
-									<select name="bindStatus" id="bindStatus" class="form-control" datatype="*" value="">
-										<option value="" #if($!{weixinGzuser.bindStatus}=="")selected#end>请选择</option>
-										<option value="Y" #if($!{weixinGzuser.bindStatus}=="Y")selected#end>已绑定</option>
-										<option value="N" #if($!{weixinGzuser.bindStatus}=="Y")selected#end>未绑定</option>
-										<option value="V" #if($!{weixinGzuser.bindStatus}=="V")selected#end>绑定中</option>
-                                    </select>
-    						  	</div>
-    						 </div>*#
     						 <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> 搜  索</button>
     						 <div class="clearfix"></div>
     			  		</div>
@@ -79,7 +62,7 @@
 										<th>关注信息</th>
 										##<th>绑定信息</th>
 										<th>地区</th>
-										<th>创建时间</th>
+										<th>关注时间</th>
 						        </thead>
 						        <tobody>
 						    	  #if($!{pageInfos})
@@ -115,7 +98,6 @@
 												#else
 													未关注
 												#end
-												<br/>$!dateTool.format("yyyy-MM-dd hh:mm:ss",$!{info.subscribeTime})
 												##<br/>$!{info.subscribeScene}
 											</td>
 											#*<td>
@@ -125,7 +107,7 @@
 											<td>
 												$!{info.country}&nbsp;&nbsp;$!{info.province}&nbsp;&nbsp;$!{info.city}
 											</td>
-											<td>$!dateTool.format("yyyy-MM-dd hh:mm:ss",$!{info.createTime})</td>
+											<td>$!{info.subscribeTime}</td>
 						           		</tr>
 						             #end
 						    	 #end
@@ -144,7 +126,48 @@
 		</div>
 	</div>
 </body>
+<!--弹出框begin-->
+<button  data-toggle="modal" data-target=".bs-example-modal-sm" id="myModalButton" style="display:none"></button>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content" style="height:80%;min-height:550px">
+		<div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          <h4 class="modal-title" id="myLargeModalLabel">打标签</h4>
+		  <div class="modal-body">
+			<input  id="tag_openid" value="" type="hidden"/>
+            <div id="has_choose" style="min-height:120px">
+				<!--标签内容-->
+			</div>
+            <div style="min-height:270px;width:100%">
+                <p>可选标签：</p>
+				<table >
+					<tr>
+				#if($!{Tags})
+					#foreach($!{tag} info $!{Tags})
+						#if($!{velocityCount}%5==0)
+                        <td style="width:20%"><input type="checkbox" name="ck" onclick="choose('$!{tag.tagid}')" value="$!{tag.tagid}" id="bx$!{tag.tagid}" /><span id="tn$!{tag.tagid}">$!{tag.name}</span></td></tr><tr>
+						#else
+						<td style="width:20%"><input type="checkbox" name="ck" onclick="choose('$!{tag.tagid}')" value="$!{tag.tagid}" id="bx$!{tag.tagid}"/><span id="tn$!{tag.tagid}">$!{tag.name}</span></td>
+						#end
+					#end
+				#end
+					</tr>
+				</table>
+			</div>
+		  </div>
+		  <div class="modal-footer">
+            <a href="javascript:getCkValue()"><button type="button" class="btn btn-primary">确定</button></a>
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="close"><i class="fa fa-close"></i> 关闭</button>
+		</div>
+        </div>
+    </div>
+  </div>
+</div>
+<!--弹出框end-->
+<input type="hidden" id="basePath" value="$!{basePath}">
 </html>
+<script type="text/javascript" src="$!{basePath}/content/weixin/js/checkPermission.js"></script> 
 <script>
 $("#ckAll").click(function(){ 
 	if($(this).prop("checked")){ 
@@ -154,13 +177,27 @@ $("#ckAll").click(function(){
 	} 
 }); 
 
-//jquery获取复选框值    
+//jquery获取选中的标签的值
 function getCkValue(){  
-  var chk_value =[];    
+  var chk_value ="";    
   $('input[name="ck"]:checked').each(function(){    
-   chk_value.push($(this).val());    
-  });    
-  //alert(chk_value.length==0 ?'你还没有选择任何内容！':chk_value);    
+   chk_value+=$(this).val()+",";    
+  });     
+  //获取当前的openid
+  var openid=$("#tag_openid").val();
+  jQuery.ajax({
+  	url:'$!{basePath}/weixin/back/weixinTag/addTags.do',
+	type:'post',
+	data:{tags:chk_value,openid:openid},
+	dataType:'json',
+	success:function(data){
+		layer.alert(data.msg,function(){
+         	location.href="";
+      	});
+	},
+	error:function(data){
+	}
+  });
 }    
 
 //粉丝同步
@@ -180,4 +217,57 @@ function syncFans(){
 		}
 	})
 }
+
+//获取用户的标签
+function getTags(openid){
+	$("#tag_openid").val(openid);
+	jQuery.ajax({
+		url:'$!{basePath}/weixin/back/weixinTag/getTags.do',
+		type:'post',
+		data:{openid:openid},
+		dataType:'json',
+		success:function(data){
+			var html="<p>已选标签：</p>";
+			var tags=data.obj.tagid_list;
+			for(var i=0;i<tags.length;i++){
+				var name=$("#tn"+tags[i]).html();
+				//首先将其展示在标签下面
+				if($(".chooseTag").length%5==0&&$(".chooseTag").length!=0){
+    				html+="<span id='span"+tags[i]+"' class='chooseTag' style='margin-right:20px'><i class='fa fa-check-square-o'></i> "+name+"</span>";
+				}else{
+    				html+="<span id='span"+tags[i]+"' class='chooseTag' style='margin-right:20px'><i class='fa fa-check-square-o'></i> "+name+"</span>";
+				}
+				//其次选择被选的标签
+				$("#bx"+tags[i]).attr("checked",true);
+			}
+			$("#has_choose").html(html);
+		},
+		error:function(){data}
+	});
+	$("#myModalButton").click();
+}
+
+//添加,移除标签
+function choose(tagid){
+	var html="";
+	var checkStatus=$("#bx"+tagid).prop("checked");
+	if(checkStatus==true){
+		//选择标签
+		var name=$("#tn"+tagid).html();
+		if(($(".chooseTag").length)%5==0){
+    		html+="<span id='span"+tagid+"' class='chooseTag' style='margin-right:20px'><i class='fa fa-check-square-o'></i> "+name+"</span>";
+		}else{
+    		html+="<span id='span"+tagid+"' class='chooseTag' style='margin-right:20px'><i class='fa fa-check-square-o'></i> "+name+"</span>";
+		}
+		$("#has_choose").append(html);
+	}else{
+		//取消标签
+		$("#span"+tagid).remove() ;
+	}
+}
+
+//关闭刷新
+$("#close").click(function(){
+	location.href="";
+})
 </script>

@@ -48,7 +48,7 @@
 	                <version>1.1</version>
 	                <configuration>
 	                    <path>/jeewx</path>
-	                    <port>8080</port>
+	                    <port>80</port>
 	                    <uriEncoding>UTF-8</uriEncoding>
 	                    <url>http://localhost:8080/manager/html</url>
 	                    <server>tomcat6</server>
@@ -101,18 +101,24 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
 		</dependency>
-		<!-- commons-email -->
+		<dependency>  
+		    <groupId>ch.qos.logback</groupId>  
+		    <artifactId>logback-classic</artifactId>  
+		    <version>1.0.7</version>  
+		</dependency>
 		
 		<!-- 系统管理模块 -->
  	    <dependency>
 			<groupId>org.h5huodong.p3</groupId>
 			<artifactId>P3-Base-system</artifactId>
+			<version>2.0.3</version>
 		</dependency>
 		
 		<!-- 微信公众管理平台 -->
 		 <dependency>
 			<groupId>org.h5huodong.p3</groupId>
 			<artifactId>P3-Biz-commonweixin</artifactId>
+			<version>1.0.1</version>
 		</dependency>
 		<!-- 九宫格 -->
 		<dependency>
@@ -124,24 +130,5 @@
 			<groupId>org.h5huodong.p3</groupId>
 			<artifactId>P3-Biz-shaketicket</artifactId>
 		</dependency>
-		<!-- 微网站
-		<dependency>
-			<groupId>org.h5huodong.p3</groupId>
-			<artifactId>P3-Biz-cms</artifactId>
-			<version>1.0.0</version>
-			<type>jar</type>
-		</dependency>-->
-		<!-- 斧头帮砍价
-		<dependency>
-			<groupId>org.h5huodong</groupId>
-			<artifactId>P3-Biz-commonftb</artifactId>
-			<version>1.0.0</version>
-		</dependency> -->
-		<!-- 新年砍价
-		<dependency>
-			<groupId>org.h5huodong</groupId>
-			<artifactId>P3-Biz-gzbargain-newYear</artifactId>
-			<version>2.0.1</version>
-		</dependency> -->
 	</dependencies>
 </project>

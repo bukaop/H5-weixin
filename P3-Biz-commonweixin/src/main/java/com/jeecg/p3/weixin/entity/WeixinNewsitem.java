@@ -24,6 +24,16 @@ public class WeixinNewsitem implements Entity<String> {
 	//update-end--Author:zhangweijian  Date: 20180802 for：新增media_id字段	private String title;	/**	 *作者	 */	private String author;	/**	 *图片路径	 */	private String imagePath;	/**	 *内容	 */	private String content;	/**	 *	 */	private String description;	/**	 *素材顺序	 */	private String orderNo;
 	//update-begin--Author:zhangweijian  Date: 20180726 for：新增图文类型，外部链接字段	/**	 *图文类型	 */	private String newType;
 	/**	 *外部链接	 */	private String externalUrl;
+	//update-begin--Author:zhangweijian Date:20181016 for：新增封面图是否展示字段
+	/**	 *是否显示封面	 */	private String showCoverPic;
+	
+	public String getShowCoverPic() {
+		return showCoverPic;
+	}
+	public void setShowCoverPic(String showCoverPic) {
+		this.showCoverPic = showCoverPic;
+	}
+	//update-end--Author:zhangweijian Date:20181016 for：新增封面图是否展示字段
 	public String getNewType() {
 		return newType;
 	}

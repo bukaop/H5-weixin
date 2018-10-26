@@ -39,9 +39,11 @@ blockquote {
 			</div>
 			<div id="page-content">
 				<div id="img-content">
-					<!-- <div class="rich_media_thumb_wrp" id="media">
+					#if($!{newsItem.showCoverPic}=="1")
+					<div class="rich_media_thumb_wrp" id="media">
 						<img class="rich_media_thumb" id="js_cover" onerror="this.parentNode.removeChild(this)" src="$!{domain}/$!{newsItem.imagePath}">
-					</div> -->
+					</div>
+					#end
 					<div class="rich_media_content" id="js_content">
 						$!{newsItem.content}
 					</div>
@@ -58,18 +60,18 @@ blockquote {
 		</div>
 	</div>
 	<div id="newsItemDescription" style="display:none">$!{newsItem.description}</div>
-	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-	<script type="text/javascript">
-	var jwod = "$!{jwid}";
-	var newsId = "$!{newsItem.id}";
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+    var jwid = "$!{jwid}";
+    var newsId = "$!{newsItem.id}";
     var imageUrl = "$!{domain}/$!{newsItem.imagePath}";
-     var newsUrl = "$!{url}";
-     var title = "$!{newsItem.title}";
-     var description = null;
-     var content = null;
-     
-     window.shareData = {  
-        "imgUrl": imageUrl, 
+    var newsUrl = "$!{url}";
+    var title = "$!{newsItem.title}";
+    var description = '';
+    var content = '';
+    //分享参数
+    window.shareData = {  
+    	"imgUrl": imageUrl, 
         "timeLineLink": newsUrl,
         "sendFriendLink": newsUrl,
         "weiboLink": newsUrl,
@@ -77,28 +79,31 @@ blockquote {
         "tDescription":description,
         "tContent": content
     };
-     var timestamp=$!{timestamp};
-     wx.config({
-     	debug: false,
+	//分享功能
+    wx.config({
+    	debug: false,
      	appId: '$!{appid}',
-     	timestamp: timestamp, 
+     	timestamp: $!{timestamp}, 
      	nonceStr: '$!{nonceStr}', 
      	signature: '$!{signature}',
      	jsApiList: ['checkJsApi','onMenuShareTimeline','onMenuShareAppMessage']
-     });
-     wx.ready(function () {
-    	var newsItemDescription=$("#newsItemDescription").html();
+    });
+	//分享
+    wx.ready(function () {
+    	var newsItemDescription=document.getElementById("newsItemDescription").innerHTML;
     	var resultStr=newsItemDescription.replace(/[\r\n]/g,"\n");//去掉回车换行
+		//分享到朋友圈
      	wx.onMenuShareTimeline({
              title: window.shareData.tTitle, 
              link: window.shareData.sendFriendLink,
              imgUrl: window.shareData.imgUrl,
              success: function () {
-             	sendMessage("share");
+             	//sendMessage("share");
              },
              cancel: function () { 
              }
          });
+		 //分享给朋友
          wx.onMenuShareAppMessage({
              title: window.shareData.tTitle, 
              desc: resultStr, 
@@ -107,7 +112,7 @@ blockquote {
              type: 'link',
              dataUrl: '', 
              success:function (){
-             	sendMessage("share");
+             	//sendMessage("share");
      		},
      		cancel: function () { 
      	    }

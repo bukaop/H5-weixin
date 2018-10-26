@@ -89,7 +89,7 @@
 				 </if>
 				 <if test="query.tagidList != null and query.tagidList != ''" >
 	  		 		/* 标签id */
-			    	AND wg.tagid_list =  #{query.tagidList,jdbcType=VARCHAR}
+			    	AND FIND_IN_SET(#{query.tagidList,jdbcType=VARCHAR},wg.tagid_list)
 				 </if>
 				 <if test="query.province != null and query.province != ''" >
 	  		 		/* 省份 */
@@ -481,5 +481,6 @@
 		   FROM   weixin_gzuser      AS wg      /* 粉丝表 */ 
 		   WHERE
 				wg.openid = #{openId}
+				AND wg.jwid = #{jwid}
 	</select>
 </mapper>

@@ -72,5 +72,6 @@
 	<import resource="classpath:config/spring-config-datasource.xml" />
 	<import resource="classpath:config/spring-config-p3.xml" />
 	<import resource="classpath:config/spring-config-cache.xml" />
-	<!-- <import resource="classpath:config/spring-quartz.xml" /> -->
+	<!-- 定时任务配置 -->
+	<import resource="classpath:config/spring-quartz.xml" /> 
 </beans>

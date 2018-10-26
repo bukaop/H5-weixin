@@ -35,7 +35,7 @@
 			#if($!{news.newType}=='news')
     		<a class="info" href="#" onclick="preview('$!{news.id}')"></a>
     		#else
-    		<a class="preview1" href="#" onclick="previewUrl('$!{news.externalUrl}')"></a>
+			<a class="info" href="#" onclick="previewUrl('$!{news.externalUrl}')"></a>
     		#end
 		</div>
 		<div style="width:70%;float:left;">
@@ -54,7 +54,6 @@
 </div>
 </div>
 </div>
-
 </body>
 <script type="text/javascript">
 	function mouseover(symbol,id){
@@ -76,7 +75,7 @@
 	}
 	
 	function preview(itemId){
-		var url = "$!{basePath}/weixin/back/weixinCommon/goContent.do?id="+itemId;
+		var url = "$!{basePath}/weixinNewsController/goContent.do?id="+itemId;
     	window.open(url);
 	}
 	function previewUrl(url){

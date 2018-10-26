@@ -9,6 +9,7 @@
 		<result column="id" property="id" jdbcType="VARCHAR"/>
 		<result column="table_name" property="tableName" jdbcType="VARCHAR"/>
 		<result column="table_remake" property="tableRemake" jdbcType="VARCHAR"/>
+		<result column="table_type" property="tableType" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<!-- 查询条件 -->
@@ -37,11 +38,12 @@
                       id                            /* 序号 */ 
                      ,table_name                    /* 表名称 */ 
                      ,table_remake                  /* 表注释 */ 
+                     ,table_type                    /* 表类型 */ 
 					)
 			values (
                       #{id,jdbcType=VARCHAR}                            /* 序号 */ 
                      ,#{tableName,jdbcType=VARCHAR}                     /* 表名称 */ 
-                     ,#{tableRemake,jdbcType=VARCHAR}                   /* 表注释 */ 
+                     ,#{tableType,jdbcType=VARCHAR}                     /* 表类型 */ 
 					)
 	</insert>
 
@@ -79,6 +81,7 @@
                    whbj.id                            /* 序号 */ 
                   ,whbj.table_name                    /* 表名称 */ 
                   ,whbj.table_remake                  /* 表注释 */ 
+                  ,whbj.table_Type                    /* 表类型*/ 
 		   FROM   weixin_huodong_biz_jwid      AS whbj      /* 微信活动jwid表 */ 
 		   WHERE
 				id = #{id}				/* 序号 */ 
@@ -119,13 +122,14 @@
                    whbj.id                            /* 序号 */ 
                   ,whbj.table_name                    /* 表名称 */ 
                   ,whbj.table_remake                  /* 表注释 */ 
+                  ,whbj.table_Type                    /* 表类型*/ 
 		FROM   	 weixin_huodong_biz_jwid      AS whbj      /* 微信活动jwid表 */ 
 		WHERE 1=1
 		   <include refid="wherecontation"/>
 		LIMIT  #{startRow}  		/* 开始序号 */ 
 			  ,#{pageSize}		/* 每页显示条数 */ 
 	</select>
-	
+	 
 	<!-- update-begin-zhangweijian  Date:20180808 for:变更微信活动jwid表公众号原始ID -->
 	<update id="updateTable" parameterType="java.lang.String">
 		UPDATE ${tableName} 
@@ -134,13 +138,27 @@
 	</update>
 	<!-- update-begin-zhangweijian  Date:20180808 for:变更微信活动jwid表公众号原始ID -->
 	
+	<update id="updateShortUrl" parameterType="java.lang.String">
+		UPDATE ${tableName} 
+		SET 
+		jwid=#{newJwid},
+		short_url=#{shortUrl},
+		hdurl=replace(hdurl,#{jwid},#{newJwid}) 
+		WHERE id = #{id}
+	</update>
+	
 	<!-- update-begin-zhangweijian  Date:20180808 for:获取所有微信活动jwid表数据 -->
 	<select id="queryAll" resultMap="WeixinHuodongBizJwid">
 		SELECT 
                    whbj.id                            /* 序号 */ 
                   ,whbj.table_name                    /* 表名称 */ 
                   ,whbj.table_remake                  /* 表注释 */ 
+                  ,whbj.table_Type                    /* 表类型*/ 
 		FROM   	 weixin_huodong_biz_jwid      AS whbj      /* 微信活动jwid表 */ 
 	</select>
 	<!-- update-end-zhangweijian  Date:20180808 for:获取所有微信活动jwid表数据 -->
+	
+	<select id="queryHdurls" parameterType="java.lang.String" resultType="java.util.HashMap">
+		SELECT id,hdurl from ${tableName} where jwid = #{jwid,jdbcType=VARCHAR}
+	</select>
 </mapper>

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -45,9 +46,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import weixin.util.redis.JedisPoolUtil;
 
+import com.jeecg.p3.commonweixin.entity.JwSystemUserJwidVo;
+import com.jeecg.p3.commonweixin.entity.JwSystemUserVo;
 import com.jeecg.p3.commonweixin.entity.MyJwWebJwid;
 import com.jeecg.p3.commonweixin.entity.WeixinOpenAccount;
 import com.jeecg.p3.commonweixin.exception.CommonweixinException;
+import com.jeecg.p3.commonweixin.service.MyJwSystemUserService;
 import com.jeecg.p3.commonweixin.service.WeixinOpenAccountService;
 import com.jeecg.p3.commonweixin.util.AccessTokenUtil;
 import com.jeecg.p3.commonweixin.util.Constants;
@@ -72,6 +76,8 @@ public class MyJwWebJwidController extends BaseController{
   private MyJwWebJwidService myJwWebJwidService;
   @Autowired
   private WeixinOpenAccountService weixinOpenAccountService;
+  @Autowired
+  private MyJwSystemUserService myJwSystemUserService;
   
   private static String authhorizationUrl = "";
   
@@ -83,11 +89,6 @@ public class MyJwWebJwidController extends BaseController{
   
   private static String getApiQueryAuth="";
   
-  /**
-   * 默认公众号
-   */
-  private static String defaultJwid="";
-  
   static{
 	  PropertiesUtil p=new PropertiesUtil("commonweixin.properties");
 	  component_appid=p.readProperty("component_appid");
@@ -95,7 +96,6 @@ public class MyJwWebJwidController extends BaseController{
 	  authhorizationCallBackUrl=p.readProperty("authhorizationCallBackUrl");
 	  getAuthorizerInfo=p.readProperty("getAuthorizerInfo");
 	  getApiQueryAuth=p.readProperty("getApiQueryAuth");
-	  defaultJwid=p.readProperty("defaultJwid");
   }
 /**
   * 列表页面
@@ -123,6 +123,7 @@ public void list(@ModelAttribute MyJwWebJwid query,HttpServletResponse response,
 			if("os.jeewx".equals(bundle.getString("net.licence.key"))){
 				velocityContext.put("os_flag","0");
 			}
+			velocityContext.put("systemUserid",systemUserid);
 			velocityContext.put("pageInfos",SystemTools.convertPaginatedList(myJwWebJwidService.queryPageList(pageQuery)));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -207,10 +208,11 @@ public AjaxJson doAdd(@ModelAttribute MyJwWebJwid myJwWebJwid,HttpServletRequest
 				log.error(e.toString());
 			}
 		}else{
-			//update-begin--Author:zhangweijian  Date: 20180801 for：提示语修改
-			j.setMsg("保存成功！AppId或 AppSecret配置不正确，请注意检查。 ");
-			//update-end--Author:zhangweijian  Date: 20180801 for：提示语修改
-			j.setSuccess(true);
+			//update-begin--Author:zhangweijian  Date: 20180910 for：配置不成功，不能保存
+			j.setMsg("AppId或 AppSecret配置不正确，请注意检查。 ");
+			j.setSuccess(false);
+			return j;
+			//update-end--Author:zhangweijian  Date: 20180910 for：配置不成功，不能保存
 		}
 		myJwWebJwid.setCreateBy(createBy);
 		MyJwWebJwid myJwWebJwid2 = myJwWebJwidService.queryByJwid(myJwWebJwid.getJwid());
@@ -255,40 +257,46 @@ public void toEdit(@RequestParam(required = true, value = "id" ) String id,HttpS
 public AjaxJson doEdit(@ModelAttribute MyJwWebJwid myJwWebJwid){
 	AjaxJson j = new AjaxJson();
 	try {
-		Map<String, Object> map = AccessTokenUtil.getAccseeToken(myJwWebJwid.getWeixinAppId(), myJwWebJwid.getWeixinAppSecret());
-		if(map.get("accessToken") != null){
-			myJwWebJwid.setAccessToken(map.get("accessToken").toString());
-			myJwWebJwid.setTokenGetTime((Date) map.get("accessTokenTime"));
-			myJwWebJwid.setApiTicket(map.get("apiTicket").toString());
-			myJwWebJwid.setApiTicketTime((Date) map.get("apiTicketTime"));
-			myJwWebJwid.setJsApiTicket(map.get("jsApiTicket").toString());
-			myJwWebJwid.setJsApiTicketTime((Date) map.get("jsApiTicketTime"));
-			j.setMsg("公众号授权成功");
-			
-			WeixinAccount po = new WeixinAccount();
-			po.setAccountappid(myJwWebJwid.getWeixinAppId());
-			po.setAccountappsecret(myJwWebJwid.getWeixinAppSecret());
-			po.setAccountaccesstoken(myJwWebJwid.getAccessToken());
-			po.setAddtoekntime(myJwWebJwid.getTokenGetTime());
-			po.setAccountnumber(myJwWebJwid.getWeixinNumber());
-			po.setApiticket(myJwWebJwid.getApiTicket());
-			po.setApiticketttime(myJwWebJwid.getApiTicketTime());
-			po.setAccounttype(myJwWebJwid.getAccountType());
-			po.setWeixinAccountid(myJwWebJwid.getJwid());//原始ID
-			po.setJsapiticket(myJwWebJwid.getJsApiTicket());
-			po.setJsapitickettime(myJwWebJwid.getJsApiTicketTime());
-			try {
-				JedisPoolUtil.putWxAccount(po);
-			} catch (Exception e) {
-				log.error(e.toString());
+		//update-begin--Author:zhangweijian Date:20181011 for：扫码登陆不限制密钥
+		String authType=myJwWebJwid.getAuthType();
+		if(!authType.equals("2")){
+			Map<String, Object> map = AccessTokenUtil.getAccseeToken(myJwWebJwid.getWeixinAppId(), myJwWebJwid.getWeixinAppSecret());
+			if(map.get("accessToken") != null){
+				myJwWebJwid.setAccessToken(map.get("accessToken").toString());
+				myJwWebJwid.setTokenGetTime((Date) map.get("accessTokenTime"));
+				myJwWebJwid.setApiTicket(map.get("apiTicket").toString());
+				myJwWebJwid.setApiTicketTime((Date) map.get("apiTicketTime"));
+				myJwWebJwid.setJsApiTicket(map.get("jsApiTicket").toString());
+				myJwWebJwid.setJsApiTicketTime((Date) map.get("jsApiTicketTime"));
+				
+				WeixinAccount po = new WeixinAccount();
+				po.setAccountappid(myJwWebJwid.getWeixinAppId());
+				po.setAccountappsecret(myJwWebJwid.getWeixinAppSecret());
+				po.setAccountaccesstoken(myJwWebJwid.getAccessToken());
+				po.setAddtoekntime(myJwWebJwid.getTokenGetTime());
+				po.setAccountnumber(myJwWebJwid.getWeixinNumber());
+				po.setApiticket(myJwWebJwid.getApiTicket());
+				po.setApiticketttime(myJwWebJwid.getApiTicketTime());
+				po.setAccounttype(myJwWebJwid.getAccountType());
+				po.setWeixinAccountid(myJwWebJwid.getJwid());//原始ID
+				po.setJsapiticket(myJwWebJwid.getJsApiTicket());
+				po.setJsapitickettime(myJwWebJwid.getJsApiTicketTime());
+				try {
+					JedisPoolUtil.putWxAccount(po);
+				} catch (Exception e) {
+					log.error(e.toString());
+				}
+			}else{
+				//update-begin--Author:zhangweijian  Date: 20180910 for：配置不成功，不能保存
+				j.setMsg("AppId或 AppSecret配置不正确，请注意检查。 ");
+				j.setSuccess(false);
+				return j;
+				//update-end--Author:zhangweijian  Date: 20180910 for：配置不成功，不能保存
 			}
-		}else{
-			//update-begin--Author:zhangweijian  Date: 20180801 for：提示语修改
-			j.setMsg("保存成功！AppId或 AppSecret配置不正确，请注意检查。 ");
-			j.setSuccess(true);
-			//update-end--Author:zhangweijian  Date: 20180801 for：提示语修改
 		}
 		myJwWebJwidService.doEdit(myJwWebJwid);
+		j.setMsg("公众号授权成功");
+		//update-end--Author:zhangweijian Date:20181011 for：扫码登陆不限制密钥
 	} catch (Exception e) {
 		e.printStackTrace();
 		log.info(e.getMessage());
@@ -685,4 +693,90 @@ public AjaxJson switchDefaultOfficialAcco(@RequestParam final String jwid,@Reque
 	return j;
 }
 //update-end-zhangweijian-----Date:20180808---for:变更公众号原始ID
+
+	//update-begin--Author:zhangweijian Date:20181019 for：授权公众号管理员
+	/**
+	 * @功能：查询待授权管理员
+	 */
+	@RequestMapping(value="searchManager",method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public AjaxJson searchManager(@RequestParam String phone){
+		AjaxJson j=new AjaxJson();
+		try {
+			List<JwSystemUserVo> jwSystemUser=myJwSystemUserService.queryByPhone(phone);
+			if(jwSystemUser.size()>0){
+				j.setObj(jwSystemUser.get(0));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return j;
+	}
+	
+	/**
+	 * @功能：授权管理员权限
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value="authManager",method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public AjaxJson authManager(@RequestParam String userId,@RequestParam String jwid,HttpServletRequest request){
+		AjaxJson j=new AjaxJson();
+		try {
+			JwSystemUserJwidVo jwSystemUserJwid=new JwSystemUserJwidVo();
+			jwSystemUserJwid.setUserId(userId);
+			jwSystemUserJwid.setJwid(jwid);
+			myJwSystemUserService.authManager(jwSystemUserJwid);
+			j.setSuccess(true);
+			j.setMsg("授权成功！");
+			j.setObj(jwSystemUserJwid.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setSuccess(false);
+			j.setMsg("当前管理员已授权");
+		}
+		return j;
+	}
+	
+	/**
+	 * @功能：获取已授权管理员信息
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="getManager",method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public AjaxJson getManager(HttpServletRequest request,@RequestParam String jwid){
+		AjaxJson j=new AjaxJson();
+		try {
+			List<JwSystemUserJwidVo> jwSystemUserJwid=myJwSystemUserService.queryByJwid(jwid);
+			if(jwSystemUserJwid.size()>0){
+				j.setObj(jwSystemUserJwid);
+			}else{
+				j.setObj("");
+			}
+			j.setSuccess(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return j;
+	}
+	
+	/**
+	 * @功能：取消授权
+	 */
+	@RequestMapping(value="cancelAuth",method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public AjaxJson cancelAuth(HttpServletRequest request,@RequestParam String id){
+		AjaxJson j=new AjaxJson();
+		try {
+			myJwSystemUserService.deleteById(id);
+			j.setSuccess(true);
+			j.setMsg("取消成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setMsg("取消失败");
+		}
+		return j;
+	}
+	//update-end--Author:zhangweijian Date:20181019 for：授权公众号管理员
 }

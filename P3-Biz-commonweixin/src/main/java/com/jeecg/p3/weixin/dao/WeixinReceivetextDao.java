@@ -1,6 +1,7 @@
 package com.jeecg.p3.weixin.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.utils.persistence.GenericDao;
@@ -18,6 +19,9 @@ public interface WeixinReceivetextDao extends GenericDao<WeixinReceivetext>{
 	public Integer count(PageQuery<WeixinReceivetext> pageQuery);
 	
 	public List<WeixinReceivetext> queryPageList(PageQuery<WeixinReceivetext> pageQuery,Integer itemCount);
+
+	public List<Map<String, Object>> queryAllChatLog(
+			WeixinReceivetext weixinReceivetext);
 	
 }
 

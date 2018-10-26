@@ -238,8 +238,9 @@
 			  ,#{pageSize}		/* 每页显示条数 */ 
 	</select>
 	
+	<!-- update-begin-Author:zhangweijian  Date: 20180820 for：添加了上传状态的判断 -->
 	<!-- 获取所有图文素材 -->
-	<select id="getAllItems" resultMap="WeixinNewstemplate">
+	<select id="getAllItems" parameterType="Object" resultMap="WeixinNewstemplate">
 		SELECT 
                    wn.id                            /*  */ 
                   ,wn.template_name                 /* 模板名称 */ 
@@ -254,5 +255,9 @@
                   ,wn.update_time                   /* 修改人名称 */ 
 		FROM   	 weixin_newstemplate      AS wn      /* 图文模板表 */ 
 		WHERE wn.jwid=#{jwid}
+		<if test="uploadType != null and uploadType != ''">
+ 			AND wn.upload_type = #{uploadType,jdbcType=VARCHAR}
+		</if>
 	</select>
+	<!-- update-end-Author:zhangweijian  Date: 20180820 for：添加上传状态的判断 -->
 </mapper>

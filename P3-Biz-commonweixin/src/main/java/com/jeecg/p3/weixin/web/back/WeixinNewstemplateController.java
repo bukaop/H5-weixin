@@ -3,30 +3,38 @@ package com.jeecg.p3.weixin.web.back;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
+import org.apache.velocity.VelocityContext;
+import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.jeecgframework.p3.core.logger.Logger;
 import org.jeecgframework.p3.core.logger.LoggerFactory;
+import org.jeecgframework.p3.core.util.SystemTools;
+import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
+import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
+import org.jeecgframework.p3.core.utils.common.PageQuery;
+import org.jeecgframework.p3.core.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.jeecgframework.p3.core.util.SystemTools;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.velocity.VelocityContext;
-import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.jeecgframework.p3.core.common.utils.AjaxJson;
-import org.jeecgframework.p3.core.utils.common.PageQuery;
-
+import com.jeecg.p3.commonweixin.entity.MyJwWebJwid;
 import com.jeecg.p3.commonweixin.util.Constants;
+import com.jeecg.p3.system.service.MyJwWebJwidService;
+import com.jeecg.p3.weixin.entity.WeixinGzuser;
 import com.jeecg.p3.weixin.entity.WeixinNewstemplate;
 import com.jeecg.p3.weixin.enums.WeixinMsgTypeEnum;
+import com.jeecg.p3.weixin.service.WeixinGzuserService;
 import com.jeecg.p3.weixin.service.WeixinNewstemplateService;
-import org.jeecgframework.p3.core.web.BaseController;
+import com.jeecg.p3.weixin.util.WeixinUtil;
+import com.jeecg.p3.weixin.util.WxErrCodeUtil;
 
  /**
  * 描述：</b>图文模板表<br>
@@ -38,9 +46,16 @@ import org.jeecgframework.p3.core.web.BaseController;
 @RequestMapping("/weixin/back/weixinNewstemplate")
 public class WeixinNewstemplateController extends BaseController{
 
-  public final static Logger log = LoggerFactory.getLogger(WeixinNewstemplateController.class);
-  @Autowired
-  private WeixinNewstemplateService weixinNewstemplateService;
+	//图文预览接口
+	private static String message_preview_url="https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN";
+	
+	public final static Logger log = LoggerFactory.getLogger(WeixinNewstemplateController.class);
+	@Autowired
+	private WeixinNewstemplateService weixinNewstemplateService;
+	@Autowired
+	private WeixinGzuserService weixinGzuserService;
+	@Autowired
+	private MyJwWebJwidService myJwWebJwidService;
   
 /**
   * 列表页面
@@ -57,6 +72,16 @@ public void list(@ModelAttribute WeixinNewstemplate query,HttpServletResponse re
 	 	//update-begin--Author:zhangweijian  Date: 20180720 for：添加jwid查询条件
 	 	String jwid =  request.getSession().getAttribute("jwid").toString();
 	 	query.setJwid(jwid);
+	 	//update-begin--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
+	 	//判断是否有权限
+		String systemUserid = request.getSession().getAttribute("system_userid").toString();
+		//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		MyJwWebJwid jw = myJwWebJwidService.queryJwidByJwidAndUserId(jwid,systemUserid);
+		//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		if(jw==null){
+	 		query.setJwid("-");
+	 	}
+	 	//update-end--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
 	 	//update-end--Author:zhangweijian  Date: 20180720 for：添加jwid查询条件
 		pageQuery.setQuery(query);
 		velocityContext.put("weixinNewstemplate",query);
@@ -168,27 +193,5 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 		}
 		return j;
 }
-
-//update-begin--Author:zhangweijian  Date: 20180802 for：上传图文素材到微信
-/**
- * 上传图文素材
- * @return
- */
-@RequestMapping(value="uploadNewstemplate",method = {RequestMethod.GET, RequestMethod.POST})
-@ResponseBody
-public AjaxJson uploadNewstemplate(@RequestParam(required = true, value = "id") String id,HttpServletRequest request){
-	AjaxJson j = new AjaxJson();
-	try {
-		String jwid =request.getSession().getAttribute("jwid").toString();
-		String message=weixinNewstemplateService.uploadNewstemplate(id,jwid);
-		j.setMsg(message);
-		j.setSuccess(true);
-	} catch (Exception e) {
-		log.error(e.getMessage());
-	}
-	return j;
-}
-//update-end--Author:zhangweijian  Date: 20180802 for：上传图文素材到微信
-
 }
 

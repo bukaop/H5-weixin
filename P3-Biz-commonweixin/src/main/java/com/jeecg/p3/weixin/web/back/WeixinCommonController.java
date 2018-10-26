@@ -41,7 +41,6 @@ public class WeixinCommonController {
 	@Autowired
 	private MyJwWebJwidService myJwWebJwidService;
 	  
-	  
 	/**
 	 * @author zhangweijian
 	 * @功能：获取微信素材
@@ -62,7 +61,9 @@ public class WeixinCommonController {
 				}
 				//获取图文素材
 				if("news".equals(msgType)){
-					List<WeixinNewstemplate> templates=weixinNewstemplateService.getAllItems(jwid);
+					//update-begin--Author:zhangweijian  Date: 20180820 for：添加一个上传状态字段
+					List<WeixinNewstemplate> templates=weixinNewstemplateService.getAllItems(jwid,"");
+					//update-end--Author:zhangweijian  Date: 20180820 for：添加一个上传状态字段
 					j.setObj(templates);
 					j.setSuccess(true);
 				}
@@ -140,11 +141,12 @@ public class WeixinCommonController {
 	}
 	
 	/**
-	 * 转向信息页面
+	 * 转向信息页面（此方法废弃，移动到WeixinNewsController）
 	 * @param request
 	 * @return
 	 * @throws Exception 
 	 */
+	@Deprecated
 	@RequestMapping(value = "goContent", method = {RequestMethod.GET,RequestMethod.POST})
 	public void goContent(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		VelocityContext velocityContext = new VelocityContext();
@@ -168,8 +170,36 @@ public class WeixinCommonController {
 		velocityContext.put("appid", myJwWeb.getWeixinAppId());
 		velocityContext.put("nonceStr", WeiXinHttpUtil.nonceStr);
 		velocityContext.put("timestamp", WeiXinHttpUtil.timestamp);
-		//velocityContext.put("signature",WeiXinHttpUtil.getRedisSignature(request, jwid));
+		velocityContext.put("signature",WeiXinHttpUtil.getRedisSignature(request, jwid));
 		String viewName = "weixin/back/newsContent.vm";
 		ViewVelocity.view(request,response,viewName,velocityContext);
 	}
+	
+	//update-begin--Author:zhangweijian  Date: 20180928 for：验证用户是否有权限操作此公众号
+	/**
+	 * 验证用户是否有权限操作此公众号
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="checkPermission",method = {RequestMethod.GET,RequestMethod.POST})
+	public AjaxJson checkPermission(HttpServletRequest request, HttpServletResponse response){
+		AjaxJson j=new AjaxJson();
+		try {
+			String systemUserid = request.getSession().getAttribute("system_userid").toString();
+		 	String jwid =  request.getSession().getAttribute("jwid").toString();
+		 	//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		 	MyJwWebJwid jw = myJwWebJwidService.queryJwidByJwidAndUserId(jwid,systemUserid);
+		 	//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		 	if(jw==null){
+		 		j.setSuccess(false);
+		 	}
+		}catch (Exception e) {
+			j.setSuccess(false);
+			j.setMsg(e.getMessage());
+		}
+		return j;
+	}
+	//update-end--Author:zhangweijian  Date: 20180928 for：验证用户是否有权限操作此公众号
 }

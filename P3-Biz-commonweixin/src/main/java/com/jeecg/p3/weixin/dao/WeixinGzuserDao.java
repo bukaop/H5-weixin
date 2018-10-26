@@ -28,13 +28,14 @@ public interface WeixinGzuserDao extends GenericDao<WeixinGzuser>{
 	 * @return
 	 */
 	public List<WeixinGzuser> queryNumberByJwid(String jwid, int pageNo, int pageSize);
-	
+	//update-begin--Author:zhangweijian  Date: 20180820 for：根据OpenId查询粉丝信息
 	/**
-	 * 根据OpenId查询粉丝数据
+	 * 根据OpenId查询粉丝信息
 	 * @param openId
+	 * @param jwid 
 	 * @return
 	 */
-	public WeixinGzuser queryByOpenId(String openId);
-	
+	public WeixinGzuser queryByOpenId(String openId, String jwid);
+	//update-end--Author:zhangweijian  Date: 20180820 for：根据OpenId查询粉丝信息
 }
 

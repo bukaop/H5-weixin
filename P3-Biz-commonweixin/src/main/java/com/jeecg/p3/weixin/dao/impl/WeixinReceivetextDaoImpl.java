@@ -1,6 +1,8 @@
 package com.jeecg.p3.weixin.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.utils.common.PageQueryWrapper;
@@ -29,6 +31,18 @@ public class WeixinReceivetextDaoImpl extends GenericDaoDefault<WeixinReceivetex
 			PageQuery<WeixinReceivetext> pageQuery,Integer itemCount) {
 		PageQueryWrapper<WeixinReceivetext> wrapper = new PageQueryWrapper<WeixinReceivetext>(pageQuery.getPageNo(), pageQuery.getPageSize(),itemCount, pageQuery.getQuery());
 		return (List<WeixinReceivetext>)super.query("queryPageList",wrapper);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryAllChatLog(
+			WeixinReceivetext weixinReceivetext) {
+		Map<String,Object> m=new HashMap<String,Object>();
+		m.put("fromUserName", weixinReceivetext.getFromUserName());
+		m.put("toUserName", weixinReceivetext.getToUserName());
+		if(weixinReceivetext.getInRecentTime() !=null){
+			m.put("inRecentTime", weixinReceivetext.getInRecentTime());
+		}
+		return super.query("queryAllChatLog",m);
 	}
 
 

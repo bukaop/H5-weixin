@@ -1,5 +1,8 @@
 package com.jeecg.p3.weixin.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.jeecgframework.p3.core.utils.common.PageList;
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import com.jeecg.p3.weixin.entity.WeixinReceivetext;
@@ -22,5 +25,8 @@ public interface WeixinReceivetextService {
 	public WeixinReceivetext queryById(String id);
 	
 	public PageList<WeixinReceivetext> queryPageList(PageQuery<WeixinReceivetext> pageQuery);
+
+	public List<Map<String, Object>> queryAllChatLog(
+			WeixinReceivetext weixinReceivetext);
 }
 

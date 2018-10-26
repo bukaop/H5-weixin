@@ -1,28 +1,27 @@
 package com.jeecg.p3.weixin.web.back;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
+import org.apache.velocity.VelocityContext;
+import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.jeecgframework.p3.core.logger.Logger;
 import org.jeecgframework.p3.core.logger.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.jeecgframework.p3.core.util.SystemTools;
 import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
-
-import javax.servlet.http.HttpServletResponse;
-import org.apache.velocity.VelocityContext;
 import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
+import org.jeecgframework.p3.core.utils.common.PageQuery;
+import org.jeecgframework.p3.core.utils.common.StringUtils;
+import org.jeecgframework.p3.core.web.BaseController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import org.jeecgframework.p3.core.common.utils.AjaxJson;
-import org.jeecgframework.p3.core.utils.common.PageQuery;
-import org.jeecgframework.p3.core.utils.common.StringUtils;
 
 import com.jeecg.p3.commonweixin.entity.MyJwWebJwid;
 import com.jeecg.p3.system.service.MyJwWebJwidService;
@@ -30,8 +29,7 @@ import com.jeecg.p3.weixin.entity.WeixinGzuser;
 import com.jeecg.p3.weixin.service.WeixinGzuserService;
 import com.jeecg.p3.weixin.task.GzUserInfoTimer;
 import com.jeecg.p3.weixin.util.WeixinUtil;
-
-import org.jeecgframework.p3.core.web.BaseController;
+import com.jeecg.p3.weixin.util.WxErrCodeUtil;
 
  /**
  * 描述：</b>粉丝表<br>
@@ -50,7 +48,6 @@ public class WeixinGzuserController extends BaseController{
   private MyJwWebJwidService myJwWebJwidService;
   @Autowired
   private GzUserInfoTimer gzUserInfoTimer;
-  
   //获取用户列表
 	public final static String user_List_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID";
   
@@ -69,9 +66,23 @@ public void list(@ModelAttribute WeixinGzuser query,HttpServletResponse response
 	 	//获取jwid
 		String jwid=request.getSession().getAttribute("jwid").toString();
 		query.setJwid(jwid);
+		//update-begin--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
+		//判断是否有权限
+		String systemUserid = request.getSession().getAttribute("system_userid").toString();
+		//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		MyJwWebJwid jw = myJwWebJwidService.queryJwidByJwidAndUserId(jwid,systemUserid);
+		//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		if(jw==null){
+	 		query.setJwid("-");
+	 	}
+	 	//update-end--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
 		//update-begin--Author:zhangweijian  Date: 20180806 for：添加jwid查询条件
 	 	VelocityContext velocityContext = new VelocityContext();
 		pageQuery.setQuery(query);
+		//update-begin--Author:zhangweijian  Date: 20180820 for：获取当前公众号的所有标签
+		//获取当前公众号的所有标签
+		//TODO
+		//update-end--Author:zhangweijian  Date: 20180820 for：获取当前公众号的所有标签
 		velocityContext.put("weixinGzuser",query);
 		velocityContext.put("pageInfos",SystemTools.convertPaginatedList(weixinGzuserService.queryPageList(pageQuery)));
 		String viewName = "weixin/back/weixinGzuser-list.vm";
@@ -107,10 +118,11 @@ public AjaxJson syncFans(HttpServletResponse response,HttpServletRequest request
 			if(!jsonObj.containsKey("errmsg")){
 		    	 total = jsonObj.getInt("total");
 		    }else{
-		    	message= "微信服务器访问异常，请稍候重试。"+jsonObj.getString("errmsg");
-		    	//update-begin-zhangweijian-----Date:20180809---for:添加返回内容
-		    	j.setMsg(message);
-		    	//update-end-zhangweijian-----Date:20180809---for:添加返回内容
+		    	//update-begin--Author:zhangweijian  Date: 20180903 for：提示信息优化
+		    	String errcode=jsonObj.getString("errcode");
+		    	String msg = WxErrCodeUtil.testErrCode(errcode);
+				j.setMsg("同步粉丝列表失败! "+msg);
+		    	//update-end--Author:zhangweijian  Date: 20180903 for：提示信息优化
 		    	return j;
 		    }
 		}
@@ -132,6 +144,30 @@ public AjaxJson syncFans(HttpServletResponse response,HttpServletRequest request
 	}
 	return j;
 }
-
+	//update-begin--Author:zhangweijian  Date: 20180820 for：增加不同页面模态框获取用户信息的跳转
+	/**
+	 * @功能：打标签获取用户跳转的页面
+	 */
+	@RequestMapping(value="getUser",method = {RequestMethod.GET,RequestMethod.POST})
+	public void getUser(@ModelAttribute WeixinGzuser query,HttpServletResponse response,HttpServletRequest request,
+				@RequestParam(required = false, value = "pageNo", defaultValue = "1") int pageNo,
+				@RequestParam(required = false, value = "pageSize", defaultValue = "10") int pageSize,@RequestParam String tagid) throws Exception{
+		 	PageQuery<WeixinGzuser> pageQuery = new PageQuery<WeixinGzuser>();
+		 	pageQuery.setPageNo(pageNo);
+		 	pageQuery.setPageSize(pageSize);
+		 	//update-begin--Author:zhangweijian  Date: 20180806 for：添加jwid查询条件
+		 	//获取jwid
+			String jwid=request.getSession().getAttribute("jwid").toString();
+			query.setJwid(jwid);
+			//update-begin--Author:zhangweijian  Date: 20180806 for：添加jwid查询条件
+		 	VelocityContext velocityContext = new VelocityContext();
+			pageQuery.setQuery(query);
+			velocityContext.put("weixinGzuser",query);
+			velocityContext.put("tagid",tagid);
+			velocityContext.put("pageInfos",SystemTools.convertPaginatedList(weixinGzuserService.queryPageList(pageQuery)));
+			String viewName = "weixin/back/weixinGzuser.vm";
+			ViewVelocity.view(request,response,viewName,velocityContext);
+	}
+	//update-end--Author:zhangweijian  Date: 20180820 for：增加不同页面模态框获取用户信息的跳转
 }
 

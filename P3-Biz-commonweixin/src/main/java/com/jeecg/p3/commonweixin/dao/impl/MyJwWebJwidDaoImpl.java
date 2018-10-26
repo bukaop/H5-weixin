@@ -93,5 +93,37 @@ public class MyJwWebJwidDaoImpl extends GenericDaoDefault<MyJwWebJwid> implement
 		super.update("updateJwid",param);
 	}
 	//update-end--Author:zhangweijian Date: 20180808 for：变更系统公众号表的公众号原始ID
+
+	//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	/**
+	 * @功能：根据jwid和用户id查询公众号信息
+	 */
+	@Override
+	public MyJwWebJwid queryJwidByJwidAndUserId(String jwid, String systemUserid) {
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("jwid", jwid);
+		paramMap.put("systemUserid", systemUserid);
+		return (MyJwWebJwid)super.queryOne("queryJwidByJwidAndUserId",paramMap);
+	}
+	//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	
+	/**
+	 * @功能：根据jwid和时间查询公众号粉丝量（无时间为累计量）
+	 */
+	public Integer queryGzuserCount(String jwid,String refDate){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("jwid", jwid);
+		paramMap.put("refDate", refDate);
+		return (Integer) super.queryOne("queryGzuserCount", paramMap);
+	}
+	/**
+	 * @功能：根据jwid和时间查询公众号消息量（无时间为累计量）
+	 */
+	public Integer queryMsgCount(String jwid,String refDate){
+		Map<String,String> paramMap = new HashMap<String,String>();
+		paramMap.put("jwid", jwid);
+		paramMap.put("refDate", refDate);
+		return (Integer) super.queryOne("queryMsgCount", paramMap);
+	}
 }
 

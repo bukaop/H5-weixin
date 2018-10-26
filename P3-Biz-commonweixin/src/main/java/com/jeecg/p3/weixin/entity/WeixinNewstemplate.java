@@ -35,6 +35,19 @@ public class WeixinNewstemplate implements Entity<String> {
 	public void setUploadTime(Date uploadTime) {
 		this.uploadTime = uploadTime;
 	}
-	/**	 *创建时间	 */	private Date createTime;	/**	 *修改人名称	 */	private String updateBy;	/**	 *修改人名称	 */	private Date updateTime;	public String getId() {	    return this.id;	}	public void setId(String id) {	    this.id=id;	}	public String getTemplateName() {	    return this.templateName;	}	public void setTemplateName(String templateName) {	    this.templateName=templateName;	}	public String getTemplateType() {	    return this.templateType;	}	public void setTemplateType(String templateType) {	    this.templateType=templateType;	}	public String getJwid() {	    return this.jwid;	}	public void setJwid(String jwid) {	    this.jwid=jwid;	}	public String getCreateBy() {	    return this.createBy;	}	public void setCreateBy(String createBy) {	    this.createBy=createBy;	}	public Date getCreateTime() {	    return this.createTime;	}	public void setCreateTime(Date createTime) {	    this.createTime=createTime;	}	public String getUpdateBy() {	    return this.updateBy;	}	public void setUpdateBy(String updateBy) {	    this.updateBy=updateBy;	}	public Date getUpdateTime() {	    return this.updateTime;	}	public void setUpdateTime(Date updateTime) {	    this.updateTime=updateTime;	}
+	/**	 *创建时间	 */	private Date createTime;	/**	 *修改人名称	 */	private String updateBy;	/**	 *修改人名称	 */	private Date updateTime;
+	//author:sunkai--date:2018-10-08--for:上传状态转译
+	/**
+	 *上传状态转译
+	 */
+	private String uploadStatus;
+	public String getUploadStatus() {
+		return uploadStatus;
+	}
+	public void setUploadStatus(String uploadStatus) {
+		this.uploadStatus = uploadStatus;
+	}
+	//author:sunkai--date:2018-10-08--for:上传状态转译
+	public String getId() {	    return this.id;	}	public void setId(String id) {	    this.id=id;	}	public String getTemplateName() {	    return this.templateName;	}	public void setTemplateName(String templateName) {	    this.templateName=templateName;	}	public String getTemplateType() {	    return this.templateType;	}	public void setTemplateType(String templateType) {	    this.templateType=templateType;	}	public String getJwid() {	    return this.jwid;	}	public void setJwid(String jwid) {	    this.jwid=jwid;	}	public String getCreateBy() {	    return this.createBy;	}	public void setCreateBy(String createBy) {	    this.createBy=createBy;	}	public Date getCreateTime() {	    return this.createTime;	}	public void setCreateTime(Date createTime) {	    this.createTime=createTime;	}	public String getUpdateBy() {	    return this.updateBy;	}	public void setUpdateBy(String updateBy) {	    this.updateBy=updateBy;	}	public Date getUpdateTime() {	    return this.updateTime;	}	public void setUpdateTime(Date updateTime) {	    this.updateTime=updateTime;	}
 }
 

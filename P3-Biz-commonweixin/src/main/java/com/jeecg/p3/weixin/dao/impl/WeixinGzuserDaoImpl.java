@@ -44,12 +44,18 @@ public class WeixinGzuserDaoImpl extends GenericDaoDefault<WeixinGzuser> impleme
 		return (List<WeixinGzuser>)super.query("queryNumberByJwid", map);
 	}
 
+	//update-begin--Author:zhangweijian  Date: 20180820 for：根据OpenId查询粉丝信息
+	/**
+	 * @功能：根据openId查询粉丝信息
+	 */
 	@Override
-	public WeixinGzuser queryByOpenId(String openId) {
+	public WeixinGzuser queryByOpenId(String openId,String jwid) {
 		Map<String,Object> map = Maps.newConcurrentMap();
 		map.put("openId", openId);
+		map.put("jwid", jwid);
 		return (WeixinGzuser)super.queryOne("queryByOpenId", map);
 	}
+	//update-end--Author:zhangweijian  Date: 20180820 for：根据OpenId查询粉丝信息
 
 
 }

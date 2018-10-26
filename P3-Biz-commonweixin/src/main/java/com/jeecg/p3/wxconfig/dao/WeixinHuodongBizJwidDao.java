@@ -1,6 +1,7 @@
 package com.jeecg.p3.wxconfig.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.utils.persistence.GenericDao;
@@ -36,5 +37,17 @@ public interface WeixinHuodongBizJwidDao extends GenericDao<WeixinHuodongBizJwid
 	 */
 	public List<WeixinHuodongBizJwid> queryAll();
 	//update-end-zhangweijian-----Date:20180808---for:获取所有微信活动jwid表数据
+
+	/**
+	 * @功能：根据表名和jwid查询hdurl
+	 */
+	public List<Map<String, Object>> queryHdurls(String tableName,String jwid);
+	
+	//update-begin--Author:zhangweijian Date:20181011 for：更新活动长短链接
+	/**
+	 * @功能：更新活动长短链接
+	 */
+	public void updateShortUrl(String tableName, String id, String jwid, String newJwid, String shortUrl);
+	//update-end--Author:zhangweijian Date:20181011 for：更新活动长短链接
 }
 

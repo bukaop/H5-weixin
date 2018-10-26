@@ -1,6 +1,7 @@
 package com.jeecg.p3.system.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.p3.core.util.PropertiesUtil;
+import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
 import org.jeecgframework.p3.core.utils.common.PageList;
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.utils.common.Pagenation;
@@ -250,24 +252,77 @@ public class MyJwWebJwidServiceImpl implements MyJwWebJwidService {
 	@Transactional(rollbackFor=Exception.class)
 	@Override
 	public void switchDefaultOfficialAcco(String jwid, String newJwid) {
-		//update-begin--Author:zhangweijian  Date: 20180809 for：加try catch
-			//更新系统公众号表
+			//update-begin--Author:zhangweijian  Date: 20180809 for：加try catch
+			logger.info("---[变更jwid]------------开始！！！-----------------");
+			//1.更新系统公众号表
 			MyJwWebJwid oldJwid=myJwWebJwidDao.queryByJwid(jwid);
 			oldJwid.setJwid(newJwid);
 			myJwWebJwidDao.update(oldJwid);
-			//更新系统用户公众号关联表
+			logger.info("---[变更jwid]------------变更公众号表的 jwid---------------tableName--jw_web_jwid");
+			//2.更新系统用户公众号关联表
 			myJwWebJwidDao.updateUserJwid(jwid,newJwid);
-			//更新所有业务表
+			logger.info("---[变更jwid]------------更新系统用户公众号关联表----------------tableName--jw_system_user_jwid");
+			//3.更新所有业务表
 			List<WeixinHuodongBizJwid> jwSystemTables=weixinHuodongBizJwidDao.queryAll();
 			for(int i=0;i<jwSystemTables.size();i++){
 				String tableName=jwSystemTables.get(i).getTableName();
-				try {
+				//update-begin--Author:zhangweijian Date:20181011 for：更新活动长短链接
+				String tableType=jwSystemTables.get(i).getTableType();
+				if(tableType.equals("2")){
+					//3.1 更新活动表的jwid,hdurl和shorturl
+					logger.info("---[变更jwid]------------更新所有业务表（jwid、活动地址）---------------tableName--"+tableName);
+					List<Map<String,Object>> tableList=weixinHuodongBizJwidDao.queryHdurls(tableName,jwid);
+					Map<String, Object> tableMap=new HashMap<String, Object>();
+					String id="";
+					String hdurl="";
+					if(tableList.size()>0){
+						for(int j=0;j<tableList.size();j++){
+							tableMap=tableList.get(j);
+							for(Map.Entry<String, Object> entry : tableMap.entrySet()){
+								if ("id".equals(entry.getKey())) {  
+									id = (String) entry.getValue();  
+								}else if ("hdurl".equals(entry.getKey())) {  
+									hdurl = (String) entry.getValue();  
+									hdurl=hdurl.replace(jwid, newJwid);
+								}  
+							}
+							String shortUrl=WeiXinHttpUtil.getShortUrl(hdurl,newJwid);
+							//更新短链接
+							weixinHuodongBizJwidDao.updateShortUrl(tableName,id,jwid,newJwid,shortUrl);
+							//logger.info("---[变更jwid]------------更新所有业务表（jwid、活动地址）---------------tableName--"+tableName);
+						}
+					}
+				}else{
+					//3.2更新微信表的jwid
+					logger.info("---[变更jwid]------------更新所有业务表（jwid）--- tableName : " + tableName);
 					weixinHuodongBizJwidDao.updateTable(tableName,jwid,newJwid);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				//update-end--Author:zhangweijian Date:20181011 for：更新活动长短链接
 			}
+			//4.重置公众号的token
+			resetAccessToken(oldJwid.getId());
+			logger.info("---[变更jwid]------------重置公众号的token----------- " );
+			logger.info("---[变更jwid]------------结束！！！-----------------");	
 		//update-end--Author:zhangweijian  Date: 20180809 for：加try catch
 	}
 	//update-end-zhangweijian-----Date:20180808---for:变更公众号原始ID
+	
+	//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	/**
+	 * @功能：根据jwid和用户id查询公众号信息
+	 */
+	@Override
+	public MyJwWebJwid queryJwidByJwidAndUserId(String jwid, String systemUserid) {
+		return myJwWebJwidDao.queryJwidByJwidAndUserId(jwid,systemUserid);
+	}
+	//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	@Override
+	public Integer queryGzuserCount(String jwid, String refDate) {
+		return myJwWebJwidDao.queryGzuserCount(jwid,refDate);
+	}
+	
+	@Override
+	public Integer queryMsgCount(String jwid, String refDate) {
+		return myJwWebJwidDao.queryMsgCount(jwid,refDate);
+	}
 }

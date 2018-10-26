@@ -9,11 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import org.jeecgframework.p3.core.util.PropertiesUtil;
 import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
 import org.jeecgframework.p3.core.utils.common.PageList;
@@ -21,16 +16,20 @@ import org.jeecgframework.p3.core.utils.common.PageQuery;
 import org.jeecgframework.p3.core.utils.common.Pagenation;
 import org.jeewx.api.wxsendmsg.JwSendMessageAPI;
 import org.jeewx.api.wxsendmsg.util.ReadImgUrls;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.jeecg.p3.weixin.util.ResourceUtil;
-import com.jeecg.p3.weixin.util.WeixinUtil;
-import com.jeecg.p3.weixin.service.WeixinNewstemplateService;
+import com.jeecg.p3.weixin.dao.WeixinNewsitemDao;
+import com.jeecg.p3.weixin.dao.WeixinNewstemplateDao;
 import com.jeecg.p3.weixin.entity.BaseGraphic;
 import com.jeecg.p3.weixin.entity.UploadGraphic;
 import com.jeecg.p3.weixin.entity.WeixinNewsitem;
 import com.jeecg.p3.weixin.entity.WeixinNewstemplate;
-import com.jeecg.p3.weixin.dao.WeixinNewsitemDao;
-import com.jeecg.p3.weixin.dao.WeixinNewstemplateDao;
+import com.jeecg.p3.weixin.service.WeixinNewstemplateService;
+import com.jeecg.p3.weixin.util.WeixinUtil;
+import com.jeecg.p3.weixin.util.WxErrCodeUtil;
 
 /**
  * 描述：</b>图文模板表<br>
@@ -80,6 +79,15 @@ public class WeixinNewstemplateServiceImpl implements WeixinNewstemplateService 
 		PageList<WeixinNewstemplate> result = new PageList<WeixinNewstemplate>();
 		Integer itemCount = weixinNewstemplateDao.count(pageQuery);
 		List<WeixinNewstemplate> list = weixinNewstemplateDao.queryPageList(pageQuery,itemCount);
+		//author:sunkai--date:2018-10-08--for:上传状态转译
+		for(WeixinNewstemplate newsTemplate:list){
+			if(newsTemplate.getUploadType().equals("2")){
+				if(newsTemplate.getUpdateTime() != null && newsTemplate.getUploadTime() != null && newsTemplate.getUpdateTime().after(newsTemplate.getUploadTime())){
+					newsTemplate.setUploadStatus("1");
+				}
+			}
+		}
+		//author:sunkai--date:2018-10-08--for:上传状态转译
 		Pagenation pagenation = new Pagenation(pageQuery.getPageNo(), itemCount, pageQuery.getPageSize());
 		result.setPagenation(pagenation);
 		result.setValues(list);
@@ -89,130 +97,10 @@ public class WeixinNewstemplateServiceImpl implements WeixinNewstemplateService 
 	//update-begin--Author:zhangweijian  Date: 20180720 for：获取所有图文素材
 	//获取所有图文素材
 	@Override
-	public List<WeixinNewstemplate> getAllItems(String jwid) {
-		return weixinNewstemplateDao.getAllItems(jwid);
+	public List<WeixinNewstemplate> getAllItems(String jwid,String uploadType) {
+		return weixinNewstemplateDao.getAllItems(jwid,uploadType);
 	}
 	//update-end--Author:zhangweijian  Date: 20180720 for：获取所有图文素材
 
-	//update-begin--Author:zhangweijian  Date: 20180802 for：上传图文素材到微信
-	//上传图文素材
-	@Transactional(rollbackFor = {Exception.class})
-	@Override
-	public String uploadNewstemplate(String id,String jwid) {
-		String message=null;
-		WeixinNewstemplate newsTemplate=weixinNewstemplateDao.get(id);
-		//1.根据id获取当前模板的所有图文
-		List<WeixinNewsitem> newsItems=weixinNewsitemDao.queryByNewstemplateId(id);
-		if(newsItems.size()>0){
-			//2.遍历所有的图文
-			List<BaseGraphic> baseGraphicList = new ArrayList<BaseGraphic>();
-			for(int i=0;i<newsItems.size();i++){
-				//3.1装载图文参数
-				WeixinNewsitem newsItem=newsItems.get(i);
-				BaseGraphic baseGraphic=new BaseGraphic();
-				baseGraphic.setAuthor(newsItem.getAuthor());
-				baseGraphic.setTitle(newsItem.getTitle());
-				baseGraphic.setContent_source_url(newsItem.getUrl());
-				baseGraphic.setDigest(newsItem.getDescription());
-				baseGraphic.setThumb_media_id(this.uploadPhoto(newsItem.getImagePath(),jwid));
-				baseGraphic.setContent(this.updateContent(newsItem.getContent(),jwid));
-				baseGraphicList.add(baseGraphic);
-				//3.2更新图文素材信息
-				newsItem.setThumbMediaId(baseGraphic.getThumb_media_id());
-				newsItem.setContent(baseGraphic.getContent());
-				weixinNewsitemDao.update(newsItem);
-			}
-			UploadGraphic graphic = new UploadGraphic();
-			graphic.setArticles(baseGraphicList);
-			JSONObject resultJson=uploadGroupNewsTemplate(graphic,jwid);
-			if(resultJson.containsKey("media_id")){
-				newsTemplate.setMediaId(resultJson.getString("media_id"));
-				newsTemplate.setUploadTime(new Date());
-				//update-begin--Author:zhangweijian  Date: 20180807 for：上传成功状态
-				//"2":上传成功；"3"：上传失败
-				newsTemplate.setUploadType("2");
-				//update-end--Author:zhangweijian  Date: 20180807 for：上传成功状态
-				weixinNewstemplateDao.update(newsTemplate);
-				message= "图文素材上传成功！";
-			}else{
-				//update-begin--Author:zhangweijian  Date: 20180807 for：上传成功状态
-				newsTemplate.setUploadTime(new Date());
-				newsTemplate.setUploadType("3");
-				weixinNewstemplateDao.update(newsTemplate);
-				//update-end--Author:zhangweijian  Date: 20180807 for：上传成功状态
-				message= "图文素材上传失败，错误信息："+resultJson.toString();
-			}
-		}else{
-			message="该图文模板尚未添加图文消息！";
-		}
-		return message;
-	}
-
-	//替换微信图文
-	private String updateContent(String content, String jwid) {
-		//获取token方法替换
-		String accessToken =WeiXinHttpUtil.getRedisWeixinToken(jwid);
-		String baseImageUrl = ResourceUtil.getWebProjectPath();
-		String domain = doMain;
-		String[] urls = ReadImgUrls.getImgs(content);
-		if(urls!=null){
-			for(String url:urls){
-				if(url.indexOf("mmbiz.qpic.cn")!=-1){
-					continue;
-				}
-				String relativeImgurl =url.replace(domain,"");
-				String tempimgurl ="";
-				if(relativeImgurl.startsWith("http")){
-					tempimgurl = relativeImgurl;
-				}else{
-					tempimgurl = baseImageUrl + relativeImgurl;
-				}
-				JSONObject retObj=JwSendMessageAPI.uploadImgReturnObj(accessToken, tempimgurl);
-				if(null!=retObj&&retObj.containsKey("url")){
-					String newUrl=retObj.getString("url");
-					content = content.replace(url, newUrl);
-					System.out.println("正文图片"+relativeImgurl+"同步微信成功!\r\n");
-				}else{
-					System.out.println("正文图片"+relativeImgurl+"同步微信成功!\r\n");
-				}
-			}
-		}
-		return content;
-	}
 	
-	//图片上传微信服务器
-	private String uploadPhoto(String imagePath, String jwid) {
-		String media_id="";
-		HttpServletRequest request =((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-		//获取token方法替换
-		String accessToken =WeiXinHttpUtil.getRedisWeixinToken(jwid);
-		String url=request.getSession().getServletContext().getRealPath("/")+imagePath;
-		System.out.println(url);
-		JSONObject jsonObj=WeixinUtil.sendMedia("image", url, accessToken);
-		if(jsonObj!=null){
-			if(jsonObj.containsKey("errcode")){
-				String errcode = jsonObj.getString("errcode");
-				String errmsg = jsonObj.getString("errmsg");
-				System.out.println("图片同步微信服务器失败【errcode="+errcode+"】【errmsg="+errmsg+"】");
-			}else{
-				System.out.println("图片素材同步微信服务器成功");
-				media_id = jsonObj.getString("media_id");
-			}
-		}
-		return media_id;
-	}
-
-	//上传图文素材
-	private JSONObject uploadGroupNewsTemplate(UploadGraphic graphic, String jwid) {
-		//获取token方法替换
-		String accessToken =WeiXinHttpUtil.getRedisWeixinToken(jwid);
-		if(accessToken!=null){
-			String requestUrl = upload_group_news_url.replace("ACCESS_TOKEN", accessToken);
-			JSONObject obj = JSONObject.fromObject(graphic);
-			JSONObject result = WeixinUtil.httpRequest(requestUrl, "POST", obj.toString());
-			return result;
-		}
-		return null;
-	}
-	//update-begin--Author:zhangweijian  Date: 20180802 for：上传图文素材到微信
 }

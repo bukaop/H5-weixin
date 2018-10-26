@@ -8,13 +8,14 @@
 		<div class="row">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<button type="button" class="btn btn-primary" id="formSubmit"><span class="glyphicon glyphicon-ok"></span> 提交</button>
+					<button type="button" class="btn btn-primary" onclick="beforesubmit()" id="formSubmit"><span class="glyphicon glyphicon-ok"></span> 提交</button>
 					<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/commonweixin/back/myJwWebJwid/list.do')"><span class="glyphicon glyphicon-circle-arrow-left"></span> 返回</button>
 				</div>
 				<div class="panel-body">
 					<form class="form-horizontal" role="form" id="dailogForm" action="$!{basePath}/commonweixin/back/myJwWebJwid/doEdit.do" method="POST">
 						 <input type="hidden" id="btn_sub" class="btn_sub" />
 						 <input type="hidden" value="$!{myJwWebJwid.id}" name="id" id="id" />
+						 <input type="hidden" value="$!{myJwWebJwid.authType}" name="authType" id="authType" />
 							<div>
                                 <span style="color:#f00;text-indent:1em">温馨提示：</span>
 								<br/>
@@ -83,8 +84,8 @@
 								<div class="col-sm-8">
     							    <label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">微信AppSecret</label>
     							    <div class="col-sm-10">
-    							      <input type="text" value="$!{myJwWebJwid.weixinAppSecret}" name="weixinAppSecret" id="weixinAppSecret" class="form-control" datatype="*"/>
-    							    </div>
+    							      <input type="text" value="$!{myJwWebJwid.weixinAppSecret}" name="weixinAppSecret" id="weixinAppSecret" class="form-control" #if($!{myJwWebJwid.authType}!="2") datatype="*" #else#end/>
+									</div>
     							</div>
 								<div class="col-sm-4">
     								<label for="inputEmail3" class="col-sm-4 control-label" style="text-align:left;">TOEKN(令牌)</label>
@@ -126,4 +127,11 @@ $("#uploadify").uploader(opts,function(data){
 	$("#img").val(data.obj);  
  	$("#pic_view").attr("src",'$!{basePath}/upload/img/commonweixin/' + data.obj);  
 });
+
+//提交表单前，清除所有input包含空格的值
+function beforesubmit(){
+	$('input[type=text]').each(function(){
+		$(this).val($(this).val().replace(/\s/g,""));
+    })
+}
 </script>

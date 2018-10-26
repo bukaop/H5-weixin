@@ -25,21 +25,16 @@ public interface WeixinNewstemplateService {
 	
 	public PageList<WeixinNewstemplate> queryPageList(PageQuery<WeixinNewstemplate> pageQuery);
 
-	//update-begin--Author:zhangweijian  Date: 20180720 for：获取所有图文素材
+	//update-begin--Author:zhangweijian  Date: 20180820 for：获取所有图文素材
 	/**
 	 * @param jwid 
+	 * @param uploadType 
 	 * @功能：获取所有图文素材
 	 * @return
 	 */
-	public List<WeixinNewstemplate> getAllItems(String jwid);
-	//update-end--Author:zhangweijian  Date: 20180720 for：获取所有图文素材
+	public List<WeixinNewstemplate> getAllItems(String jwid, String uploadType);
+	//update-end--Author:zhangweijian  Date: 20180820 for：获取所有图文素材
 
-	//update-begin--Author:zhangweijian  Date: 20180802 for：新增media_id字段
-	/**
-	 * @param jwid 
-	 * @功能：上传图文素材
-	 */
-	public String uploadNewstemplate(String id, String jwid);
-	//update-end--Author:zhangweijian  Date: 20180802 for：新增media_id字段
+
 }
 

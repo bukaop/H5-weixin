@@ -67,8 +67,8 @@ h1{ margin-top: 160px; color: #0096cd; font-family: "sans-serif"; font-size: 32p
 			<h1 class="center-block" style="width:290px;font-size:x-large;text-align:center">$!{logoTitle.title1}</h1>
 			<form action="../system/login.do" id="loginform" class="form-signin" role="form" method="post">
 				<input type="hidden" name="jwid" id="jwid" value="">
-				<input type="text" name="username" id="username" class="form-control" placeholder="用户名" required autofocus style="background:url('css/images/u.png') 10px center no-repeat #fff; text-indent:30px;"> <br/>
-				<input type="password" name="password"  id="password"  class="form-control" placeholder="密码" required autofocus style="background:url('css/images/u.png') 10px center no-repeat #fff; text-indent:30px;margin-bottom:0"> <br/>
+				<input type="text" name="username" id="username" class="form-control" placeholder="用户名" value="admin" required autofocus style="background:url('css/images/u.png') 10px center no-repeat #fff; text-indent:30px;"> <br/>
+				<input type="password" name="password"  id="password"  class="form-control" placeholder="密码" value="123456" required autofocus style="background:url('css/images/u.png') 10px center no-repeat #fff; text-indent:30px;margin-bottom:0"> <br/>
 				<input type="text" id="randCode" name="randCode" class="form-control" placeholder="验证码" required autofocus style="background:url('css/images/u.png') 10px center no-repeat #fff; text-indent:30px;width:170px;float:left">
 					<img style="float:left;margin-left:15px;height:44px;width:110px" scr="javascript:location.href='/randCodeImage.do" id="randCodeImage"/> 
 					<br/>

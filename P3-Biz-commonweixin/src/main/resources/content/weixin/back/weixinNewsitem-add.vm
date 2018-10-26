@@ -128,6 +128,8 @@
     							<div id="files" class="files">
     								<i style="height:110px;overflow:hidden;display:inline-block;width:100;"><img src="$!{basePath}/content/weixin/plug-in/imgs/timg.jpg" width="100px" height="100px" /></i>
     							</div>
+								<input type="hidden" name="showCoverPic" value="1"  class="showCoverPic"/>
+								<input type="checkbox" checked id="showCoverPic" style="float: left;margin-top: 3px;margin-right: 10px;"/><span>封面图片显示在正文中</span>
     							 <div id="progress" class="progress">
     						        <div class="progress-bar progress-bar-success"></div>
     						    </div>
@@ -188,8 +190,7 @@
 			   					</div>
 			   				</div>
 			   				<div class="editor-right" >
-					  			<script type="text/plain" id="content" name="content">
-				     			</script>
+					  			<script type="text/plain" id="content" name="content"></script>
 			  				</div>
 		   				</div>
                         </table>
@@ -204,7 +205,6 @@
 </div>
 <div style="text-align:center;margin-top:10px">
 	<button type="button" class="btn btn-primary" id="formSubmit1"><span class="glyphicon glyphicon-ok"></span> 保存</button>
-	<button type="button" class="btn btn-primary" id="viewButton"><i class="fa fa-eye"></i> 预览</button>
 </div>
 <!--手机预览 BEGIN-->
 <div id="previewbox">
@@ -216,12 +216,15 @@
 <script type="text/javascript" src="$!{basePath}/plug-in/js/Validform_v5.3.2.js"></script> 
 <script type="text/javascript" src="$!{basePath}/plug-in/js/forminit.p3.js"></script> 
 <script >
+$("#showCoverPic").click(function(){
+	if($("#showCoverPic").is(":checked")){
+		$(".showCoverPic").val("1");
+	}else{
+		$(".showCoverPic").val("0");
+	}
+})
 //初始化加载数据
 $(function(){
-	//手机预览
-	$("#viewButton").click(function(){
-		previewboxShow();
-	});
 	initMySheetTemplate(1);
 	
 	//实例化文本编辑器
@@ -284,49 +287,6 @@ function change(type){
 	}
 }
 </script>
-<!--手机预览 BEGIN-->
-<script>
-function previewboxNowDate(){
-  var now= new Date();
-  var year=now.getFullYear();
-  var month=now.getMonth()+1;
-  var strDate=now.getDate();
-  if (month >= 1 && month <= 9) {
-      month = "0" + month;
-  }
-  if (strDate >= 0 && strDate <= 9) {
-      strDate = "0" + strDate;
-  }
-  return year+"-"+month+"-"+strDate;
-} 
-//关闭预览框
-function previewboxClose(){
-	$("#previewbox").hide();
-}
-//预览框添加内容
-function previewboxShow(flag){
-	var authorHref = $("#url").val();
-	var href = "";
-	var content=$("#content").html();
-	if(!authorHref){
-		authorHref = "";
-	}else{
-		authorHref ="href= '"+authorHref+"' ";
-		href = '<a style="font-size:12px;color:#607fa6" href="'+$("#url").val()+'" target="_blank" id="post-user">阅读原文</a>';
-	}
-	var previewboxTitle = "<div class='preview-title'>"+$("#title").val()+"</div>";
-	var previewUserAndDate ="<div><em class='preview-date'>"+previewboxNowDate()+"</em> <a class = 'preview-author' "+authorHref+" target='_blank'>"+$("#author").val()+"</a>";
-	$("#previewContent").html(previewboxTitle+previewUserAndDate+content + '<div>'+href+'<em style="color:#8c8c8c;font-style:normal;font-size:12px;">阅读 100000+</em></div>');
-	if(!flag){
-		if ($("#previewbox").css("display") == "block") {
-	         $("#previewbox").hide();
-	     } else {
-	        $("#previewbox").show();
-	    }
-	}
-}
-</script>
-<!--手机预览 END-->
 <script >
 //初始化单个样式库
 var mySheetTemplate = "";

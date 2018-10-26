@@ -42,7 +42,9 @@ public class syncFansInfo implements Callable<Boolean> {
 				//2.将粉丝列表信息存入数据库
 				String openId=openIdArr.get(i).toString();
 				//3.判断当前粉丝在表中是否存在
-				WeixinGzuser gzuserInfo=weixinGzuserDao.queryByOpenId(openId);
+				//update-begin--Author:zhangweijian  Date: 20180820 for：添加jwid查询条件
+				WeixinGzuser gzuserInfo=weixinGzuserDao.queryByOpenId(openId,jwid);
+				//update-end--Author:zhangweijian  Date: 20180820 for：添加jwid查询条件
 				//4.不存在，添加
 				if(gzuserInfo==null){
 					WeixinGzuser newGzuser=new WeixinGzuser();

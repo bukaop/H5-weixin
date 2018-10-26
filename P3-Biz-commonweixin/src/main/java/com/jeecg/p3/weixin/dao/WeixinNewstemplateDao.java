@@ -19,14 +19,15 @@ public interface WeixinNewstemplateDao extends GenericDao<WeixinNewstemplate>{
 	
 	public List<WeixinNewstemplate> queryPageList(PageQuery<WeixinNewstemplate> pageQuery,Integer itemCount);
 
-	//update-begin--Author:zhangweijian  Date: 20180720 for：获取所有图文素材
+	//update-begin--Author:zhangweijian  Date: 20180820 for：获取所有图文素材
 	/**
 	 * @param jwid 
+	 * @param uploadType 
 	 * @功能：获取所有图文素材
 	 * @return
 	 */
-	public List<WeixinNewstemplate> getAllItems(String jwid);
-	//update-end--Author:zhangweijian  Date: 20180720 for：获取所有图文素材
+	public List<WeixinNewstemplate> getAllItems(String jwid, String uploadType);
+	//update-end--Author:zhangweijian  Date: 20180820 for：获取所有图文素材
 	
 }
 

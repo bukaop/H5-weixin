@@ -54,12 +54,15 @@ public interface WeixinGzuserService {
 	 */
 	public List<WeixinGzuser> batchGetGzUserInfo(List<Map<String, String>> user_list, String accessToken) throws Exception;
 	
+	//update-begin--Author:zhangweijian  Date: 20180820 for：根据OpenId查询粉丝信息
 	/**
-	 * 根据OpenId查询粉丝数据
+	 * 根据OpenId查询粉丝信息
+	 * @param jwid
 	 * @param openId
 	 * @return
 	 */
-	public WeixinGzuser queryByOpenId(String openId);
+	public WeixinGzuser queryByOpenId(String openId,String jwid);
+	//update-end--Author:zhangweijian  Date: 20180820 for：根据OpenId查询粉丝信息
 	
 	/**
 	 * 根据微信用户OpenId和微信公众号，获取微信用户的昵称等信息

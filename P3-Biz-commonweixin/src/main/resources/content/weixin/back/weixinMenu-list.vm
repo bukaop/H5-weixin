@@ -84,13 +84,13 @@
 																		#if($!{info.orders}=="13")子菜单1*3#end
 																		#if($!{info.orders}=="14")子菜单1*4#end
 																		#if($!{info.orders}=="15")子菜单1*5#end
-																		#if($!{info.orders}=="2")二级菜单2#end
+																		#if($!{info.orders}=="2")一级菜单2#end
 																		#if($!{info.orders}=="21")子菜单2*1#end
 																		#if($!{info.orders}=="22")子菜单2*2#end
 																		#if($!{info.orders}=="23")子菜单2*3#end
 																		#if($!{info.orders}=="24")子菜单2*4#end
 																		#if($!{info.orders}=="25")子菜单2*5#end
-																		#if($!{info.orders}=="3")三级菜单3#end
+																		#if($!{info.orders}=="3")一级菜单3#end
 																		#if($!{info.orders}=="31")子菜单3*1#end
 																		#if($!{info.orders}=="32")子菜单3*2#end
 																		#if($!{info.orders}=="33")子菜单3*3#end
@@ -126,6 +126,8 @@
 		</div>
 	</div>
 </body>
+<input type="hidden" id="basePath" value="$!{basePath}">
+<script type="text/javascript" src="$!{basePath}/content/weixin/js/checkPermission.js"></script> 
 <script type="text/javascript" src="$!{basePath}/content/weixin/js/treeTable/jquery.treeTable.js"></script>
 </html>
 <script>
@@ -163,7 +165,7 @@ $(function(){
 //同步菜单
 function doSyncMenu(){
 	jQuery.ajax({
-		url:'$!{basePath}/menuManagerController/doSyncMenu.do',
+		url:'$!{basePath}/weixin/back/weixinMenu/doSyncMenu.do',
 		type:'post',
 		dataType:'json',
 		success:function(data){

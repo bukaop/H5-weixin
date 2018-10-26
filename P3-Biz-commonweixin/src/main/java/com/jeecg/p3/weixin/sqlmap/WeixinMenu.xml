@@ -305,17 +305,17 @@
 	</select>
 	
 	<!-- 根据orders获取父级id -->
-	<select id="getFatherIdByorders" parameterType="java.lang.String" resultType="java.lang.String">
+	<select id="getFatherIdByorders" parameterType="Object" resultType="java.lang.String">
 		SELECT id 
 		FROM weixin_menu
-		WHERE orders=LEFT(#{orders},1)
+		WHERE orders=LEFT(#{orders},1) AND jwid =#{jwid} AND length(#{orders})>1
 	</select>
 	
 	<!-- 根据orders查询菜单信息 -->
-	<select id="queryByOrders" parameterType="java.lang.String" resultType="com.jeecg.p3.weixin.entity.WeixinMenu">
+	<select id="queryByOrders" parameterType="Object" resultType="com.jeecg.p3.weixin.entity.WeixinMenu">
 		SELECT * 
 		FROM weixin_menu
-		WHERE orders=#{orders}
+		WHERE orders=#{orders} AND jwid =#{jwid}
 	</select>
 	
 	<!-- 根据fatherId查询其子级菜单 -->

@@ -136,7 +136,7 @@ function goUpate(newstemplateId){
 //预览图文素材
 function preview(newstemplateId){
 	var jwid='$!{jwid}';
-	var url = "$!{basePath}/weixin/back/weixinCommon/goContent.do?&id="+newstemplateId+"&jwid="+jwid;
+	var url = "$!{basePath}/weixinNewsController/goContent.do?&id="+newstemplateId+"&jwid="+jwid;
 	window.open(url);
 }
 function previewUrl(url){

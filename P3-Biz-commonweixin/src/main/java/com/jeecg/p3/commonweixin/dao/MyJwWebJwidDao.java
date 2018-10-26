@@ -69,5 +69,22 @@ public interface MyJwWebJwidDao extends GenericDao<MyJwWebJwid>{
 	 */
 	public void updateUserJwid(String jwid, String newJwid);
 	//update-end--Author:zhangweijian  Date: 20180808 for：变更系统公众号表的公众号原始ID
+
+	//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	/**
+	 * @功能：根据jwid和用户id查询公众号信息
+	 */
+	public MyJwWebJwid queryJwidByJwidAndUserId(String jwid, String systemUserid);
+	//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	
+	/**
+	 * @功能：根据jwid和时间查询公众号粉丝量（无时间为累计量）
+	 */
+	public Integer queryGzuserCount(String jwid,String refDate);
+	
+	/**
+	 * @功能：根据jwid和时间查询公众号消息量（无时间为累计量）
+	 */
+	public Integer queryMsgCount(String jwid,String refDate);
 }
 

@@ -8,7 +8,7 @@
 		<div class="row">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-	        	<button type="button" class="btn btn-primary" id="formSubmit"><span class="glyphicon glyphicon-ok"></span> 保存</button>
+	        	<button type="button" class="btn btn-primary" id="formSubmit" onclick="beforesubmit()"><span class="glyphicon glyphicon-ok"></span> 保存</button>
 				<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/weixin/back/weixinMenu/list.do')"><span class="glyphicon glyphicon-circle-arrow-left"></span> 返回</button>
 				</div>
 					<div class="panel-body">
@@ -184,5 +184,13 @@ function getsucaiList(msgType){
 			alert(data.msg); 
 		}
 	})
+}
+
+//提交表单前，清除所有input包含空格的值
+function beforesubmit(){
+	$('input[type=text]').each(function(){
+		$(this).val($(this).val().replace(/\s/g,""));
+    })
+	$("#url").val($("#url").val().replace(/\s/g,""));
 }
 </script>

@@ -71,5 +71,16 @@ public interface MyJwWebJwidService {
 	 */
 	public void switchDefaultOfficialAcco(String jwid, String newJwid);
 	//update-end-zhangweijian-----Date:20180808---for:变更公众号原始ID
+
+	//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	/**
+	 * @功能:根据jwid和用户id查询公众号信息
+	 */
+	public MyJwWebJwid queryJwidByJwidAndUserId(String jwid, String systemUserid);
+	//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	
+	public Integer queryGzuserCount(String jwid,String refDate);
+	
+	public Integer queryMsgCount(String jwid,String refDate);
 }
 

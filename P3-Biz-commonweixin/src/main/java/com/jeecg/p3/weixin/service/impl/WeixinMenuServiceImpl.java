@@ -58,18 +58,19 @@ public class WeixinMenuServiceImpl implements WeixinMenuService {
 		return result;
 	}
 
+	//update-begin--Author:zhangweijian Date:20181017 for：添加jwid参数
 	//根据orders获取父级id
 	@Override
-	public String getFatherIdByorders(String orders) {
-		return weixinMenuDao.getFatherIdByorders(orders);
+	public String getFatherIdByorders(String orders, String jwid) {
+		return weixinMenuDao.getFatherIdByorders(orders, jwid);
 	}
 
 	//根据orders查询菜单信息
 	@Override
-	public WeixinMenu queryByOrders(String orders) {
-		return weixinMenuDao.queryByOrders(orders);
+	public WeixinMenu queryByOrders(String orders,String jwid) {
+		return weixinMenuDao.queryByOrders(orders,jwid);
 	}
-
+	//update-end--Author:zhangweijian Date:20181017 for：添加jwid参数
 	//根据fatherId查询其子级菜单
 	@Override
 	public int getSonMenuByFatherId(String fatherId) {

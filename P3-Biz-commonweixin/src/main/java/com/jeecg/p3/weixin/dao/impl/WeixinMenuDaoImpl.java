@@ -34,18 +34,25 @@ public class WeixinMenuDaoImpl extends GenericDaoDefault<WeixinMenu> implements 
 		return (List<WeixinMenu>)super.query("queryPageList",wrapper);
 	}
 
+	//update-begin--Author:zhangweijian Date:20181017 for：添加jwid参数
 	//根据orders获取父级id
 	@Override
-	public String getFatherIdByorders(String orders) {
-		return (String) super.queryOne("getFatherIdByorders", orders);
+	public String getFatherIdByorders(String orders, String jwid) {
+		Map<String, Object> param=Maps.newConcurrentMap();
+		param.put("orders", orders);
+		param.put("jwid", jwid);
+		return (String) super.queryOne("getFatherIdByorders", param);
 	}
 
 	//根据orders查询菜单信息
 	@Override
-	public WeixinMenu queryByOrders(String orders) {
-		return (WeixinMenu) super.queryOne("queryByOrders", orders);
+	public WeixinMenu queryByOrders(String orders, String jwid) {
+		Map<String, Object> param=Maps.newConcurrentMap();
+		param.put("orders", orders);
+		param.put("jwid", jwid);
+		return (WeixinMenu) super.queryOne("queryByOrders", param);
 	}
-
+	//update-end--Author:zhangweijian Date:20181017 for：添加jwid参数
 	//根据fatherId查询其子级菜单
 	@SuppressWarnings("unchecked")
 	@Override

@@ -3,30 +3,30 @@ package com.jeecg.p3.weixin.web.back;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.velocity.VelocityContext;
+import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.jeecgframework.p3.core.logger.Logger;
 import org.jeecgframework.p3.core.logger.LoggerFactory;
+import org.jeecgframework.p3.core.util.SystemTools;
+import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
+import org.jeecgframework.p3.core.utils.common.PageQuery;
+import org.jeecgframework.p3.core.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.jeecgframework.p3.core.util.SystemTools;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.velocity.VelocityContext;
-import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.jeecgframework.p3.core.common.utils.AjaxJson;
-import org.jeecgframework.p3.core.utils.common.PageQuery;
-
+import com.jeecg.p3.commonweixin.entity.MyJwWebJwid;
 import com.jeecg.p3.commonweixin.util.Constants;
+import com.jeecg.p3.system.service.MyJwWebJwidService;
 import com.jeecg.p3.weixin.entity.WeixinTexttemplate;
-import com.jeecg.p3.weixin.enums.WeixinMsgTypeEnum;
 import com.jeecg.p3.weixin.service.WeixinTexttemplateService;
-import org.jeecgframework.p3.core.web.BaseController;
 
  /**
  * 描述：</b>文本模板表<br>
@@ -41,7 +41,8 @@ public class WeixinTexttemplateController extends BaseController{
   public final static Logger log = LoggerFactory.getLogger(WeixinTexttemplateController.class);
   @Autowired
   private WeixinTexttemplateService weixinTexttemplateService;
-  
+  @Autowired
+	private MyJwWebJwidService myJwWebJwidService;
 /**
   * 列表页面
   * @return
@@ -57,6 +58,16 @@ public void list(@ModelAttribute WeixinTexttemplate query,HttpServletResponse re
 	 	//update-begin--Author:zhangweijian  Date: 20180720 for：添加jwid查询条件
 	 	String jwid =  request.getSession().getAttribute("jwid").toString();
 	 	query.setJwid(jwid);
+	 	//update-begin--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
+	 	//判断是否有权限
+		String systemUserid = request.getSession().getAttribute("system_userid").toString();
+		//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		MyJwWebJwid jw = myJwWebJwidService.queryJwidByJwidAndUserId(jwid,systemUserid);
+		//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		if(jw==null){
+	 		query.setJwid("-");
+	 	}
+	 	//update-end--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
 	 	//update-end--Author:zhangweijian  Date: 20180720 for：添加jwid查询条件
 		pageQuery.setQuery(query);
 		velocityContext.put("weixinTexttemplate",query);

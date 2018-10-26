@@ -67,14 +67,14 @@
 									            	<tr>		
 									            		##<td><input type="checkbox" name="ck" value="$!{info.id}" /></td>	
 																	<td>$!{info.templateName}</td>
-																	<td>#if($!{info.templateContent}&&$!{info.templateContent.length()}>100)$!{info.templateContent.substring(0,100)}......#else $!{info.templateContent}#end</td>
+																	<td style="width:450px">#if($!{info.templateContent}&&$!{info.templateContent.length()}>100)$!{info.templateContent.substring(0,100)}......#else $!{info.templateContent}#end</td>
 																	##<td>$!{info.jwid}</td>
 																	<td>$!dateTool.format("yyyy-MM-dd hh:mm:ss",$!{info.createTime})</td>
 																	##<td>$!dateTool.format("yyyy-MM-dd",$!{info.updateTime})</td>
 										                <td class="last">
 							                			<a class="btn btn-primary btn-xs" href="javascript:doUrl('$!{basePath}/weixin/back/weixinTexttemplate/toEdit.do?id=$!{info.id}')" ><i class="fa fa-edit"></i> 编辑</a>
 							                			<a class="btn btn-danger btn-xs" href="javascript:delData('$!{basePath}/weixin/back/weixinTexttemplate/doDelete.do?id=$!{info.id}')"><i class="fa fa-trash-o"></i> 删除</a>
-							                			<a class="btn btn-info btn-xs" href="javascript:void(0);" onclick="showModal('text','$!{info.id}')"><i class="fa fa-eye"></i> 预览</a>
+							                			<a class="btn btn-info btn-xs" href="javascript:void(0);" onclick="showModal('text','$!{info.id}')"><i class="fa fa-eye"></i> 本地预览</a>
 						                				</td>
 									           		</tr>
 									             #end
@@ -110,13 +110,15 @@
 					在这里添加一些文本
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-close"></i> 关闭</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
 	</div>
 </body>
+<input type="hidden" id="basePath" value="$!{basePath}">
 </html>
+<script type="text/javascript" src="$!{basePath}/content/weixin/js/checkPermission.js"></script>  
 <script>
 $("#ckAll").click(function(){ 
 	if($(this).prop("checked")){ 

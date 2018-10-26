@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jeecg.p3.commonweixin.entity.MyJwWebJwid;
 import com.jeecg.p3.commonweixin.util.Constants;
+import com.jeecg.p3.system.service.MyJwWebJwidService;
 import com.jeecg.p3.weixin.entity.WeixinSubscribe;
 import com.jeecg.p3.weixin.service.WeixinSubscribeService;
 
@@ -40,7 +42,9 @@ public class WeixinSubscribeController extends BaseController {
 	public final static Logger log = LoggerFactory.getLogger(WeixinSubscribeController.class);
 	@Autowired
 	private WeixinSubscribeService weixinSubscribeService;
-
+	@Autowired
+	private MyJwWebJwidService myJwWebJwidService;
+	
 	/**
 	 * 列表页面
 	 * 
@@ -53,6 +57,16 @@ public class WeixinSubscribeController extends BaseController {
 		PageQuery<WeixinSubscribe> pageQuery = new PageQuery<WeixinSubscribe>();
 		String jwid =  request.getSession().getAttribute("jwid").toString();
 	 	query.setJwid(jwid);
+	 	//update-begin--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
+	 	//判断是否有权限
+	 	String systemUserid = request.getSession().getAttribute("system_userid").toString();
+	 	//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	 	MyJwWebJwid jw = myJwWebJwidService.queryJwidByJwidAndUserId(jwid,systemUserid);
+	 	//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	 	if(jw==null){
+	 		query.setJwid("-");
+	 	}
+	 	//update-end--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
 		pageQuery.setPageNo(pageNo);
 		pageQuery.setPageSize(pageSize);
 		VelocityContext velocityContext = new VelocityContext();

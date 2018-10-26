@@ -113,7 +113,9 @@
 		</div><!-- /.modal -->
 	</div>
 </body>
+<input type="hidden" id="basePath" value="$!{basePath}">
 </html>
+<script type="text/javascript" src="$!{basePath}/content/weixin/js/checkPermission.js"></script> 
 <script>
 $("#ckAll").click(function(){ 
 	if($(this).prop("checked")){ 

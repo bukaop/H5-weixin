@@ -1,5 +1,8 @@
 package com.jeecg.p3.weixin.web.back;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +23,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+import com.jeecg.p3.commonweixin.entity.MyJwWebJwid;
+import com.jeecg.p3.system.service.MyJwWebJwidService;
 import com.jeecg.p3.weixin.entity.WeixinReceivetext;
+import com.jeecg.p3.weixin.service.WeixinGzuserService;
 import com.jeecg.p3.weixin.service.WeixinReceivetextService;
 
  /**
@@ -36,6 +43,10 @@ public class WeixinReceivetextController extends BaseController{
   public final static Logger log = LoggerFactory.getLogger(WeixinReceivetextController.class);
   @Autowired
   private WeixinReceivetextService weixinReceivetextService;
+  @Autowired
+  private MyJwWebJwidService myJwWebJwidService;
+  @Autowired
+  private WeixinGzuserService weixinGzuserService;
   
 /**
   * 列表页面
@@ -48,6 +59,16 @@ public void list(@ModelAttribute WeixinReceivetext query,HttpServletResponse res
 	 	PageQuery<WeixinReceivetext> pageQuery = new PageQuery<WeixinReceivetext>();
 	 	String jwid =  request.getSession().getAttribute("jwid").toString();
 	 	query.setToUserName(jwid);
+	 	//update-begin--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
+	 	//判断是否有权限
+	 	String systemUserid = request.getSession().getAttribute("system_userid").toString();
+	 	//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	 	MyJwWebJwid jw = myJwWebJwidService.queryJwidByJwidAndUserId(jwid,systemUserid);
+	 	//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+	 	if(jw==null){
+	 		query.setJwid("-");
+	 	}
+	 	//update-end--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
 	 	pageQuery.setPageNo(pageNo);
 	 	pageQuery.setPageSize(pageSize);
 	 	VelocityContext velocityContext = new VelocityContext();
@@ -153,6 +174,66 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 		return j;
 }
 
+/**
+ * 查询聊天记录
+ * @return
+ */
+@RequestMapping(value="queryChatLog",method = {RequestMethod.GET,RequestMethod.POST})
+@ResponseBody
+public AjaxJson queryChatLog(@RequestParam(required = true, value = "id" ) String id,HttpServletResponse response,HttpServletRequest request){
+	AjaxJson j = new AjaxJson();
+	try {
+		WeixinReceivetext weixinReceivetext = weixinReceivetextService.queryById(id);
+		List<Map<String,Object>> chats=weixinReceivetextService.queryAllChatLog(weixinReceivetext);
+		//遍历查询结果，获取消息类型
+		for(Map<String,Object> m:chats){
+			String msgtype = (String) m.get("msgtype");
+			String content = (String) m.get("content");
+			if("image".equals(msgtype)){
+				JSONObject json = (JSONObject) JSONObject.parse(content);
+				m.put("content", json.getString("PicUrl"));
+			}
+		}
+		j.setObj(chats);
+	} catch (Exception e) {
+		e.printStackTrace();
+		log.error(e.getMessage());
+		j.setSuccess(false);
+		j.setMsg("获取消息失败");
+	}
+	return j;
+}
 
+/**
+ *更新聊天信息
+ * @return
+ */
+@RequestMapping(value="updateChatLog",method = {RequestMethod.GET,RequestMethod.POST})
+@ResponseBody
+public AjaxJson updateChatLog(@RequestParam(required = true, value = "id" ) String id,HttpServletResponse response,HttpServletRequest request){
+	AjaxJson j = new AjaxJson();
+	try {
+		String inRecentTime = request.getParameter("inRecentTime");
+		WeixinReceivetext weixinReceivetext = weixinReceivetextService.queryById(id);
+		weixinReceivetext.setInRecentTime(inRecentTime);
+		List<Map<String,Object>> chats=weixinReceivetextService.queryAllChatLog(weixinReceivetext);
+		//遍历查询结果，获取消息类型
+		for(Map<String,Object> m:chats){
+			String msgtype = (String) m.get("msgtype");
+			String content = (String) m.get("content");
+			if("image".equals(msgtype)){
+				JSONObject json = (JSONObject) JSONObject.parse(content);
+				m.put("content", json.getString("PicUrl"));
+			}
+		}
+		j.setObj(chats);
+	} catch (Exception e) {
+		e.printStackTrace();
+		log.error(e.getMessage());
+		j.setSuccess(false);
+		j.setMsg("获取消息失败");
+	}
+	return j;
+}
 }
 

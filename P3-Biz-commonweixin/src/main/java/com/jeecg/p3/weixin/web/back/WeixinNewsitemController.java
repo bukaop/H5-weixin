@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.jeecgframework.p3.core.util.SystemTools;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.velocity.VelocityContext;
 import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,8 +30,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import org.jeecgframework.p3.core.common.utils.AjaxJson;
+import org.jeecgframework.p3.core.common.utils.RandomUtils;
 import org.jeecgframework.p3.core.common.utils.StringUtil;
 import org.jeecgframework.p3.core.utils.common.PageQuery;
 
@@ -127,6 +130,11 @@ public AjaxJson doAdd(@ModelAttribute WeixinNewsitem weixinNewsitem){
 		//update-end--Author:zhangweijian  Date: 20180724 for：获取素材最大序号
 		weixinNewsitem.setCreateTime(new Date());
 		weixinNewsitemService.doAdd(weixinNewsitem);
+		//update-begin--Author:sunkai  Date: 20181008 for：更新图文素材修改时间
+		WeixinNewstemplate weixinNewstemplate = weixinNewstemplateService.queryById(weixinNewsitem.getNewstemplateId());
+		weixinNewstemplate.setUpdateTime(new Date());
+		weixinNewstemplateService.doEdit(weixinNewstemplate);
+		//update-end--Author:sunkai  Date: 20181008 for：更新图文素材修改时间
 		j.setSuccess(true);
 		j.setMsg("保存成功");
 	} catch (Exception e) {
@@ -178,6 +186,11 @@ public AjaxJson doEdit(@ModelAttribute WeixinNewsitem weixinNewsitem,HttpServlet
 		String updateBy = (String)request.getSession().getAttribute(Constants.SYSTEM_USERID);
 		weixinNewsitem.setUpdateBy(updateBy);
 		weixinNewsitemService.doEdit(weixinNewsitem);
+		//update-begin--Author:sunkai  Date: 20181008 for：更新图文素材修改时间
+		WeixinNewstemplate weixinNewstemplate = weixinNewstemplateService.queryById(weixinNewsitem.getNewstemplateId());
+		weixinNewstemplate.setUpdateTime(new Date());
+		weixinNewstemplateService.doEdit(weixinNewstemplate);
+		//update-end--Author:sunkai  Date: 20181008 for：更新图文素材修改时间
 		j.setMsg("编辑成功");
 	} catch (Exception e) {
 		log.error(e.getMessage());
@@ -253,7 +266,11 @@ public  AjaxJson doUpload(MultipartHttpServletRequest request, HttpServletRespon
 		while(it.hasNext()){  
 		    //根据文件名称取文件  
 		    MultipartFile multifile = request.getFile(it.next());  
-		    String fileName = multifile.getOriginalFilename(); 
+		    //author:sunkai--date:2018-10-10--for:上传图片时更换图片名---
+		    String realFilename=multifile.getOriginalFilename();
+	        String fileExtension = realFilename.substring(realFilename.lastIndexOf("."));
+	        String fileName=UUID.randomUUID().toString().replace("-", "")+fileExtension;
+	        //author:sunkai--date:2018-10-10--for:上传图片时更换图片名---
 		    String filePath = "upload/files/"; 
 		    File file = new File(basePath+filePath);
 			if (!file.exists()) {
@@ -343,5 +360,24 @@ public AjaxJson getTemplate(@RequestParam String type){
 	return j;
 }
 
+//update-begin--Author:zhangweijian  Date: 20180820 for：获取模板素材
+/**
+ * @功能：获取模板素材
+ * @return
+ */
+@RequestMapping(value = "/getNewsTempate",method ={RequestMethod.GET, RequestMethod.POST})
+@ResponseBody
+public AjaxJson getNewsTempate(@RequestParam String templateId){
+	AjaxJson j = new AjaxJson();
+	try {
+		List<WeixinNewsitem> newsitems=weixinNewsitemService.queryByNewstemplateId(templateId);
+		j.setObj(newsitems);
+	} catch (Exception e) {
+		log.error(e.getMessage());
+		j.setSuccess(false);
+	}
+	return j;
+}
+//update-end--Author:zhangweijian  Date: 20180820 for：获取模板素材
 }
 

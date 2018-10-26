@@ -1,42 +1,45 @@
 package com.jeecg.p3.weixin.web.back;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
+import org.apache.velocity.VelocityContext;
+import org.jeecgframework.p3.core.common.utils.AjaxJson;
 import org.jeecgframework.p3.core.logger.Logger;
 import org.jeecgframework.p3.core.logger.LoggerFactory;
+import org.jeecgframework.p3.core.util.SystemTools;
+import org.jeecgframework.p3.core.util.WeiXinHttpUtil;
+import org.jeecgframework.p3.core.util.oConvertUtils;
+import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
+import org.jeecgframework.p3.core.utils.common.PageQuery;
+import org.jeecgframework.p3.core.utils.common.StringUtils;
+import org.jeecgframework.p3.core.web.BaseController;
+import org.jeewx.api.core.exception.WexinReqException;
+import org.jeewx.api.core.req.model.menu.WeixinButton;
+import org.jeewx.api.wxmenu.JwMenuAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.jeecgframework.p3.core.util.SystemTools;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.velocity.VelocityContext;
-import org.jeecgframework.p3.core.util.plugin.ViewVelocity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.jeecgframework.p3.core.common.utils.AjaxJson;
-import org.jeecgframework.p3.core.utils.common.PageQuery;
-import org.jeecgframework.p3.core.utils.common.StringUtils;
-
+import com.jeecg.p3.commonweixin.entity.MyJwWebJwid;
 import com.jeecg.p3.commonweixin.util.Constants;
+import com.jeecg.p3.system.service.MyJwWebJwidService;
 import com.jeecg.p3.weixin.entity.WeixinMenu;
-import com.jeecg.p3.weixin.entity.WeixinNewsitem;
-import com.jeecg.p3.weixin.entity.WeixinNewstemplate;
-import com.jeecg.p3.weixin.entity.WeixinTexttemplate;
 import com.jeecg.p3.weixin.enums.WeixinMenuTypeEnum;
 import com.jeecg.p3.weixin.enums.WeixinMsgTypeEnum;
 import com.jeecg.p3.weixin.service.WeixinMenuService;
-import com.jeecg.p3.weixin.service.WeixinNewsitemService;
-import com.jeecg.p3.weixin.service.WeixinNewstemplateService;
-import com.jeecg.p3.weixin.service.WeixinTexttemplateService;
-
-import org.jeecgframework.p3.core.web.BaseController;
+import com.jeecg.p3.weixin.util.WxErrCodeUtil;
 
  /**
  * 描述：</b>微信菜单表<br>
@@ -51,7 +54,8 @@ public class WeixinMenuController extends BaseController{
   public final static Logger log = LoggerFactory.getLogger(WeixinMenuController.class);
   @Autowired
   private WeixinMenuService weixinMenuService;
-  
+  @Autowired
+  private MyJwWebJwidService myJwWebJwidService;
 /**
   * 列表页面
   * @return
@@ -68,6 +72,16 @@ public void list(@ModelAttribute WeixinMenu query,HttpServletResponse response,H
 	 	//update-begin--Author:zhangweijian  Date: 20180720 for：添加jwid查询条件
 	 	String jwid =  request.getSession().getAttribute("jwid").toString();
 	 	query.setJwid(jwid);
+	 	//update-begin--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
+	 	//判断是否有权限
+		String systemUserid = request.getSession().getAttribute("system_userid").toString();
+		//update-begin--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		MyJwWebJwid jw = myJwWebJwidService.queryJwidByJwidAndUserId(jwid,systemUserid);
+		//update-end--Author:zhangweijian  Date: 20181008 for：根据jwid和用户id查询公众号信息
+		if(jw==null){
+	 		query.setJwid("-");
+	 	}
+	 	//update-end--Author:zhangweijian  Date: 20180928 for：无权限不能查看公众号数据
 	 	//update-end--Author:zhangweijian  Date: 20180720 for：添加jwid查询条件
 		pageQuery.setQuery(query);
 		WeixinMenuTypeEnum[] menuTypeEnums=WeixinMenuTypeEnum.values();
@@ -116,19 +130,22 @@ public void toAddDialog(HttpServletRequest request,HttpServletResponse response,
  */
 @RequestMapping(value = "/doAdd",method ={RequestMethod.GET, RequestMethod.POST})
 @ResponseBody
-public AjaxJson doAdd(@ModelAttribute WeixinMenu weixinMenu){
+public AjaxJson doAdd(@ModelAttribute WeixinMenu weixinMenu,HttpServletRequest request){
 	AjaxJson j = new AjaxJson();
 	try {
 		//添加创建时间
 		weixinMenu.setCreateTime(new Date());
 		//1.判断当前级是否存在
-		WeixinMenu otherMenu=weixinMenuService.queryByOrders(weixinMenu.getOrders());
+		//update-begin--Author:zhangweijian Date:20181017 for：添加jwid参数
+		String jwid =  request.getSession().getAttribute("jwid").toString();
+		WeixinMenu otherMenu=weixinMenuService.queryByOrders(weixinMenu.getOrders(),jwid);
+		//update-end--Author:zhangweijian Date:20181017 for：添加jwid参数
 		if(otherMenu!=null){
 			j.setSuccess(false);
 			j.setMsg("当前菜单位置已存在");
 		}else{
 			//获取fatherId
-			String fatherId= weixinMenuService.getFatherIdByorders(weixinMenu.getOrders());
+			String fatherId= weixinMenuService.getFatherIdByorders(weixinMenu.getOrders(),jwid);
 			//2.判断是不是父级
 			if(weixinMenu.getOrders().length()>1&&!StringUtils.isEmpty(fatherId)||weixinMenu.getOrders().length()==1){
 				//2.1不是父级，有父级，直接添加/是父级，直接添加
@@ -145,6 +162,7 @@ public AjaxJson doAdd(@ModelAttribute WeixinMenu weixinMenu){
 			}
 		}
 	} catch (Exception e) {
+		e.printStackTrace();
 		log.error(e.getMessage());
 		j.setSuccess(false);
 		j.setMsg("保存失败");
@@ -202,18 +220,29 @@ public AjaxJson doEdit(@ModelAttribute WeixinMenu weixinMenu,HttpServletRequest 
 			
 		}else{
 		//2.当前级是父级但不存在子级(或者当前级不是父级)
-			WeixinMenu otherMenu=weixinMenuService.queryByOrders(weixinMenu.getOrders());
+			//update-begin--Author:zhangweijian Date:20181017 for：添加jwid参数
+			String jwid =  request.getSession().getAttribute("jwid").toString();
+			// 查询新位置上原来是否存在菜单
+			WeixinMenu otherMenu=weixinMenuService.queryByOrders(weixinMenu.getOrders(),jwid);
+			//update-end--Author:zhangweijian Date:20181017 for：添加jwid参数
 			//判断当前级是否存在
 			if(otherMenu!=null&&weixinMenu.getId().equals(otherMenu.getId())||otherMenu==null){
 				//2.1存在，是本身，能编辑；不存在，能编辑
-				String fatherId=weixinMenuService.getFatherIdByorders(weixinMenu.getOrders());
-				if(StringUtils.isEmpty(fatherId)){
-					fatherId="";
+				String fatherId=weixinMenuService.getFatherIdByorders(weixinMenu.getOrders(),jwid);
+				//update-begin--Author:zhangweijian Date:20181017 for：当前菜单位置的父级不存在，请先添加一级菜单
+				if(weixinMenu.getOrders().length()>1&&StringUtils.isEmpty(fatherId)){
+					j.setSuccess(false);
+					j.setMsg("当前菜单位置的父级不存在，请先添加一级菜单");
+				}else{
+					if(StringUtils.isEmpty(fatherId)){
+						fatherId="";
+					}
+					weixinMenu.setFatherId(fatherId);
+					weixinMenuService.doEdit(weixinMenu);
+					j.setSuccess(true);
+					j.setMsg("编辑成功");
 				}
-				weixinMenu.setFatherId(fatherId);
-				weixinMenuService.doEdit(weixinMenu);
-				j.setSuccess(true);
-				j.setMsg("编辑成功");
+				//update-end--Author:zhangweijian Date:20181017 for：当前菜单位置的父级不存在，请先添加一级菜单
 			}else{
 				//2.2存在，不是本身，不能编辑
 				j.setSuccess(false);
@@ -259,6 +288,117 @@ public AjaxJson doDelete(@RequestParam(required = true, value = "id" ) String id
 		}
 		return j;
 }
+
+	@RequestMapping(value="/doSyncMenu",method={RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public AjaxJson doSyncMenu(HttpServletRequest request){
+		AjaxJson j=new AjaxJson();
+		//获取jwid
+		String jwid =  request.getSession().getAttribute("jwid").toString();
+		//根据jwid获取一级菜单
+		WeixinMenu queryFristMenu=new WeixinMenu();
+		queryFristMenu.setFatherId("");
+		queryFristMenu.setJwid(jwid);
+		List<WeixinMenu> firstMenus=weixinMenuService.queryMenusByJwid(queryFristMenu);
+		//获取token方法替换
+		String accessToken =WeiXinHttpUtil.getRedisWeixinToken(jwid);
+		if(oConvertUtils.isEmpty(accessToken)){
+			j.setSuccess(false);
+			j.setMsg("未获取到公众号accessToken");
+			return j;
+		}
+		//判断如果菜单为空的话，则调用删除菜单的接口
+		if(firstMenus.size()==0){
+			try {
+				JwMenuAPI.deleteMenu(accessToken);
+				j.setSuccess(true);
+				j.setMsg("同步微信菜单成功！");
+				return j;
+			} catch (WexinReqException e) {
+				e.printStackTrace();
+				//update-begin--Author:zhangweijian  Date: 20180903 for：提示信息优化
+				JSONObject code=JSONObject.fromObject(e.getMessage());
+				String errcode=code.getString("errcode");
+				j.setSuccess(false);
+				//author:sunkai--date:2018-09-26--for:菜单同步错误返回码信息转义
+				String msg = WxErrCodeUtil.testErrCode(errcode);
+				j.setMsg("微信菜单同步失败！"+msg);
+				//author:sunkai--date:2018-09-26--for:菜单同步错误返回码信息转义
+				//update-end--Author:zhangweijian  Date: 20180903 for：提示信息优化
+				return j;
+			}
+		}
+		//获取二级菜单
+		List<WeixinButton> resultList=new ArrayList<WeixinButton>();
+		for(int i=0;i<firstMenus.size();i++){
+			WeixinMenu queryChildMenu=new WeixinMenu();
+			queryChildMenu.setJwid(jwid);
+			queryChildMenu.setFatherId(firstMenus.get(i).getId());
+			List<WeixinMenu> childMenus=weixinMenuService.queryMenusByJwid(queryChildMenu);
+			if(childMenus.size()==0){
+				//组装菜单接口的参数结构体
+				resultList.add(combineBtn(firstMenus.get(i)));
+			}else{
+				//组装一级菜单名称
+				WeixinButton wxButton = new WeixinButton();
+				wxButton.setName(firstMenus.get(i).getMenuName());
+				//组装二级菜单接口的参数结构体
+				List<WeixinButton> childlist=new ArrayList<WeixinButton>();
+				for(int m=0;m<childMenus.size();m++){
+					childlist.add(combineBtn(childMenus.get(m)));
+				}
+				wxButton.setSub_button(childlist);
+				resultList.add(wxButton);
+			}
+		}
+		try {
+			JwMenuAPI.createMenu(accessToken, resultList);
+			j.setMsg("同步微信菜单成功！");
+			j.setSuccess(true);
+		} catch (WexinReqException e) {
+			//update-begin--Author:zhangweijian  Date: 20180903 for：提示信息优化
+			JSONObject code=JSONObject.fromObject(e.getMessage());
+			String errcode=code.getString("errcode");
+			j.setSuccess(false);
+			//author:sunkai--date:2018-09-26--for:菜单同步错误返回码信息转义
+			String msg = WxErrCodeUtil.testErrCode(errcode);
+			j.setMsg("微信菜单同步失败！"+msg);
+			//author:sunkai--date:2018-09-26--for:菜单同步错误返回码信息转义
+			//update-end--Author:zhangweijian  Date: 20180903 for：提示信息优化
+			e.printStackTrace();
+		}
+		return j;
+	}
+
+	/**
+	 * @功能：组装菜单接口的参数结构体
+	 * @param weixinMenu
+	 * @param listBtnSub
+	 */
+	private WeixinButton combineBtn(WeixinMenu weixinMenu) {
+		WeixinButton wxButton=new WeixinButton();
+		//网页链接类
+		if("view".equals(weixinMenu.getMenuType())){
+			wxButton.setName(weixinMenu.getMenuName());
+			wxButton.setType(weixinMenu.getMenuType());
+			wxButton.setUrl(weixinMenu.getUrl());
+		}
+		//消息触发类
+		if("click".equals(weixinMenu.getMenuType())){
+			wxButton.setName(weixinMenu.getMenuName());
+			wxButton.setType(weixinMenu.getMenuType());
+			wxButton.setKey(weixinMenu.getMenuKey());
+		}
+		//小程序类
+		if("miniprogram".equals(weixinMenu.getMenuType())){
+			wxButton.setName(weixinMenu.getMenuName());
+			wxButton.setType(weixinMenu.getMenuType());
+			wxButton.setUrl(weixinMenu.getUrl());
+			wxButton.setAppid(weixinMenu.getMiniprogramAppid());
+			wxButton.setPagepath(weixinMenu.getMiniprogramPagepath());
+		}
+		return wxButton;
+	}
 
 }
 

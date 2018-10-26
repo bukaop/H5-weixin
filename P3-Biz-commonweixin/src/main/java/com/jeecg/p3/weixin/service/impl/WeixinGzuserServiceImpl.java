@@ -79,6 +79,8 @@ public class WeixinGzuserServiceImpl implements WeixinGzuserService {
 		PageList<WeixinGzuser> result = new PageList<WeixinGzuser>();
 		Integer itemCount = weixinGzuserDao.count(pageQuery);
 		List<WeixinGzuser> list = weixinGzuserDao.queryPageList(pageQuery,itemCount);
+		//获取用户的标签名称
+		//TODO
 		Pagenation pagenation = new Pagenation(pageQuery.getPageNo(), itemCount, pageQuery.getPageSize());
 		result.setPagenation(pagenation);
 		result.setValues(list);
@@ -215,11 +217,18 @@ public class WeixinGzuserServiceImpl implements WeixinGzuserService {
     	return jsonList;
     }
 
+    //update-begin--Author:zhangweijian  Date: 20180820 for：根据openId和jwid查询粉丝信息
+    /**
+     * @功能：根据openId和jwid查询粉丝信息
+     * @param openId
+     * @param jwid
+     */
 	@Override
-	public WeixinGzuser queryByOpenId(String openId) {
-		return weixinGzuserDao.queryByOpenId(openId);
+	public WeixinGzuser queryByOpenId(String openId,String jwid) {
+		return weixinGzuserDao.queryByOpenId(openId,jwid);
 	}
-
+	//update-end--Author:zhangweijian  Date: 20180820 for：根据openId和jwid查询粉丝信息
+	
 	/**
 	 * 根据微信用户OpenId和微信公众号，获取微信用户的昵称等信息
 	 * @param openId
@@ -329,7 +338,7 @@ public class WeixinGzuserServiceImpl implements WeixinGzuserService {
 					List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>(2000);
 					int k=0;
 					//获取粉丝列表信息
-					String requestUrl=user_List_url.replace("NEXT_OPENID", "").replace("ACCESS_TOKEN", accessToken);;
+					String requestUrl=user_List_url.replace("NEXT_OPENID", "").replace("ACCESS_TOKEN", accessToken);
 					while(oConvertUtils.isNotEmpty(next_openid) && k<2000){
 						k++;
 						//调用接口获取粉丝列表(一次最多拉取10000)
@@ -349,7 +358,9 @@ public class WeixinGzuserServiceImpl implements WeixinGzuserService {
 							}
 							next_openid = jsonObj.getString("next_openid");
 							//使用next_openid继续获取下一页粉丝数据[循环]
-							requestUrl=user_List_url.replace("ACCESS_TOKEN",accessToken)+"&next_openid="+next_openid;
+							//update-begin--Author:zhangweijian Date:20181015 for：同步粉丝问题
+							requestUrl=user_List_url.replace("ACCESS_TOKEN",accessToken).replace("NEXT_OPENID", next_openid);
+							//update-end--Author:zhangweijian Date:20181015 for：同步粉丝问题
 						}
 					}
 					executor.shutdown();

@@ -1,6 +1,5 @@
 package com.jeecg.p3.weixin.task;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +64,6 @@ public class GzUserInfoTimer {
 			int count = 0;
 			int pageNo = 0;
 			int pageSize = 100;
-		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		    while (flag && count < 10000) {
 		    	count++;
 				// 用于调用微信接口时 封装openid

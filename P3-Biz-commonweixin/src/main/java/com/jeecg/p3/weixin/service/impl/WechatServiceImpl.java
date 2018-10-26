@@ -56,7 +56,6 @@ import com.jeecg.p3.weixin.vo.resp.TextMessageResp;
  */
 @Service("wechatService")
 public class WechatServiceImpl implements WechatService {
-	
 	 public final static Logger log = LoggerFactory.getLogger(WechatServiceImpl.class);
 	 
 	 @Autowired
@@ -80,18 +79,23 @@ public class WechatServiceImpl implements WechatService {
 	 @Autowired
 	 private WeixinGzuserService weixinGzuserService;
 
+
 	@Override
 	public String coreService(HttpServletRequest request) {
+		log.info(" ------------接受微信客户端消息，进入逻辑处理开始------------");
 		String respMessage = "";
 		try {
 			// xml请求解析
 			Map<String, String> requestMap = MessageUtil.parseXml(request);
+			log.info(" ---------解析微信客户端消息完成-----MessageUtil.parseXml-------");
 			
 			//消息存储-非事件消息
-			if(!requestMap.get("MsgType").equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)) {
+			if(!MessageUtil.REQ_MESSAGE_TYPE_EVENT.equals(requestMap.get("MsgType"))) {
+				log.info(" ---------保存微信客户端消息进数据库-------");
 				saveReceiveMessage(requestMap);
 			}
 			
+			log.info(" -----微信客户端消息------： {}", requestMap.toString());
 			//写入通用DTO类中方便传递参数
 			WeixinMessageDTO weixinMessageDTO = new WeixinMessageDTO();
 			// 发送方帐号(OpenId)
@@ -110,6 +114,7 @@ public class WechatServiceImpl implements WechatService {
 			weixinMessageDTO.setKey(requestMap.get("EventKey"));
 			//Event(事件)
 			weixinMessageDTO.setEvent(requestMap.get("Event"));
+			
 			
 			//【微信触发类型】文本消息
 			if (weixinMessageDTO.getMsgType().equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)) {
@@ -148,13 +153,17 @@ public class WechatServiceImpl implements WechatService {
 					try {
 						respMessage = doSubscribeEventResponse(weixinMessageDTO, request);
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.error("-----处理订阅事件异常：--------------"+e.toString());
 					}
 				//扫描二维码
 				}else if(eventType.equals(MessageUtil.EVENT_TYPE_SCAN)){
 					try {
-						respMessage = doScanEventResponse(weixinMessageDTO, request);
+						String sceneId = weixinMessageDTO.getKey();
+						//respMessage = doScanEventResponse(weixinMessageDTO,sceneId, request);
+						//TODO
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.error("-----处理扫描二维码事件异常：--------------"+e.toString());
 					}
 				}
@@ -163,6 +172,7 @@ public class WechatServiceImpl implements WechatService {
 					try {
 						respMessage = doUnsubscribeEventResponse(weixinMessageDTO, request);
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.error("-----处理取消订阅事件异常：--------------"+e.toString());
 					}
 				}
@@ -171,6 +181,7 @@ public class WechatServiceImpl implements WechatService {
 					try {
 						respMessage = doLocationEventResponse(weixinMessageDTO, request);
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.error("-----处理上报地理位置事件异常：--------------"+e.toString());
 					}
 				}
@@ -179,6 +190,7 @@ public class WechatServiceImpl implements WechatService {
 					try {
 						respMessage = doMyMenuEventResponse(weixinMessageDTO, request);
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.error("-----处理微信请求[Click]事件异常：--------------"+e.toString());
 					}
 				}
@@ -187,6 +199,7 @@ public class WechatServiceImpl implements WechatService {
 					try {
 						respMessage = doMyMenuViewEventResponse(weixinMessageDTO, request);
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.error("-----处理微信请求[View]事件异常：--------------"+e.toString());
 					}
 				}
@@ -195,12 +208,14 @@ public class WechatServiceImpl implements WechatService {
 					try {
 						respMessage = doOtherEventResponse(eventType, requestMap);
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.error("-----处理其他事件异常：--------------"+e.toString());
 					}
 				}
 			}
 		} catch (Exception e) {
 			log.error("-----处理微信请求异常：--------------"+e.toString());
+			e.printStackTrace();
 			respMessage = "";
 		}
 		return respMessage;
@@ -307,19 +322,17 @@ public class WechatServiceImpl implements WechatService {
 		}
 		//关注,根据用户OpenId和Jwid添加关注用户
 		saveGzUserInfoByOpenId(weixinMessageDTO.getFromUserName(), weixinMessageDTO.getToUserName());
+		//update-begin--Author:sunkai  Date:20180904 for：扫码关注事件--------------------
+		//获取关注后参数内的sceneId
+		if(weixinMessageDTO.getKey().indexOf("qrscene_")!=-1){
+			String sceneId = weixinMessageDTO.getKey().substring(weixinMessageDTO.getKey().indexOf("_")+1);
+//			respMessage = this.doScanEventResponse(weixinMessageDTO, sceneId, request);
+		}
+		//update-end--Author:sunkai  Date:20180904 for：扫码关注事件--------------------
 		return respMessage;
 	}
 	
-	/**
-	 * 【微信触发类型】事件推送-扫描二维码
-	 * @param weixinMessageDTO, request
-	 * @return respMessage
-	 */
-	private String doScanEventResponse(WeixinMessageDTO weixinMessageDTO, HttpServletRequest request) {
-		//TODO
-		String respMessage = "";
-		return respMessage;
-	}
+	//update-begin--Author:sunkai  Date:20180904 for：扫码关注事件--------------------
 	
 	/**
 	 * 【微信触发类型】事件推送-取消订阅
@@ -329,7 +342,9 @@ public class WechatServiceImpl implements WechatService {
 	private String doUnsubscribeEventResponse(WeixinMessageDTO weixinMessageDTO, HttpServletRequest request) {
 		String respMessage = "";
 		//取消关注,更新粉丝表状态
-		WeixinGzuser weixinGzuser = weixinGzuserService.queryByOpenId(weixinMessageDTO.getFromUserName());
+		//update-begin--Author:zhangweijian  Date: 20180820 for：添加jwid查询条件
+		WeixinGzuser weixinGzuser = weixinGzuserService.queryByOpenId(weixinMessageDTO.getFromUserName(),weixinMessageDTO.getToUserName());
+		//update-end--Author:zhangweijian  Date: 20180820 for：添加jwid查询条件
 		if(weixinGzuser != null) {
 			weixinGzuser.setSubscribe("0");//未关注
 			weixinGzuser.setTagidList("");//标签ID置为空
@@ -426,7 +441,9 @@ public class WechatServiceImpl implements WechatService {
 				article.setDescription(weixinNewsitem.getDescription());
 				String url = "";
 				if ("news".equals(weixinNewsitem.getNewType())) {
-					url = basePath + "/weixin/back/weixinCommon/goContent.do?id=" + weixinNewsitem.getId() + "&jwid=" + weixinMessageDTO.getToUserName();
+					//---update-begin-Alex----Date:20181010---for:替换文章访问链接
+					url = basePath + "/weixinNewsController/goContent.do?id=" + weixinNewsitem.getId() + "&jwid=" + weixinMessageDTO.getToUserName();
+					//---update-end-Alex----Date:20181010---for:替换文章访问链接
 				} else {
 					//图文外部链接参数替换
 					url = weixinNewsitem.getExternalUrl();
@@ -609,6 +626,7 @@ public class WechatServiceImpl implements WechatService {
 			weixinReceivetext.setToUserName(requestMap.get("ToUserName"));
 			weixinReceivetext.setMsgId(requestMap.get("MsgId"));
 			weixinReceivetext.setMsgType(msgType);
+			weixinReceivetext.setJwid(requestMap.get("ToUserName"));
 			weixinReceivetext.setMediaId(requestMap.get("MediaId"));
 			//根据不同类型存储Content不统一，改为存储JSON格式
 			Map<String,Object> map = new HashMap<String,Object>();
@@ -655,6 +673,7 @@ public class WechatServiceImpl implements WechatService {
 			}
 			weixinReceivetextService.doAdd(weixinReceivetext);
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.error("-----消息存储异常：--------------"+e.toString());
 		}
 	}
@@ -711,8 +730,8 @@ public class WechatServiceImpl implements WechatService {
 			return "";
 		} else if (eventType.equals(MessageUtil.EVENT_MASSSENDJOBFINISH)) {
 			// 群发： 事件推送群发结果
+			//TODO
 			return "";
-			// TODO
 		} else if (eventType.equals(MessageUtil.EVENT_SHAKEAROUNDUSERSHAKE)) {
 			// 摇一摇： 事件通知
 			return "";
@@ -747,7 +766,9 @@ public class WechatServiceImpl implements WechatService {
 	 * @param jwid
 	 */
 	public void saveGzUserInfoByOpenId(String openId, String jwid) {
-		WeixinGzuser weixinGzuser = weixinGzuserService.queryByOpenId(openId);
+		//update-begin--Author:zhangweijian  Date: 20180820 for：添加jwid查询条件
+		WeixinGzuser weixinGzuser = weixinGzuserService.queryByOpenId(openId,jwid);
+		//update-end--Author:zhangweijian  Date: 20180820 for：添加jwid查询条件
 		// 获取请求的微信公众账号信息
 		MyJwWebJwid myJwWebJwid = myJwWebJwidService.queryByJwid(jwid);
 		// 通过微信接口，抓取关注用户信息
@@ -761,7 +782,7 @@ public class WechatServiceImpl implements WechatService {
 				gzUserInfo.setHeadimgurl(gzUser.getHeadimgurl());
 				String nickName = WeixinUtil.encode(gzUser.getNickname().getBytes());
 				gzUserInfo.setNickname(nickName);
-				gzUserInfo.setNicknameTxt(gzUser.getNickname());
+				gzUserInfo.setNicknameTxt(EmojiFilter.filterEmoji(gzUser.getNickname()));
 				gzUserInfo.setOpenid(gzUser.getOpenid());
 				// 增加表情过滤
 				gzUserInfo.setProvince(EmojiFilter.filterEmoji(gzUser.getProvince()));
@@ -800,6 +821,7 @@ public class WechatServiceImpl implements WechatService {
 			if (gzUser != null) {
 				String nickName = WeixinUtil.encode(gzUser.getNickname().getBytes());
 				weixinGzuser.setNickname(nickName);
+				weixinGzuser.setNicknameTxt(EmojiFilter.filterEmoji(gzUser.getNickname()));
 				weixinGzuser.setHeadimgurl(gzUser.getHeadimgurl());
 			}
 			// 默认设为关注

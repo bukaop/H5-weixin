@@ -8,7 +8,7 @@
 		<div class="row">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-	        	<button type="button" class="btn btn-primary" id="formSubmit"><span class="glyphicon glyphicon-ok"></span> 保存</button>
+	        	<button type="button" class="btn btn-primary" id="formSubmit" onclick="beforesubmit()"><span class="glyphicon glyphicon-ok"></span> 保存</button>
 				<button type="button" class="btn btn-default" id="formReturn" data-dismiss="modal" onclick="doUrl('$!{basePath}/weixin/back/weixinTexttemplate/list.do')"><span class="glyphicon glyphicon-circle-arrow-left"></span> 返回</button>
 				</div>
 				<div class="panel-body">
@@ -24,7 +24,7 @@
 							<div class="form-group mno">
 							    <label for="inputEmail3" class="col-sm-2 control-label" style="text-align:left;">文本内容</label>
 							    <div class="col-sm-6">
-								  <textarea rows="7" cols="60" name="templateContent" id="templateContent" class="form-control" datatype="*">$!{weixinTexttemplate.templateContent}</textarea>
+                                  <textarea rows="7" cols="60" name="templateContent" id="templateContent" class="form-control" datatype="*">$!{weixinTexttemplate.templateContent}</textarea>
 								  <a href="javascript:insertText(document.getElementById('templateContent'))"><i class="fa fa-link"></i> 插入超链接</a>
 								</div>
 							</div>
@@ -55,5 +55,11 @@ function insertText(obj) {
     } else {
         obj.value += str;
     }
+}
+//提交表单前，清除所有input包含空格的值
+function beforesubmit(){
+	$('input[type=text]').each(function(){
+		$(this).val($(this).val().replace(/\s/g,""));
+    })
 }
 </script>

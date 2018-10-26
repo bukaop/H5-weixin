@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import org.jeecgframework.p3.core.logger.Logger;
+import org.jeecgframework.p3.core.logger.LoggerFactory;
 import org.jeecgframework.p3.core.util.oConvertUtils;
 
 /**
@@ -13,6 +15,8 @@ import org.jeecgframework.p3.core.util.oConvertUtils;
  * @date 2013-05-18
  */
 public class SignUtil {
+	public final static Logger log = LoggerFactory.getLogger(SignUtil.class);
+	
 	// 与接口配置信息中的Token要一致
 	/**
 	 * 验证签名
@@ -23,6 +27,7 @@ public class SignUtil {
 	 * @return
 	 */
 	public static boolean checkSignature(String token,String signature, String timestamp, String nonce) {
+		log.info("-------------微信消息签名加密-----token：" + token + "----signature----"+ signature + "----timestamp----"+ timestamp + "----nonce----"+ nonce );
 		if(oConvertUtils.isEmpty(token)) {
 			return false;
 		}
@@ -47,6 +52,7 @@ public class SignUtil {
 
 		content = null;
 		// 将sha1加密后的字符串可与signature对比，标识该请求来源于微信
+		log.info("-------------tmpStr----------：" + tmpStr );
 		return tmpStr != null ? tmpStr.equals(signature.toUpperCase()) : false;
 	}
 
