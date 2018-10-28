@@ -78,7 +78,6 @@
 * 在线体验(微信扫描登录)：[http://www.h5huodong.com/system/login.do](http://www.h5huodong.com/system/login.do)
 * 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
 * 技术QQ群 : 97460170
-* 在线文档： [http://jeewx-h5.mydoc.io](http://jeewx-h5.mydoc.io)
 
 
 
@@ -101,10 +100,6 @@
 
 	1.工具类：P3-Web/src/main/java/org/jeecgframework/p3/cg/util/CodeToolUtil.java
 	2.配置文件：P3-Web/src/main/resources/p3-cg-config.properties
-
-
-
-
 
 
 
