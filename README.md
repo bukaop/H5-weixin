@@ -65,7 +65,7 @@
 		</dependency>
 	3.项目启动访问方式：
 	  采用maven方式，启动Web项目
-      http://localhost:8080/jeewx
+      http://localhost/jeewx
     4.页面层面不能采用jsp，需要采用模板语言Velocity
     5.实现插件式开发，按照模块进行开发，每个模块可以单独达成jar包
 	6.数据库配置文件：
