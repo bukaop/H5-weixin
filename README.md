@@ -1,6 +1,6 @@
 捷微H5 | 免费微信活动平台
 ==========
-捷微H5，是一款开源免费的微信运营平台，是jeewx的新一代产品，平台涵盖了、微信公众号管理、微信H5活动、小程序、微网站、微商城、分销商城、小程序商城、小程序网站、砍价、投票等等功能，是一套成熟的互联网运营产品。架构层面，采用JAVA语言，具备更高的并发能力和大数据能力，采用微服务架构，插件式开发、模块化、UI体验更好；另外强大的代码生成器，便于用户二次开发，开发效率很高；最大的优势： 插件模式，每个功能模块以插件方式提供，方便插拔集成，个性化定制。
+捷微H5，是一款开源免费的微信运营平台，是jeewx的新一代产品，平台涵盖了：微信公众号管理、各种微信活动、小程序、微网站、微商城、分销商城、小程序商城、小程序网站、砍价、投票、会员等等功能，是一套成熟的互联网运营产品。架构层面，采用JAVA语言，具备更高的并发能力和大数据能力，采用微服务架构，插件式开发模块化、UI体验更好；另外强大的代码生成器，显著提高开发效率，便于用户二次开发；最大的优势： 插件模式，每个功能模块以插件方式提供，方便插拔集成，个性化定制。
 
 当前最新版本： 4.1.0（发布日期：20181026）
 
@@ -44,7 +44,7 @@
 
 ### 二、项目说明
 	  1.微信公众号管理   P3-Biz-commonweixin
-	  2.摇一摇送卡券     P3-Biz-shaketicket
+	  2.摇一摇活动     P3-Biz-shaketicket
 	  3.九宫格活动       P3-Biz-jiugongge
 	  4.启动项目         P3-Web
 	  
@@ -69,7 +69,9 @@
     4.页面层面不能采用jsp，需要采用模板语言Velocity
     5.实现插件式开发，按照模块进行开发，每个模块可以单独达成jar包
 	6.数据库配置文件：
-	  src/main/resources/db.properties
+	  P3-Web/src/main/resources/db.properties
+	7.redis配置文件
+	  P3-Web/src/main/resources/redis.properties
 	 
 
   
@@ -88,18 +90,18 @@
 	1.Eclipse + Maven + JDK7
     2.项目以Maven方式导入eclipse
 	3.初始化数据库脚步
-	    P3-Web\doc\db\jeewx-h5-mysql-20180810.sql
+	    P3-Web\doc\db\jeewx-h5-mysql-20181028.sql
 	4.采用maven方式，启动主项目P3-Web，命令：tomcat:run
       活动访问地址：
-	     http://localhost:8080/jeewx
+	     http://localhost/jeewx
 	  说明：插件不能单独启动，maven方式引入到Web项目
 	5.系统默认登录账号 admin/123456
 	  
 	
 【代码生成器】
 
-	1.工具类：P3-Web/src/main/java/org/jeecgframework/p3/cg/util/CodeToolUtil.java
-	2.配置文件：P3-Web/src/main/resources/p3-cg-config.properties
+	1.代码生成器工具类：P3-Web/src/main/java/org/jeecgframework/p3/cg/util/CodeToolUtil.java
+	2.代码生成配置文件：P3-Web/src/main/resources/p3-cg-config.properties
 
 
 
