@@ -275,7 +275,7 @@
 	处理信息: 列表总数
 	-->
 	<select id="count" resultType="java.lang.Integer"  parameterType="Object">
-		SELECT count(x.jwid)  FROM
+		SELECT count(*)  FROM
 		(SELECT jwj.jwid FROM  jw_web_jwid      AS jwj      /*  */ 
 		 WHERE 1=1
 		    <include refid="wherecontation"/>
