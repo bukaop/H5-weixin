@@ -138,6 +138,7 @@ public class MyJwWebJwidServiceImpl implements MyJwWebJwidService {
 				//TODO
 				logger.error("----------定时任务：H5平台独立公众号，重置redis缓存token失败-------------"+e.toString());
 				e.printStackTrace();
+				return " 没有配置Redis 缓存！";
 			}
 			//--------H5平台独立公众号，重置redis缓存---------------------------------------
 			return "success";

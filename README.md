@@ -49,9 +49,14 @@
 	  4.启动项目         P3-Web
 	  
 	  
+### 三、小程序源码
+	  1.微信公众号管理   P3-Biz-commonweixin
+	  2.摇一摇活动       P3-Biz-shaketicket
+	  3.九宫格活动       P3-Biz-jiugongge
+	  4.启动项目         P3-Web
+	  	  
 	  
-	  
-### 三、架构说明
+### 四、架构说明
 
     1.采用SpringMvc + Mybatis + Velocity + Maven(构建) 框架技术
     2.插件引入方式
@@ -75,19 +80,18 @@
 	 
 
   
-### 四、技术交流
+### 五、技术交流
 
-* 在线体验(微信扫描登录)：[http://www.h5huodong.com/system/login.do](http://www.h5huodong.com/system/login.do)
+* 在线体验(扫描登录)：[http://www.h5huodong.com/system/login.do](http://www.h5huodong.com/system/login.do)
 * 技术论坛 ：[www.jeecg.org](http://www.jeecg.org)
 * 技术QQ群 : 97460170
-* 视频教程 : 
-    链接：[https://pan.baidu.com/s/1gYDNvRWkritKb6sOMOx4hg](https://pan.baidu.com/s/1gYDNvRWkritKb6sOMOx4hg)
-	提取码：wq8d 
+* 视频教程(提取码：wq8d) : [https://pan.baidu.com/s/1gYDNvRWkritKb6sOMOx4hg](https://pan.baidu.com/s/1gYDNvRWkritKb6sOMOx4hg)
+	
 
 
 
 
-### 五、快速入门
+### 六、快速入门
 
 【开发入门】
 
