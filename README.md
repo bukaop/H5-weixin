@@ -50,9 +50,9 @@
 	  5.启动项目         P3-Web
 	  
 	  
-### 三、小程序源码
-	  1.小程序商城   	 [https://gitee.com/jeecg/weixin-app-cms](https://gitee.com/jeecg/weixin-app-cms)
-	  2.小程序官网       [https://gitee.com/jeecg/weixin-app-shop](https://gitee.com/jeecg/weixin-app-shop)
+### 三、小程序源码下载
+	  1.小程序商城地址    https://gitee.com/jeecg/weixin-app-cms
+	  2.小程序官网地址    https://gitee.com/jeecg/weixin-app-shop
 
 	  	  
 	  
