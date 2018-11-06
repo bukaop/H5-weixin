@@ -51,8 +51,8 @@
 	  
 	  
 ### 三、小程序源码下载
-	  1.小程序商城地址    https://gitee.com/jeecg/weixin-app-cms
-	  2.小程序官网地址    https://gitee.com/jeecg/weixin-app-shop
+	  1.小程序商城地址:    https://gitee.com/jeecg/weixin-app-cms
+	  2.小程序官网地址:    https://gitee.com/jeecg/weixin-app-shop
 
 	  	  
 	  
