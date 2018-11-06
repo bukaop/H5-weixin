@@ -46,14 +46,14 @@
 	  1.微信公众号管理   P3-Biz-commonweixin
 	  2.摇一摇活动       P3-Biz-shaketicket
 	  3.九宫格活动       P3-Biz-jiugongge
-	  4.启动项目         P3-Web
+	  4.新年砍价         P3-Biz-gzbargain
+	  5.启动项目         P3-Web
 	  
 	  
 ### 三、小程序源码
-	  1.微信公众号管理   P3-Biz-commonweixin
-	  2.摇一摇活动       P3-Biz-shaketicket
-	  3.九宫格活动       P3-Biz-jiugongge
-	  4.启动项目         P3-Web
+	  1.小程序商城   	 [https://gitee.com/jeecg/weixin-app-cms](https://gitee.com/jeecg/weixin-app-cms)
+	  2.小程序官网       [https://gitee.com/jeecg/weixin-app-shop](https://gitee.com/jeecg/weixin-app-shop)
+
 	  	  
 	  
 ### 四、架构说明
