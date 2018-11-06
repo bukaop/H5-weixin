@@ -135,9 +135,11 @@ public void toEdit(@RequestParam(required = true, value = "id" ) String id,HttpS
 public AjaxJson doEdit(@ModelAttribute GzWxActBargain gzWxActBargain){
 	AjaxJson j = new AjaxJson();
 	try {
+		gzWxActBargain.setShowRate(1);
 		gzWxActBargainService.doEdit(gzWxActBargain);
 		j.setMsg("编辑成功");
 	} catch (Exception e) {
+		e.printStackTrace();
 		j.setSuccess(false);
 		j.setMsg("编辑失败");
 	}
