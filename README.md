@@ -6,7 +6,8 @@
 
 架构演变：
 
-	  JEEWX 从4.0版本开始，技术架构全新换代，采用微服务架构插件式开发，每个业务模块都是独立的JAR包，方便用户集成，可插拔的模式。框架技术：SpringMvc + Mybatis + Velocity + Bootstrap + Maven
+	  JEEWX 从4.0版本开始，技术架构全新换代，采用微服务架构插件式开发，每个业务模块都是独立的JAR包，
+	  方便用户集成，可插拔的模式。框架技术：SpringMvc + Mybatis + Velocity + Bootstrap + Maven
 	  老版本JEEWX是基于jeecg开发，如果你更喜欢老版，请在这里下载：https://github.com/zhangdaiscott/jeewx
 	  
 	  
