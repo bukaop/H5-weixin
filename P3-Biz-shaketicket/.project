@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>P3-Biz-shaketicket</name>
+	<comment></comment>
+	<projects>
+		<project>P3-Biz-commonweixin</project>
+		<project>P3-Biz-gzbargain-newYear</project>
+		<project>P3-Biz-jiugongge</project>
+		<project>P3-Web</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.m2e.core.maven2Nature</nature>
+	</natures>
+</projectDescription>
