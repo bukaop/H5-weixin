@@ -1,0 +1,84 @@
+[2019-03-18 10:04:44.899] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'txtCache' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'txtCache' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:04:44.905] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'system_error_config' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'system_error_config' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:04:46.632] [INFO] [org.quartz.impl.StdSchedulerFactory:1184] Using default implementation for ThreadExecutor
+[2019-03-18 10:04:46.655] [INFO] [org.quartz.core.SchedulerSignalerImpl:61] Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+[2019-03-18 10:04:46.656] [INFO] [org.quartz.core.QuartzScheduler:240] Quartz Scheduler v.2.2.1 created.
+[2019-03-18 10:04:46.660] [INFO] [org.quartz.simpl.RAMJobStore:155] RAMJobStore initialized.
+[2019-03-18 10:04:46.663] [INFO] [org.quartz.core.QuartzScheduler:305] Scheduler meta-data: Quartz Scheduler (v2.2.1) 'schedulerFactory' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+[2019-03-18 10:04:46.664] [INFO] [org.quartz.impl.StdSchedulerFactory:1339] Quartz scheduler 'schedulerFactory' initialized from an externally provided properties instance.
+[2019-03-18 10:04:46.664] [INFO] [org.quartz.impl.StdSchedulerFactory:1343] Quartz scheduler version: 2.2.1
+[2019-03-18 10:04:46.666] [INFO] [org.quartz.core.QuartzScheduler:2311] JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@10bd044b
+[2019-03-18 10:04:46.674] [INFO] [org.quartz.core.QuartzScheduler:575] Scheduler schedulerFactory_$_NON_CLUSTERED started.
+[2019-03-18 10:15:30.806] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'txtCache' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'txtCache' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:15:30.811] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'system_error_config' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'system_error_config' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:15:32.168] [INFO] [org.quartz.impl.StdSchedulerFactory:1184] Using default implementation for ThreadExecutor
+[2019-03-18 10:15:32.221] [INFO] [org.quartz.core.SchedulerSignalerImpl:61] Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+[2019-03-18 10:15:32.221] [INFO] [org.quartz.core.QuartzScheduler:240] Quartz Scheduler v.2.2.1 created.
+[2019-03-18 10:15:32.223] [INFO] [org.quartz.simpl.RAMJobStore:155] RAMJobStore initialized.
+[2019-03-18 10:15:32.224] [INFO] [org.quartz.core.QuartzScheduler:305] Scheduler meta-data: Quartz Scheduler (v2.2.1) 'schedulerFactory' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+[2019-03-18 10:15:32.225] [INFO] [org.quartz.impl.StdSchedulerFactory:1339] Quartz scheduler 'schedulerFactory' initialized from an externally provided properties instance.
+[2019-03-18 10:15:32.225] [INFO] [org.quartz.impl.StdSchedulerFactory:1343] Quartz scheduler version: 2.2.1
+[2019-03-18 10:15:32.227] [INFO] [org.quartz.core.QuartzScheduler:2311] JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@7a378397
+[2019-03-18 10:15:32.235] [INFO] [org.quartz.core.QuartzScheduler:575] Scheduler schedulerFactory_$_NON_CLUSTERED started.
+[2019-03-18 10:20:00.050] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 10:20:00.091] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken request url=https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxd2572e52fe8800df&secret=0d5b0f29e30859d71133ee45ddc6efab.
+[2019-03-18 10:20:00.536] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonStr={"access_token":"19_6dLxl5WCsDYRtgSXrXdNGleat9E7-2i9oyxyWIVsG0bzhJyN852YI-dqXl847fhj2j4vvSsIxzkoa7hw7EQkvYSZMjoBBc3gbHhzcKBujCF7E2Kyl23oEwQKKmbt18Ep72dDxufJxflOhWN2VMCiAIAEVL","expires_in":7200}.
+[2019-03-18 10:20:01.051] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonObjApi={"errcode":0,"errmsg":"ok","expires_in":7200,"ticket":"IpK_1T69hDhZkLQTlwsAXzVS-WiIlmHz57pf9LljuAp_5XZ5vXPza6T5uC9Cjpbn7Yxj5e-AdH3-VdpyooCdBQ"}.
+[2019-03-18 10:20:01.279] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonObjJsApi={"errcode":0,"errmsg":"ok","expires_in":7200,"ticket":"kgt8ON7yVITDhtdwci0qeaMj_IyibyW8ERIGfrkjOHiNfsOh23BMoDdSWd-M6gtTLeTxVP0FU0zKOjQavEEBYQ"}.
+[2019-03-18 10:20:01.349] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=1299ms.==========================
+[2019-03-18 10:30:00.002] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 10:30:00.005] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=3ms.==========================
+[2019-03-18 10:40:00.001] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 10:40:00.004] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=3ms.==========================
+[2019-03-18 10:49:47.313] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'txtCache' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'txtCache' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:49:47.316] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'system_error_config' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'system_error_config' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:49:48.587] [INFO] [org.quartz.impl.StdSchedulerFactory:1184] Using default implementation for ThreadExecutor
+[2019-03-18 10:49:48.636] [INFO] [org.quartz.core.SchedulerSignalerImpl:61] Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+[2019-03-18 10:49:48.637] [INFO] [org.quartz.core.QuartzScheduler:240] Quartz Scheduler v.2.2.1 created.
+[2019-03-18 10:49:48.638] [INFO] [org.quartz.simpl.RAMJobStore:155] RAMJobStore initialized.
+[2019-03-18 10:49:48.639] [INFO] [org.quartz.core.QuartzScheduler:305] Scheduler meta-data: Quartz Scheduler (v2.2.1) 'schedulerFactory' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+[2019-03-18 10:49:48.640] [INFO] [org.quartz.impl.StdSchedulerFactory:1339] Quartz scheduler 'schedulerFactory' initialized from an externally provided properties instance.
+[2019-03-18 10:49:48.640] [INFO] [org.quartz.impl.StdSchedulerFactory:1343] Quartz scheduler version: 2.2.1
+[2019-03-18 10:49:48.641] [INFO] [org.quartz.core.QuartzScheduler:2311] JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@4b3dee2e
+[2019-03-18 10:49:48.647] [INFO] [org.quartz.core.QuartzScheduler:575] Scheduler schedulerFactory_$_NON_CLUSTERED started.
+[2019-03-18 10:50:00.011] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 10:50:00.063] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=52ms.==========================
+[2019-03-18 10:56:01.785] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'txtCache' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'txtCache' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:56:01.788] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'system_error_config' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'system_error_config' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:56:03.092] [INFO] [org.quartz.impl.StdSchedulerFactory:1184] Using default implementation for ThreadExecutor
+[2019-03-18 10:56:03.108] [INFO] [org.quartz.core.SchedulerSignalerImpl:61] Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+[2019-03-18 10:56:03.109] [INFO] [org.quartz.core.QuartzScheduler:240] Quartz Scheduler v.2.2.1 created.
+[2019-03-18 10:56:03.110] [INFO] [org.quartz.simpl.RAMJobStore:155] RAMJobStore initialized.
+[2019-03-18 10:56:03.110] [INFO] [org.quartz.core.QuartzScheduler:305] Scheduler meta-data: Quartz Scheduler (v2.2.1) 'schedulerFactory' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+[2019-03-18 10:56:03.111] [INFO] [org.quartz.impl.StdSchedulerFactory:1339] Quartz scheduler 'schedulerFactory' initialized from an externally provided properties instance.
+[2019-03-18 10:56:03.111] [INFO] [org.quartz.impl.StdSchedulerFactory:1343] Quartz scheduler version: 2.2.1
+[2019-03-18 10:56:03.112] [INFO] [org.quartz.core.QuartzScheduler:2311] JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@4ba4074f
+[2019-03-18 10:56:03.127] [INFO] [org.quartz.core.QuartzScheduler:575] Scheduler schedulerFactory_$_NON_CLUSTERED started.
