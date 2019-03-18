@@ -1,0 +1,9 @@
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:12 +0800] "GET /jeewx/system/login.do HTTP/1.1" 200 9846 http-bio-80-exec-1 133
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:12 +0800] "GET /jeewx/randCodeImage?v=1552877952194 HTTP/1.1" 200 2195 http-bio-80-exec-3 198
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:16 +0800] "POST /jeewx/system/checkUser.do HTTP/1.1" 200 96 http-bio-80-exec-4 79
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:16 +0800] "POST /jeewx/system/login.do HTTP/1.1" 200 15092 http-bio-80-exec-5 126
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:16 +0800] "GET /jeewx/system/back/home.do HTTP/1.1" 200 298 http-bio-80-exec-6 22
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:16 +0800] "GET /jeewx/system/back/jwSystemProject/toIndex.do HTTP/1.1" 200 21556 http-bio-80-exec-7 52
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:16 +0800] "GET /img/defImage.jpg?v=201607281400 HTTP/1.1" 404 - http-bio-80-exec-8 0
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:23 +0800] "GET /jeewx/commonweixin/back/myJwWebJwid/list.do HTTP/1.1" 200 14793 http-bio-80-exec-10 104
+0:0:0:0:0:0:0:1 - - [18/Mar/2019:10:59:23 +0800] "GET /jeewx/commonweixin/back/myJwWebJwid/list.do HTTP/1.1" 200 14793 http-bio-80-exec-9 111

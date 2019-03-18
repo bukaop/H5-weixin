@@ -82,3 +82,76 @@
 [2019-03-18 10:56:03.111] [INFO] [org.quartz.impl.StdSchedulerFactory:1343] Quartz scheduler version: 2.2.1
 [2019-03-18 10:56:03.112] [INFO] [org.quartz.core.QuartzScheduler:2311] JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@4ba4074f
 [2019-03-18 10:56:03.127] [INFO] [org.quartz.core.QuartzScheduler:575] Scheduler schedulerFactory_$_NON_CLUSTERED started.
+[2019-03-18 10:58:55.384] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'txtCache' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'txtCache' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:58:55.387] [WARN] [net.sf.ehcache.config.CacheConfiguration:698] Cache 'system_error_config' is set to eternal but also has TTI/TTL set.  To avoid this warning, clean up the config removing conflicting values of eternal, TTI and TTL. Effective configuration for Cache 'system_error_config' will be eternal='true', timeToIdleSeconds='0', timeToLiveSeconds='0'.
+[2019-03-18 10:58:56.489] [INFO] [org.quartz.impl.StdSchedulerFactory:1184] Using default implementation for ThreadExecutor
+[2019-03-18 10:58:56.501] [INFO] [org.quartz.core.SchedulerSignalerImpl:61] Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+[2019-03-18 10:58:56.502] [INFO] [org.quartz.core.QuartzScheduler:240] Quartz Scheduler v.2.2.1 created.
+[2019-03-18 10:58:56.503] [INFO] [org.quartz.simpl.RAMJobStore:155] RAMJobStore initialized.
+[2019-03-18 10:58:56.504] [INFO] [org.quartz.core.QuartzScheduler:305] Scheduler meta-data: Quartz Scheduler (v2.2.1) 'schedulerFactory' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+[2019-03-18 10:58:56.504] [INFO] [org.quartz.impl.StdSchedulerFactory:1339] Quartz scheduler 'schedulerFactory' initialized from an externally provided properties instance.
+[2019-03-18 10:58:56.504] [INFO] [org.quartz.impl.StdSchedulerFactory:1343] Quartz scheduler version: 2.2.1
+[2019-03-18 10:58:56.505] [INFO] [org.quartz.core.QuartzScheduler:2311] JobFactory set to: org.springframework.scheduling.quartz.AdaptableJobFactory@6f4de21c
+[2019-03-18 10:58:56.511] [INFO] [org.quartz.core.QuartzScheduler:575] Scheduler schedulerFactory_$_NON_CLUSTERED started.
+[2019-03-18 10:59:12.003] [INFO] [com.jeecg.p3.system.web.SystemController:250] 登录失败：用户【null】验证码错误
+[2019-03-18 10:59:16.093] [INFO] [com.jeecg.p3.system.web.SystemController:250] 登录验证成功：用户【admin】权限验证通过
+[2019-03-18 10:59:16.324] [INFO] [org.jeecgframework.p3.core.web.BaseController:234] [0:0:0:0:0:0:0:1]  back home
+[2019-03-18 11:00:00.028] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 11:00:00.038] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=10ms.==========================
+[2019-03-18 11:10:00.004] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 11:10:00.010] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=5ms.==========================
+[2019-03-18 11:20:00.024] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 11:20:00.027] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=3ms.==========================
+[2019-03-18 11:30:00.001] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 11:30:00.006] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=4ms.==========================
+[2019-03-18 11:40:00.003] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 11:40:00.011] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=7ms.==========================
+[2019-03-18 11:50:00.001] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 11:50:00.010] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken request url=https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxd2572e52fe8800df&secret=0d5b0f29e30859d71133ee45ddc6efab.
+[2019-03-18 11:50:00.462] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonStr={"access_token":"19_3YJRe4CZWtTXoW0QpW4ILf6Cavjfdad1CzpI1x0SlppJOvBsEb1K_w2wpd34_u9C2djhpP9GWDe1H_0kR9AaQsK_HJWTmfhtl_stiYRcZMkwU0ek7Ops6gsOMH9qsia-ZSpC5_q9yd2IjRKtKIEcADARPL","expires_in":7200}.
+[2019-03-18 11:50:00.675] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonObjApi={"errcode":0,"errmsg":"ok","expires_in":7200,"ticket":"IpK_1T69hDhZkLQTlwsAXzVS-WiIlmHz57pf9LljuAp_5XZ5vXPza6T5uC9Cjpbn7Yxj5e-AdH3-VdpyooCdBQ"}.
+[2019-03-18 11:50:00.846] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonObjJsApi={"errcode":0,"errmsg":"ok","expires_in":7200,"ticket":"kgt8ON7yVITDhtdwci0qeaMj_IyibyW8ERIGfrkjOHiNfsOh23BMoDdSWd-M6gtTLeTxVP0FU0zKOjQavEEBYQ"}.
+[2019-03-18 11:50:00.921] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=919ms.==========================
+[2019-03-18 12:00:00.003] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 12:00:00.011] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=6ms.==========================
+[2019-03-18 12:10:00.003] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 12:10:00.008] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=4ms.==========================
+[2019-03-18 12:20:00.037] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 12:20:00.040] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=3ms.==========================
+[2019-03-18 12:30:00.002] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 12:30:00.016] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=13ms.==========================
+[2019-03-18 12:40:00.003] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 12:40:00.010] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=6ms.==========================
+[2019-03-18 12:50:00.004] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 12:50:00.019] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=15ms.==========================
+[2019-03-18 13:00:00.003] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 13:00:00.011] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=8ms.==========================
+[2019-03-18 13:10:00.001] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 13:10:00.010] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=8ms.==========================
+[2019-03-18 13:20:00.058] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 13:20:00.062] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken request url=https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxd2572e52fe8800df&secret=0d5b0f29e30859d71133ee45ddc6efab.
+[2019-03-18 13:20:00.374] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonStr={"access_token":"19_UnN3FiVQT7VjNupdI3eRcfloDusaLnllYahFo47HY9Rxc3q6gwwmlyn3gzL9yoDXw63syB72k652rHfGKB7907hwMvVVOyUWW5Q4osI2ckVSDiLW9_mMqwezJ0vjBHaNeA8lnQy2n4r8uiXhOEOeAJAFVF","expires_in":7200}.
+[2019-03-18 13:20:00.543] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonObjApi={"errcode":0,"errmsg":"ok","expires_in":7200,"ticket":"IpK_1T69hDhZkLQTlwsAXzVS-WiIlmHz57pf9LljuArbnqR0upW5i0dcMzfj6kHf8tdUS0dCCUQrORI91C1Fow"}.
+[2019-03-18 13:20:00.743] [INFO] [com.jeecg.p3.commonweixin.util.AccessTokenUtil:264] AccseeToken response jsonObjJsApi={"errcode":0,"errmsg":"ok","expires_in":7200,"ticket":"kgt8ON7yVITDhtdwci0qeaMj_IyibyW8ERIGfrkjOHgPP-f74RNYtw4ttYGOhgTl0mzsM63t4LDw1kpck6q-dg"}.
+[2019-03-18 13:20:00.767] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=708ms.==========================
+[2019-03-18 13:30:00.005] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 13:30:00.012] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=6ms.==========================
+[2019-03-18 13:40:00.001] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 13:40:00.006] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=5ms.==========================
+[2019-03-18 13:50:00.003] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 13:50:00.010] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=6ms.==========================
+[2019-03-18 14:00:00.003] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 14:00:00.009] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=6ms.==========================
+[2019-03-18 14:10:00.002] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 14:10:00.010] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=7ms.==========================
+[2019-03-18 14:20:00.099] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 14:20:00.101] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=2ms.==========================
+[2019-03-18 14:30:00.004] [INFO] [com.jeecg.p3.task.RefreshTokenTask:250] ===================重置AccseeToken定时任务开启==========================
+[2019-03-18 14:30:00.010] [INFO] [com.jeecg.p3.task.RefreshTokenTask:264] ===================重置AccseeToken定时任务结束，用时=6ms.==========================
